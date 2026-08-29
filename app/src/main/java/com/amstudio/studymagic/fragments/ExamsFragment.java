@@ -31,6 +31,10 @@ public class ExamsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_exams, container, false);
 
+        View header = view.findViewById(R.id.llHeader);
+        com.amstudio.studymagic.utils.WindowInsetsUtil.applyTopInset(header);
+        com.amstudio.studymagic.utils.WindowInsetsUtil.setLightStatusBar(getActivity(), false);
+
         RecyclerView rvExams = view.findViewById(R.id.rvExams);
         categoryAdapter = new CategoryAdapter(categoryList, R.layout.item_category_grid, category -> {
             Bundle bundle = new Bundle();

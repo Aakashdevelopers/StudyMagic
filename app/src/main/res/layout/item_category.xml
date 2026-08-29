@@ -12,15 +12,17 @@
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:background="@drawable/bg_category_icon"
-        android:padding="16dp">
+        android:padding="0dp">
 
-        <ImageView
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/ivCategoryIcon"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@null"
-            android:src="@drawable/ic_category_ssc"
-            app:tint="@color/colorPrimary" />
+            app:tint="@color/colorPrimary"/>
 
     </FrameLayout>
 

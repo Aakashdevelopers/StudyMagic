@@ -41,6 +41,9 @@ public class TestListFragment extends Fragment {
         String title = getArguments() != null ? getArguments().getString("topicName", getArguments().getString("categoryName", "Tests")) : "Tests";
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
+        com.amstudio.studymagic.utils.WindowInsetsUtil.applyTopInset(toolbar);
+        com.amstudio.studymagic.utils.WindowInsetsUtil.setLightStatusBar(getActivity(), false);
+
         toolbar.setTitle(title);
         toolbar.setNavigationIcon(android.R.drawable.ic_menu_revert);
         toolbar.setNavigationOnClickListener(v -> getParentFragmentManager().popBackStack());

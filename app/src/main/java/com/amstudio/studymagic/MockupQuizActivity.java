@@ -3,9 +3,9 @@ package com.amstudio.studymagic;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -18,32 +18,45 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.amstudio.studymagic.adapters.PaletteAdapter;
+import com.amstudio.studymagic.adapters.SubjectTabAdapter;
 import com.amstudio.studymagic.fragments.ResultFragment;
 import com.amstudio.studymagic.models.Question;
+import com.amstudio.studymagic.models.SupabaseTest;
 import com.amstudio.studymagic.models.Test;
 import com.amstudio.studymagic.utils.WindowInsetsUtil;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
-public class QuizActivity extends AppCompatActivity {
+public class MockupQuizActivity extends AppCompatActivity {
 
-    private Test test;
-    private List<Question> questions;
-    private int currentQuestionIndex = 0;
-    
-    private TextView tvTimer, tvQuizTitle, tvQuestionNoPill, tvQuestionText;
+    private SupabaseTest supabaseTest;
+    private Map<String, List<Question>> subjectWiseQuestions = new LinkedHashMap<>();
+    private List<String> subjects = new ArrayList<>();
+    private String currentSubject;
+    private int currentQuestionIndexInSubject = 0;
+
+    private TextView tvTimer, tvQuizTitle, tvQuestionNoPill, tvQuestionText, tvSubjectLabel;
     private com.google.android.material.progressindicator.LinearProgressIndicator quizProgress;
     private RadioGroup rgOptions;
     private RadioButton rb1, rb2, rb3, rb4;
     private Button btnSaveNext, btnMarkNext, btnClear, btnSubmitTop;
     private ImageView btnPause, btnMenu, btnMarkForReviewStar;
+    private RecyclerView rvSubjects;
+    private SubjectTabAdapter subjectAdapter;
     private PaletteAdapter paletteAdapter;
-    
+
     private CountDownTimer timer;
     private long timeLeftInMillis;
     private boolean isTimerRunning = false;
@@ -52,22 +65,34 @@ public class QuizActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_quiz);
+        setContentView(R.layout.activity_mockup_quiz);
 
-        if (getIntent() != null && getIntent().hasExtra("test")) {
-            test = (Test) getIntent().getSerializableExtra("test");
-            if (test != null) questions = test.getQuestions();
+        if (getIntent() != null && getIntent().hasExtra("supabaseTest")) {
+            supabaseTest = (SupabaseTest) getIntent().getSerializableExtra("supabaseTest");
+            parseQuestions();
         }
 
-        if (questions == null || questions.isEmpty()) {
+        if (subjects.isEmpty()) {
             finish();
             return;
         }
 
+        currentSubject = subjects.get(0);
         initViews();
-        timeLeftInMillis = test.getDurationMinutes() * 60 * 1000L;
+        timeLeftInMillis = supabaseTest.duration * 60 * 1000L;
         startTimer();
-        showQuestion(currentQuestionIndex);
+        showQuestion(0);
+    }
+
+    private void parseQuestions() {
+        Gson gson = new Gson();
+        String jsonStr = gson.toJson(supabaseTest.questionsJson);
+        Type mapType = new TypeToken<Map<String, List<Question>>>(){}.getType();
+        Map<String, List<Question>> map = gson.fromJson(jsonStr, mapType);
+        if (map != null) {
+            subjectWiseQuestions.putAll(map);
+            subjects.addAll(map.keySet());
+        }
     }
 
     private void initViews() {
@@ -92,6 +117,7 @@ public class QuizActivity extends AppCompatActivity {
         tvQuizTitle = findViewById(R.id.tvQuizTitle);
         tvQuestionNoPill = findViewById(R.id.tvQuestionNoPill);
         tvQuestionText = findViewById(R.id.tvQuestionText);
+        tvSubjectLabel = findViewById(R.id.tvSubjectLabel);
         quizProgress = findViewById(R.id.quizProgress);
         rgOptions = findViewById(R.id.rgOptions);
         rb1 = findViewById(R.id.rbOption1);
@@ -107,13 +133,20 @@ public class QuizActivity extends AppCompatActivity {
         btnPause = findViewById(R.id.btnPause);
         btnMenu = findViewById(R.id.btnMenu);
         btnMarkForReviewStar = findViewById(R.id.btnMarkForReviewStar);
+        rvSubjects = findViewById(R.id.rvSubjects);
         
-        tvQuizTitle.setText(test.getTitle());
+        tvQuizTitle.setText(supabaseTest.title);
 
-        paletteAdapter = new PaletteAdapter(questions, index -> {
-            currentQuestionIndex = index;
-            showQuestion(index);
+        subjectAdapter = new SubjectTabAdapter(subjects, subject -> {
+            currentSubject = subject;
+            currentQuestionIndexInSubject = 0;
+            updatePalette();
+            showQuestion(0);
         });
+        rvSubjects.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        rvSubjects.setAdapter(subjectAdapter);
+
+        updatePalette();
 
         btnMenu.setOnClickListener(view -> showPaletteBottomSheet());
 
@@ -124,18 +157,18 @@ public class QuizActivity extends AppCompatActivity {
 
         btnClear.setOnClickListener(view -> {
             rgOptions.clearCheck();
-            questions.get(currentQuestionIndex).setSelectedOptionIndex(null);
-            paletteAdapter.notifyItemChanged(currentQuestionIndex);
+            getCurrentQuestions().get(currentQuestionIndexInSubject).setSelectedOptionIndex(null);
+            paletteAdapter.notifyItemChanged(currentQuestionIndexInSubject);
         });
 
         btnMarkNext.setOnClickListener(view -> {
-            questions.get(currentQuestionIndex).setMarkedForReview(true);
+            getCurrentQuestions().get(currentQuestionIndexInSubject).setMarkedForReview(true);
             saveSelectedOption();
             goToNextQuestion();
         });
 
         btnSaveNext.setOnClickListener(view -> {
-            questions.get(currentQuestionIndex).setMarkedForReview(false);
+            getCurrentQuestions().get(currentQuestionIndexInSubject).setMarkedForReview(false);
             saveSelectedOption();
             goToNextQuestion();
         });
@@ -143,11 +176,22 @@ public class QuizActivity extends AppCompatActivity {
         btnSubmitTop.setOnClickListener(view -> finishTest());
 
         btnMarkForReviewStar.setOnClickListener(view -> {
-            boolean current = questions.get(currentQuestionIndex).isMarkedForReview();
-            questions.get(currentQuestionIndex).setMarkedForReview(!current);
+            boolean current = getCurrentQuestions().get(currentQuestionIndexInSubject).isMarkedForReview();
+            getCurrentQuestions().get(currentQuestionIndexInSubject).setMarkedForReview(!current);
             updateInfoStripIcons();
-            paletteAdapter.notifyItemChanged(currentQuestionIndex);
+            paletteAdapter.notifyItemChanged(currentQuestionIndexInSubject);
         });
+    }
+
+    private void updatePalette() {
+        paletteAdapter = new PaletteAdapter(getCurrentQuestions(), index -> {
+            currentQuestionIndexInSubject = index;
+            showQuestion(index);
+        });
+    }
+
+    private List<Question> getCurrentQuestions() {
+        return subjectWiseQuestions.get(currentSubject);
     }
 
     private void showPaletteBottomSheet() {
@@ -157,9 +201,8 @@ public class QuizActivity extends AppCompatActivity {
         RecyclerView rvPalette = view.findViewById(R.id.rvQuestionPalette);
         rvPalette.setAdapter(paletteAdapter);
         
-        // Update selection logic for bottom sheet
         paletteAdapter.setOnItemClickListener(index -> {
-            currentQuestionIndex = index;
+            currentQuestionIndexInSubject = index;
             showQuestion(index);
             dialog.dismiss();
         });
@@ -174,18 +217,32 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void goToNextQuestion() {
-        if (currentQuestionIndex < questions.size() - 1) {
-            currentQuestionIndex++;
-            showQuestion(currentQuestionIndex);
+        List<Question> currentQs = getCurrentQuestions();
+        if (currentQuestionIndexInSubject < currentQs.size() - 1) {
+            currentQuestionIndexInSubject++;
+            showQuestion(currentQuestionIndexInSubject);
         } else {
-            finishTest();
+            // Check if there is a next subject
+            int subjectIndex = subjects.indexOf(currentSubject);
+            if (subjectIndex < subjects.size() - 1) {
+                currentSubject = subjects.get(subjectIndex + 1);
+                currentQuestionIndexInSubject = 0;
+                subjectAdapter.setSelectedSubject(currentSubject);
+                updatePalette();
+                showQuestion(0);
+                Toast.makeText(this, "Next Subject: " + currentSubject, Toast.LENGTH_SHORT).show();
+            } else {
+                finishTest();
+            }
         }
     }
 
     private void showQuestion(int index) {
-        Question q = questions.get(index);
+        List<Question> currentQs = getCurrentQuestions();
+        Question q = currentQs.get(index);
         tvQuestionNoPill.setText(String.valueOf(index + 1));
         tvQuestionText.setText(q.getQuestionText());
+        tvSubjectLabel.setText("Subject: " + currentSubject);
         
         updateProgress();
         updateInfoStripIcons();
@@ -205,10 +262,8 @@ public class QuizActivity extends AppCompatActivity {
             }
         }
         
-        paletteAdapter.notifyDataSetChanged(); 
-        
-        // Update button text for last question
-        if (index == questions.size() - 1) {
+        // Update button text
+        if (index == currentQs.size() - 1 && subjects.indexOf(currentSubject) == subjects.size() - 1) {
             btnSaveNext.setText("FINISH");
         } else {
             btnSaveNext.setText("Save & Next");
@@ -216,33 +271,38 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void updateProgress() {
+        int totalQuestions = 0;
         int attemptedCount = 0;
-        for (Question q : questions) {
-            if (q.getSelectedOptionIndex() != null) attemptedCount++;
+        for (List<Question> list : subjectWiseQuestions.values()) {
+            totalQuestions += list.size();
+            for (Question q : list) {
+                if (q.getSelectedOptionIndex() != null) attemptedCount++;
+            }
         }
-        int progress = (int) (((float) attemptedCount / questions.size()) * 100);
+        int progress = (int) (((float) attemptedCount / totalQuestions) * 100);
         quizProgress.setProgress(progress);
     }
 
     private void updateInfoStripIcons() {
-        Question q = questions.get(currentQuestionIndex);
+        Question q = getCurrentQuestions().get(currentQuestionIndexInSubject);
         btnMarkForReviewStar.setColorFilter(q.isMarkedForReview() ? 0xFFFF1744 : 0xFF757575);
     }
 
     private void saveSelectedOption() {
         int checkedId = rgOptions.getCheckedRadioButtonId();
+        List<Question> currentQs = getCurrentQuestions();
         if (checkedId == -1) {
-            questions.get(currentQuestionIndex).setSelectedOptionIndex(null);
+            currentQs.get(currentQuestionIndexInSubject).setSelectedOptionIndex(null);
         } else if (checkedId == R.id.rbOption1) {
-            questions.get(currentQuestionIndex).setSelectedOptionIndex(0);
+            currentQs.get(currentQuestionIndexInSubject).setSelectedOptionIndex(0);
         } else if (checkedId == R.id.rbOption2) {
-            questions.get(currentQuestionIndex).setSelectedOptionIndex(1);
+            currentQs.get(currentQuestionIndexInSubject).setSelectedOptionIndex(1);
         } else if (checkedId == R.id.rbOption3) {
-            questions.get(currentQuestionIndex).setSelectedOptionIndex(2);
+            currentQs.get(currentQuestionIndexInSubject).setSelectedOptionIndex(2);
         } else if (checkedId == R.id.rbOption4) {
-            questions.get(currentQuestionIndex).setSelectedOptionIndex(3);
+            currentQs.get(currentQuestionIndexInSubject).setSelectedOptionIndex(3);
         }
-        paletteAdapter.notifyItemChanged(currentQuestionIndex);
+        paletteAdapter.notifyItemChanged(currentQuestionIndexInSubject);
     }
 
     private void startTimer() {
@@ -256,7 +316,7 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onFinish() {
                 isTimerRunning = false;
-                Toast.makeText(QuizActivity.this, "Time's up!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MockupQuizActivity.this, "Time's up!", Toast.LENGTH_SHORT).show();
                 finishTest();
             }
         }.start();
@@ -289,15 +349,26 @@ public class QuizActivity extends AppCompatActivity {
         saveSelectedOption();
         
         int correct = 0;
-        for (Question q : questions) {
-            if (q.getSelectedOptionIndex() != null && q.getSelectedOptionIndex() == q.getCorrectOptionIndex()) {
-                correct++;
+        int total = 0;
+        for (List<Question> list : subjectWiseQuestions.values()) {
+            total += list.size();
+            for (Question q : list) {
+                if (q.getSelectedOptionIndex() != null && q.getSelectedOptionIndex() == q.getCorrectOptionIndex()) {
+                    correct++;
+                }
             }
         }
 
+        // To reuse ResultFragment, we need a Test object
+        List<Question> allQuestions = new ArrayList<>();
+        for (List<Question> list : subjectWiseQuestions.values()) {
+            allQuestions.addAll(list);
+        }
+        Test test = new Test(String.valueOf(supabaseTest.id), supabaseTest.title, supabaseTest.description, supabaseTest.duration, allQuestions);
+
         Bundle bundle = new Bundle();
         bundle.putInt("correct", correct);
-        bundle.putInt("total", questions.size());
+        bundle.putInt("total", total);
         bundle.putSerializable("test", test);
 
         ResultFragment fragment = new ResultFragment();

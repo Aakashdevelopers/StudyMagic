@@ -3,9 +3,16 @@ package com.amstudio.studymagic;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.amstudio.studymagic.adapters.ChatAdapter;
@@ -15,6 +22,7 @@ import com.amstudio.studymagic.models.ai.ChatMessage;
 import com.amstudio.studymagic.models.ai.ChatRequest;
 import com.amstudio.studymagic.models.ai.ChatResponse;
 import com.amstudio.studymagic.utils.Constants;
+import com.amstudio.studymagic.utils.WindowInsetsUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +44,7 @@ public class AskAIActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ask_ai);
 
@@ -53,6 +62,23 @@ public class AskAIActivity extends AppCompatActivity {
     }
 
     private void initViews() {
+        View main = findViewById(R.id.main);
+        View llTopBar = findViewById(R.id.llTopBar);
+        View llChatInput = findViewById(R.id.llInputAreaContainer);
+        
+        // Set status bar icons to dark since background is white
+        WindowInsetsControllerCompat windowInsetsController =
+                WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+        windowInsetsController.setAppearanceLightStatusBars(true);
+
+        // Apply insets manually to the root view
+        ViewCompat.setOnApplyWindowInsetsListener(main, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars() | WindowInsetsCompat.Type.displayCutout());
+            llTopBar.setPadding(llTopBar.getPaddingLeft(), systemBars.top, llTopBar.getPaddingRight(), llTopBar.getPaddingBottom());
+            llChatInput.setPadding(llChatInput.getPaddingLeft(), llChatInput.getPaddingTop(), llChatInput.getPaddingRight(), systemBars.bottom);
+            return insets;
+        });
+
         rvChat = findViewById(R.id.rvChat);
         etMessage = findViewById(R.id.etMessage);
         btnSend = findViewById(R.id.btnSend);

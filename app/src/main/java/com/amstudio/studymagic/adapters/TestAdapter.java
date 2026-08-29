@@ -50,9 +50,9 @@ public class TestAdapter extends RecyclerView.Adapter<TestAdapter.ViewHolder> {
         return tests.size();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTitle, tvDescription, tvDuration;
-        Button btnStart;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        public TextView tvTitle, tvDescription, tvDuration;
+        public Button btnStart;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

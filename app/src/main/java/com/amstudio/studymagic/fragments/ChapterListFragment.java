@@ -34,6 +34,9 @@ public class ChapterListFragment extends Fragment {
         String subjectName = getArguments() != null ? getArguments().getString("subjectName") : "Chapters";
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
+        com.amstudio.studymagic.utils.WindowInsetsUtil.applyTopInset(toolbar);
+        com.amstudio.studymagic.utils.WindowInsetsUtil.setLightStatusBar(getActivity(), false);
+
         toolbar.setTitle(subjectName);
         toolbar.setNavigationIcon(android.R.drawable.ic_menu_revert);
         toolbar.setNavigationOnClickListener(v -> getParentFragmentManager().popBackStack());

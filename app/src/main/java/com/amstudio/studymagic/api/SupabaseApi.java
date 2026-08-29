@@ -2,17 +2,26 @@ package com.amstudio.studymagic.api;
 
 import com.amstudio.studymagic.models.Category;
 import com.amstudio.studymagic.models.Chapter;
+import com.amstudio.studymagic.models.Note;
 import com.amstudio.studymagic.models.Subject;
 import com.amstudio.studymagic.models.SupabaseTest;
 import com.amstudio.studymagic.models.Topic;
 import java.util.List;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface SupabaseApi {
-    @GET("tests")
+    @GET("mockup_tests?select=*&is_featured=eq.true")
     Call<List<SupabaseTest>> getTests();
+
+    @GET("notes?select=*&order=created_at.desc")
+    Call<List<Note>> getNotes();
+
+    @POST("notes")
+    Call<Void> insertNote(@Body Note note);
 
     @GET("subjects")
     Call<List<Subject>> getSubjects(@Query("category_id") String categoryId);
@@ -23,7 +32,7 @@ public interface SupabaseApi {
     @GET("topics")
     Call<List<Topic>> getTopics(@Query("chapter_id") String chapterId);
 
-    @GET("topic_tests")
+    @GET("tests")
     Call<List<SupabaseTest>> getTestsByTopic(@Query("topic_id") String topicId);
 
     @GET("tests")

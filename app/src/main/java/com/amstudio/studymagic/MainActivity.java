@@ -2,23 +2,32 @@ package com.amstudio.studymagic;
 
 import android.os.Bundle;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
+import com.amstudio.studymagic.fragments.AboutDeveloperFragment;
 import com.amstudio.studymagic.fragments.ExamsFragment;
 import com.amstudio.studymagic.fragments.HomeFragment;
 import com.amstudio.studymagic.fragments.NotesFragment;
-import com.amstudio.studymagic.fragments.SettingsFragment;
+import com.amstudio.studymagic.utils.WindowInsetsUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(R.layout.activity_main);
+
+        WindowInsetsUtil.setLightStatusBar(this, true); // Dark icons for light background
+        WindowInsetsUtil.applyBottomInset(findViewById(R.id.bottom_navigation));
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnItemSelectedListener(item -> {
@@ -31,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
                 selectedFragment = new ExamsFragment();
             } else if (itemId == R.id.nav_notes) {
                 selectedFragment = new NotesFragment();
-            } else if (itemId == R.id.nav_settings) {
-                selectedFragment = new SettingsFragment();
+            } else if (itemId == R.id.nav_about) {
+                selectedFragment = new AboutDeveloperFragment();
             }
 
             if (selectedFragment != null) {

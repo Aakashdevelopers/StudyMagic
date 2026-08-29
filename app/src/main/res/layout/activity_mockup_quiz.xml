@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/backgroundColor">
 
-    <!-- Top Professional Bar -->
+    <!-- Top Bar -->
     <LinearLayout
         android:id="@+id/llTopBar"
         android:layout_width="match_parent"
@@ -38,7 +38,7 @@
                 android:id="@+id/tvTimer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="00:14:57"
+                android:text="00:00:00"
                 android:textColor="@color/textPrimary"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -49,20 +49,11 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="All India Mock Test"
+                android:text="Mockup Test"
                 android:textColor="@color/textSecondary"
                 android:textSize="12sp" />
 
         </LinearLayout>
-
-        <ImageView
-            android:id="@+id/btnLanguage"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:padding="8dp"
-            android:src="@drawable/ic_language"
-            app:tint="@color/textPrimary"
-            android:background="?attr/selectableItemBackgroundBorderless" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSubmitTop"
@@ -92,6 +83,17 @@
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@id/llTopBar">
 
+        <!-- Subject Selector -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSubjects"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:paddingVertical="8dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_subject_tab" />
+
         <!-- Info Strip -->
         <LinearLayout
             android:id="@+id/llInfoStrip"
@@ -119,42 +121,12 @@
                 android:layout_marginHorizontal="12dp"
                 android:background="#EEEEEE" />
 
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:src="@android:drawable/ic_menu_recent_history"
-                app:tint="#757575" />
-
             <TextView
-                android:id="@+id/tvSectionTimer"
+                android:id="@+id/tvSubjectLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:text="00:03"
+                android:text="Subject: Math"
                 android:textColor="#757575"
-                android:textSize="12sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:background="@drawable/bg_marks_badge"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="4dp"
-                android:text="+ 2.0"
-                android:textColor="@color/colorSuccess"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/bg_marks_badge"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="4dp"
-                android:text="- 0.5"
-                android:textColor="@color/colorError"
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
@@ -164,25 +136,9 @@
                 android:layout_weight="1" />
 
             <ImageView
-                android:id="@+id/btnReport"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_report_quiz"
-                android:background="?attr/selectableItemBackgroundBorderless" />
-
-            <ImageView
-                android:id="@+id/btnBookmark"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="12dp"
-                android:src="@drawable/ic_bookmark_quiz"
-                android:background="?attr/selectableItemBackgroundBorderless" />
-
-            <ImageView
                 android:id="@+id/btnMarkForReviewStar"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_marginStart="12dp"
                 android:src="@drawable/ic_star_quiz"
                 android:background="?attr/selectableItemBackgroundBorderless" />
 
@@ -192,7 +148,7 @@
             android:id="@+id/quizProgress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:progress="30"
+            android:progress="0"
             app:trackColor="@color/surfaceVariant"
             app:trackThickness="2dp" />
 

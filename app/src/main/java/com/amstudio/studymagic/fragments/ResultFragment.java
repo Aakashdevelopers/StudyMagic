@@ -53,6 +53,10 @@ public class ResultFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_result, container, false);
 
+        View header = view.findViewById(R.id.llHeader);
+        com.amstudio.studymagic.utils.WindowInsetsUtil.applyTopInset(header);
+        com.amstudio.studymagic.utils.WindowInsetsUtil.setLightStatusBar(getActivity(), false);
+
         int correct = getArguments() != null ? getArguments().getInt("correct") : 0;
         int total = getArguments() != null ? getArguments().getInt("total") : 0;
         Test test = getArguments() != null ? (Test) getArguments().getSerializable("test") : null;

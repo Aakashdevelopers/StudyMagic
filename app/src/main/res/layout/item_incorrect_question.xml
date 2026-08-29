@@ -42,19 +42,6 @@
             android:textColor="@color/colorSuccess"
             android:textSize="12sp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnExplainAI"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="✨ ASK AI"
-            android:textColor="@color/colorPrimary"
-            android:textSize="12sp"
-            app:icon="@drawable/ic_language"
-            app:iconSize="16dp"
-            app:iconTint="@color/colorPrimary" />
-
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

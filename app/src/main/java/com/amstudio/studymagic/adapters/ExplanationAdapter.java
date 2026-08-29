@@ -1,16 +1,13 @@
 package com.amstudio.studymagic.adapters;
 
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.amstudio.studymagic.AskAIActivity;
 import com.amstudio.studymagic.R;
 import com.amstudio.studymagic.models.Question;
 
@@ -39,13 +36,6 @@ public class ExplanationAdapter extends RecyclerView.Adapter<ExplanationAdapter.
         String yourAns = q.getSelectedOptionIndex() != null ? q.getOptions().get(q.getSelectedOptionIndex()) : "Not Attempted";
         holder.tvYourAns.setText("Your Answer: " + yourAns);
         holder.tvCorrectAns.setText("Correct Answer: " + q.getOptions().get(q.getCorrectOptionIndex()));
-
-        holder.btnExplain.setText("✨ ASK AI");
-        holder.btnExplain.setOnClickListener(v -> {
-            Intent intent = new Intent(v.getContext(), AskAIActivity.class);
-            intent.putExtra("question", q);
-            v.getContext().startActivity(intent);
-        });
     }
 
     @Override
@@ -55,14 +45,12 @@ public class ExplanationAdapter extends RecyclerView.Adapter<ExplanationAdapter.
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvQuestion, tvYourAns, tvCorrectAns;
-        Button btnExplain;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvQuestion = itemView.findViewById(R.id.tvQuestionText);
             tvYourAns = itemView.findViewById(R.id.tvYourAnswer);
             tvCorrectAns = itemView.findViewById(R.id.tvCorrectAnswer);
-            btnExplain = itemView.findViewById(R.id.btnExplainAI);
         }
     }
 }

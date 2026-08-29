@@ -34,6 +34,9 @@ public class SubjectListFragment extends Fragment {
         String categoryName = getArguments() != null ? getArguments().getString("categoryName") : "Subjects";
 
         Toolbar toolbar = view.findViewById(R.id.toolbar);
+        com.amstudio.studymagic.utils.WindowInsetsUtil.applyTopInset(toolbar);
+        com.amstudio.studymagic.utils.WindowInsetsUtil.setLightStatusBar(getActivity(), false);
+        
         toolbar.setTitle(categoryName);
         toolbar.setNavigationIcon(android.R.drawable.ic_menu_revert);
         toolbar.setNavigationOnClickListener(v -> getParentFragmentManager().popBackStack());

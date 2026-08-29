@@ -4,9 +4,7 @@ plugins {
 
 android {
     namespace = "com.amstudio.studymagic"
-    compileSdk {
-        version = release(37)
-    }
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.amstudio.studymagic"
@@ -20,9 +18,7 @@ android {
 
     buildTypes {
         release {
-            optimization {
-                enable = false
-            }
+            isMinifyEnabled = false
         }
     }
     compileOptions {
@@ -36,6 +32,7 @@ dependencies {
     implementation(libs.appcompat)
     implementation(libs.constraintlayout)
     implementation(libs.material)
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("com.squareup.picasso:picasso:2.8")
     
     // Networking
@@ -50,6 +47,11 @@ dependencies {
 
     // Confetti Animation
     implementation("nl.dionsegijn:konfetti-xml:2.0.4")
+    //circle image view
+    implementation("de.hdodenhof:circleimageview:3.1.0")
+
+    // PDF Viewer
+    implementation("com.github.barteksc:AndroidPdfViewer:3.1.0-beta.1")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.espresso.core)

@@ -15,12 +15,14 @@ import com.amstudio.studymagic.adapters.CategoryAdapter;
 import com.amstudio.studymagic.adapters.CategoryAdapter;
 import com.amstudio.studymagic.adapters.TestAdapter;
 import android.content.Intent;
+import com.amstudio.studymagic.MockupQuizActivity;
 import com.amstudio.studymagic.QuizActivity;
 import com.amstudio.studymagic.api.ApiClient;
 import com.amstudio.studymagic.models.Category;
 import com.amstudio.studymagic.models.SupabaseTest;
 import com.amstudio.studymagic.models.Test;
 import com.amstudio.studymagic.utils.MockData;
+import com.amstudio.studymagic.utils.WindowInsetsUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,13 +34,17 @@ public class HomeFragment extends Fragment {
 
     private TestAdapter testAdapter;
     private CategoryAdapter categoryAdapter;
-    private List<Test> featuredTests = new ArrayList<>();
+    private List<SupabaseTest> featuredTests = new ArrayList<>();
     private List<Category> categoryList = new ArrayList<>();
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        View header = view.findViewById(R.id.llHeader);
+        WindowInsetsUtil.applyTopInset(header);
+        WindowInsetsUtil.setLightStatusBar(getActivity(), false); // Light icons on dark header
 
         RecyclerView rvCategories = view.findViewById(R.id.rvCategories);
         categoryAdapter = new CategoryAdapter(categoryList, category -> {
@@ -57,15 +63,44 @@ public class HomeFragment extends Fragment {
         rvCategories.setAdapter(categoryAdapter);
 
         RecyclerView rvFeatured = view.findViewById(R.id.rvFeaturedTests);
-        testAdapter = new TestAdapter(featuredTests, test -> {
-            Intent intent = new Intent(getActivity(), QuizActivity.class);
-            intent.putExtra("test", test);
-            startActivity(intent);
+        // Custom logic for Home Featured Tests to handle MockupQuizActivity
+        testAdapter = new TestAdapter(new ArrayList<>(), test -> {}); // Dummy for layout manager if needed, but we'll use a better way
+        
+        // Let's create a specialized adapter or just update the existing one to handle SupabaseTest
+        rvFeatured.setAdapter(new RecyclerView.Adapter() {
+            @NonNull
+            @Override
+            public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_test, parent, false);
+                return new TestAdapter.ViewHolder(v);
+            }
+
+            @Override
+            public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+                SupabaseTest sTest = featuredTests.get(position);
+                TestAdapter.ViewHolder vh = (TestAdapter.ViewHolder) holder;
+                vh.tvTitle.setText(sTest.title);
+                vh.tvDescription.setText(sTest.description);
+                vh.tvDuration.setText(sTest.duration + " Mins");
+                
+                View.OnClickListener listener = v -> {
+                    Intent intent = new Intent(getActivity(), MockupQuizActivity.class);
+                    intent.putExtra("supabaseTest", sTest);
+                    startActivity(intent);
+                };
+                
+                vh.btnStart.setOnClickListener(listener);
+                vh.itemView.setOnClickListener(listener);
+            }
+
+            @Override
+            public int getItemCount() {
+                return featuredTests.size();
+            }
         });
-        rvFeatured.setAdapter(testAdapter);
 
         fetchCategories();
-        fetchFeaturedTests();
+        fetchFeaturedTests(view);
 
         return view;
     }
@@ -88,16 +123,17 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void fetchFeaturedTests() {
+    private void fetchFeaturedTests(View rootView) {
         ApiClient.getInterface().getTests().enqueue(new Callback<List<SupabaseTest>>() {
             @Override
             public void onResponse(Call<List<SupabaseTest>> call, Response<List<SupabaseTest>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     featuredTests.clear();
-                    for (SupabaseTest sTest : response.body()) {
-                        featuredTests.add(sTest.toTest());
+                    featuredTests.addAll(response.body());
+                    RecyclerView rv = rootView.findViewById(R.id.rvFeaturedTests);
+                    if (rv != null && rv.getAdapter() != null) {
+                        rv.getAdapter().notifyDataSetChanged();
                     }
-                    testAdapter.notifyDataSetChanged();
                 }
             }
 

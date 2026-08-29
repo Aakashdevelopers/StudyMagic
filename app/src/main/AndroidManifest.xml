@@ -4,6 +4,9 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
 
     <application
         android:allowBackup="true"
@@ -26,8 +29,12 @@
         </activity>
 
         <activity android:name=".QuizActivity" />
+        <activity android:name=".MockupQuizActivity" />
         <activity android:name=".AskAIActivity"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".PdfViewerActivity"
+            android:configChanges="orientation|screenSize" />
     </application>
 
 </manifest>
