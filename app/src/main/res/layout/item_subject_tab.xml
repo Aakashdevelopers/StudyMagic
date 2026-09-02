@@ -1,13 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/tvSubjectTab"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/llSubjectContainer"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="4dp"
     android:background="@drawable/bg_subject_tab_unselected"
-    android:paddingHorizontal="16dp"
-    android:paddingVertical="8dp"
-    android:text="Mathematics"
-    android:textColor="@color/textPrimary"
-    android:textSize="14sp"
-    android:textStyle="bold" />
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="14dp"
+    android:paddingVertical="8dp">
+
+    <ImageView
+        android:id="@+id/ivSubjectLock"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginEnd="6dp"
+        android:contentDescription="Locked"
+        android:src="@drawable/ic_lock"
+        android:visibility="gone"
+        app:tint="#757575"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/tvSubjectTab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mathematics"
+        android:textColor="@color/textPrimary"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/ivSubjectDone"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="6dp"
+        android:contentDescription="Completed"
+        android:src="@drawable/ic_check_circle"
+        android:visibility="gone"
+        app:tint="@color/colorSuccess"
+        tools:visibility="visible" />
+
+</LinearLayout>

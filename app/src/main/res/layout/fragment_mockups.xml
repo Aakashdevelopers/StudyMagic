@@ -25,7 +25,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Study Notes"
+                android:text="Full Mock Tests"
                 android:textColor="@color/white"
                 android:textSize="22sp"
                 android:fontFamily="sans-serif-medium" />
@@ -34,7 +34,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="Access your learning materials"
+                android:text="Exam-like experience with detailed analysis"
                 android:textColor="@color/surfaceVariant"
                 android:textSize="14sp" />
 
@@ -49,12 +49,14 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvNotes"
+            android:id="@+id/rvMockups"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:padding="8dp"
-            tools:listitem="@layout/item_note" />
+            android:paddingTop="8dp"
+            android:paddingBottom="16dp"
+            tools:listitem="@layout/item_test" />
+
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <ProgressBar

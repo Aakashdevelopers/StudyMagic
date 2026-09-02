@@ -36,9 +36,9 @@ public class NotesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_notes, container, false);
 
-        View content = view.findViewById(R.id.llContent);
-        com.amstudio.studymagic.utils.WindowInsetsUtil.applyTopInset(content);
-        com.amstudio.studymagic.utils.WindowInsetsUtil.setLightStatusBar(getActivity(), true); // Dark icons on light background
+        View header = view.findViewById(R.id.llHeader);
+        com.amstudio.studymagic.utils.WindowInsetsUtil.applyTopInset(header);
+        com.amstudio.studymagic.utils.WindowInsetsUtil.setLightStatusBar(getActivity(), false); // Light icons on dark header
 
         rvNotes = view.findViewById(R.id.rvNotes);
         progressBar = view.findViewById(R.id.progressBar);

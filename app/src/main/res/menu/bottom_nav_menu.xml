@@ -13,7 +13,7 @@
         android:icon="@drawable/ic_notes"
         android:title="Notes" />
     <item
-        android:id="@+id/nav_about"
-        android:icon="@drawable/ic_language"
-        android:title="About" />
+        android:id="@+id/nav_mockups"
+        android:icon="@drawable/ic_star_quiz"
+        android:title="Mockups" />
 </menu>

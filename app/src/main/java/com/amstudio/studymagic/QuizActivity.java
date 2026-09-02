@@ -75,10 +75,10 @@ public class QuizActivity extends AppCompatActivity {
         LinearLayout llTopBar = findViewById(R.id.llTopBar);
         LinearLayout llBottomActions = findViewById(R.id.llBottomActions);
 
-        // Set status bar icons to dark since top bar is white
+        // Set status bar icons to light since top bar is dark
         WindowInsetsControllerCompat windowInsetsController =
                 WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
-        windowInsetsController.setAppearanceLightStatusBars(true);
+        windowInsetsController.setAppearanceLightStatusBars(false);
 
         // Apply insets manually to the root view for better reliability
         ViewCompat.setOnApplyWindowInsetsListener(main, (v, insets) -> {

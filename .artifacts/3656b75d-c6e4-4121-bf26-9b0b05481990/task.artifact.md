@@ -1,0 +1,8 @@
+- [x] Delete `AskAIActivity.java`
+- [x] Delete `activity_ask_ai.xml`
+- [x] Delete `ChatAdapter.java`
+- [x] Delete `item_chat_user.xml`
+- [x] Delete `item_chat_ai.xml`
+- [x] Delete `ChatMessage.java`
+- [x] Remove `AskAIActivity` from `AndroidManifest.xml`
+- [x] Verify build

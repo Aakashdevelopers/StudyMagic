@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Header integrated into ScrollView -->
+            <!-- Premium Header -->
             <LinearLayout
                 android:id="@+id/llHeader"
                 android:layout_width="match_parent"
@@ -26,20 +26,20 @@
                 android:orientation="vertical"
                 android:paddingHorizontal="24dp"
                 android:paddingTop="32dp"
-                android:paddingBottom="40dp">
+                android:paddingBottom="44dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-medium"
-                    android:text="Test Result"
+                    android:text="Assessment Summary"
                     android:textColor="@color/white"
                     android:textSize="20sp" />
 
                 <RelativeLayout
-                    android:layout_width="160dp"
-                    android:layout_height="160dp"
-                    android:layout_marginTop="24dp">
+                    android:layout_width="170dp"
+                    android:layout_height="170dp"
+                    android:layout_marginTop="28dp">
 
                     <com.google.android.material.progressindicator.CircularProgressIndicator
                         android:id="@+id/resultRing"
@@ -48,9 +48,10 @@
                         android:layout_centerInParent="true"
                         android:progress="80"
                         app:indicatorColor="@color/white"
-                        app:indicatorSize="150dp"
-                        app:trackColor="#33FFFFFF"
-                        app:trackThickness="10dp" />
+                        app:indicatorSize="160dp"
+                        app:trackColor="#26FFFFFF"
+                        app:trackThickness="12dp"
+                        app:trackCornerRadius="6dp"/>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -65,15 +66,18 @@
                             android:layout_height="wrap_content"
                             android:text="8/10"
                             android:textColor="@color/white"
-                            android:textSize="32sp"
-                            android:textStyle="bold" />
+                            android:textSize="36sp"
+                            android:fontFamily="sans-serif-black" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Your Score"
-                            android:textColor="@color/surfaceVariant"
-                            android:textSize="12sp" />
+                            android:text="FINAL SCORE"
+                            android:alpha="0.8"
+                            android:letterSpacing="0.1"
+                            android:textColor="@color/white"
+                            android:textSize="10sp"
+                            android:textStyle="bold" />
 
                     </LinearLayout>
 
@@ -83,15 +87,15 @@
                     android:id="@+id/tvPerformanceMessage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="20dp"
                     android:background="@drawable/bg_search_bar"
-                    android:backgroundTint="#33FFFFFF"
-                    android:paddingHorizontal="16dp"
-                    android:paddingVertical="6dp"
+                    android:backgroundTint="#26FFFFFF"
+                    android:paddingHorizontal="20dp"
+                    android:paddingVertical="8dp"
                     android:text="Excellent Performance!"
                     android:textColor="@color/white"
                     android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="sans-serif-medium" />
 
             </LinearLayout>
 
@@ -99,22 +103,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingHorizontal="20dp"
-                android:paddingTop="20dp">
+                android:paddingHorizontal="15dp"
+                android:paddingTop="15dp">
 
-                <!-- Summary Card -->
+                <!-- Modern Summary Card -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="4dp"
-                    app:strokeWidth="0dp">
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#E0E0E0"
+                    app:strokeWidth="1dp">
 
                     <GridLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:columnCount="2"
-                        android:padding="12dp">
+                        android:padding="8dp">
 
                         <!-- Correct -->
                         <LinearLayout
@@ -123,7 +128,8 @@
                             android:layout_columnWeight="1"
                             android:gravity="center"
                             android:orientation="vertical"
-                            android:padding="12dp">
+                            android:padding="16dp"
+                            android:background="?attr/selectableItemBackground">
 
                             <TextView
                                 android:id="@+id/tvCorrectCount"
@@ -131,15 +137,18 @@
                                 android:layout_height="wrap_content"
                                 android:text="08"
                                 android:textColor="@color/colorSuccess"
-                                android:textSize="18sp"
-                                android:textStyle="bold" />
+                                android:textSize="20sp"
+                                android:fontFamily="sans-serif-black" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Correct"
+                                android:layout_marginTop="2dp"
+                                android:text="CORRECT"
                                 android:textColor="@color/textSecondary"
-                                android:textSize="11sp" />
+                                android:textSize="10sp"
+                                android:letterSpacing="0.05"
+                                android:textStyle="bold" />
 
                         </LinearLayout>
 
@@ -150,7 +159,8 @@
                             android:layout_columnWeight="1"
                             android:gravity="center"
                             android:orientation="vertical"
-                            android:padding="12dp">
+                            android:padding="16dp"
+                            android:background="?attr/selectableItemBackground">
 
                             <TextView
                                 android:id="@+id/tvWrongCount"
@@ -158,15 +168,18 @@
                                 android:layout_height="wrap_content"
                                 android:text="02"
                                 android:textColor="@color/colorError"
-                                android:textSize="18sp"
-                                android:textStyle="bold" />
+                                android:textSize="20sp"
+                                android:fontFamily="sans-serif-black" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Wrong"
+                                android:layout_marginTop="2dp"
+                                android:text="INCORRECT"
                                 android:textColor="@color/textSecondary"
-                                android:textSize="11sp" />
+                                android:textSize="10sp"
+                                android:letterSpacing="0.05"
+                                android:textStyle="bold" />
 
                         </LinearLayout>
 
@@ -177,7 +190,8 @@
                             android:layout_columnWeight="1"
                             android:gravity="center"
                             android:orientation="vertical"
-                            android:padding="12dp">
+                            android:padding="16dp"
+                            android:background="?attr/selectableItemBackground">
 
                             <TextView
                                 android:id="@+id/tvAccuracy"
@@ -185,15 +199,18 @@
                                 android:layout_height="wrap_content"
                                 android:text="80%"
                                 android:textColor="@color/colorPrimary"
-                                android:textSize="18sp"
-                                android:textStyle="bold" />
+                                android:textSize="20sp"
+                                android:fontFamily="sans-serif-black" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Accuracy"
+                                android:layout_marginTop="2dp"
+                                android:text="ACCURACY"
                                 android:textColor="@color/textSecondary"
-                                android:textSize="11sp" />
+                                android:textSize="10sp"
+                                android:letterSpacing="0.05"
+                                android:textStyle="bold" />
 
                         </LinearLayout>
 
@@ -204,7 +221,8 @@
                             android:layout_columnWeight="1"
                             android:gravity="center"
                             android:orientation="vertical"
-                            android:padding="12dp">
+                            android:padding="16dp"
+                            android:background="?attr/selectableItemBackground">
 
                             <TextView
                                 android:id="@+id/tvTimeTaken"
@@ -212,15 +230,18 @@
                                 android:layout_height="wrap_content"
                                 android:text="04:20"
                                 android:textColor="@color/textPrimary"
-                                android:textSize="18sp"
-                                android:textStyle="bold" />
+                                android:textSize="20sp"
+                                android:fontFamily="sans-serif-black" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Time Spent"
+                                android:layout_marginTop="2dp"
+                                android:text="TIME SPENT"
                                 android:textColor="@color/textSecondary"
-                                android:textSize="11sp" />
+                                android:textSize="10sp"
+                                android:letterSpacing="0.05"
+                                android:textStyle="bold" />
 
                         </LinearLayout>
 
@@ -234,8 +255,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="0dp"
                     app:strokeColor="#E0E0E0"
                     app:strokeWidth="1dp">
 
@@ -252,19 +273,19 @@
                             android:orientation="horizontal">
 
                             <ImageView
-                                android:layout_width="28dp"
-                                android:layout_height="28dp"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
                                 android:background="@drawable/bg_circle_light"
-                                android:padding="6dp"
+                                android:padding="8dp"
                                 android:src="@drawable/ic_language"
                                 app:tint="@color/colorPrimary" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="12dp"
+                                android:layout_marginStart="14dp"
                                 android:fontFamily="sans-serif-medium"
-                                android:text="AI Smart Insights"
+                                android:text="AI Performance Insights"
                                 android:textColor="@color/textPrimary"
                                 android:textSize="16sp" />
 
@@ -284,7 +305,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="16dp"
-                            android:lineSpacingExtra="5dp"
+                            android:lineSpacingExtra="6dp"
                             android:text="Generating your performance analysis..."
                             android:textColor="@color/textPrimary"
                             android:textSize="14sp" />
@@ -297,9 +318,9 @@
                     android:id="@+id/tvIncorrectTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="28dp"
+                    android:layout_marginTop="32dp"
                     android:fontFamily="sans-serif-medium"
-                    android:text="Detailed Review"
+                    android:text="Questions Review"
                     android:textColor="@color/textPrimary"
                     android:textSize="18sp"
                     android:visibility="gone" />
@@ -308,8 +329,9 @@
                     android:id="@+id/rvExplanations"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="16dp"
                     android:nestedScrollingEnabled="false"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/item_incorrect_question" />
 
@@ -318,12 +340,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="32dp"
-                    android:layout_marginBottom="32dp"
-                    android:text="Finish Review"
+                    android:layout_marginBottom="40dp"
+                    android:text="Back to Dashboard"
                     android:textAllCaps="false"
                     android:textSize="16sp"
-                    android:textStyle="bold"
-                    app:cornerRadius="12dp" />
+                    android:fontFamily="sans-serif-medium"
+                    app:cornerRadius="28dp" />
 
             </LinearLayout>
         </LinearLayout>

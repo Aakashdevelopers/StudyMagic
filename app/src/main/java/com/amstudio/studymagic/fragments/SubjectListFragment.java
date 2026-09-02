@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
+import com.google.android.material.appbar.MaterialToolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import com.amstudio.studymagic.R;
@@ -33,12 +33,11 @@ public class SubjectListFragment extends Fragment {
         String categoryId = getArguments() != null ? getArguments().getString("categoryId") : "";
         String categoryName = getArguments() != null ? getArguments().getString("categoryName") : "Subjects";
 
-        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        MaterialToolbar toolbar = view.findViewById(R.id.toolbar);
         com.amstudio.studymagic.utils.WindowInsetsUtil.applyTopInset(toolbar);
         com.amstudio.studymagic.utils.WindowInsetsUtil.setLightStatusBar(getActivity(), false);
         
         toolbar.setTitle(categoryName);
-        toolbar.setNavigationIcon(android.R.drawable.ic_menu_revert);
         toolbar.setNavigationOnClickListener(v -> getParentFragmentManager().popBackStack());
 
         RecyclerView rv = view.findViewById(R.id.rvTests);

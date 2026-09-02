@@ -15,7 +15,10 @@ import retrofit2.http.Query;
 
 public interface SupabaseApi {
     @GET("mockup_tests?select=*&is_featured=eq.true")
-    Call<List<SupabaseTest>> getTests();
+    Call<List<SupabaseTest>> getFeaturedTests();
+
+    @GET("mockup_tests?select=*")
+    Call<List<SupabaseTest>> getAllMockupTests();
 
     @GET("notes?select=*&order=created_at.desc")
     Call<List<Note>> getNotes();

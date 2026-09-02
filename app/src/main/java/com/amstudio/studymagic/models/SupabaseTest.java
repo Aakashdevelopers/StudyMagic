@@ -21,59 +21,81 @@ public class SupabaseTest implements Serializable {
     public String title;
     public String description;
     public int duration;
-    
+
+    @SerializedName("test_type")
+    public String testType; // "type1" / "universal" OR "type2" / "subject_wise"
+
+    @SerializedName("is_subject_timer_enabled")
+    public boolean isSubjectTimerEnabled = false;
+
+    @SerializedName("subjects")
+    public List<SubjectModel> subjects;
+
     @SerializedName("questions_json")
     public Object questionsJson;
 
-    public Test toTest() {
-        Gson gson = new Gson();
-        List<Question> allQuestions = new ArrayList<>();
-        
-        // Handle both String (text column) and Map/List (jsonb column)
-        String jsonStr;
-        if (questionsJson instanceof String) {
-            jsonStr = (String) questionsJson;
-        } else {
-            jsonStr = gson.toJson(questionsJson);
-        }
-        
-        if (jsonStr == null || jsonStr.isEmpty() || jsonStr.equals("null")) {
-            return new Test(String.valueOf(id), title, description, duration, allQuestions);
-        }
+    public static class SubjectModel implements Serializable {
+        @SerializedName("id")
+        public String id;
 
-        try {
-            // Try parsing as Map<String, List<Question>> (New Format: Subject-wise)
-            Type mapType = new TypeToken<Map<String, List<Question>>>(){}.getType();
-            Map<String, List<Question>> subjectMap = gson.fromJson(jsonStr, mapType);
-            
-            // Check if it's actually a map of lists
-            if (subjectMap != null && !subjectMap.isEmpty() && subjectMap.values().iterator().next() instanceof List) {
-                for (Object value : subjectMap.values()) {
-                    if (value instanceof List) {
-                        allQuestions.addAll((List<Question>) value);
+        @SerializedName("subject_name")
+        public String subjectName;
+        
+        @SerializedName("questions_json")
+        public Object questionsJson;
+        
+        @SerializedName("duration")
+        public int duration; // In minutes
+    }
+
+    public Test toTest() {
+        List<Question> allQuestions = new ArrayList<>();
+        Gson gson = new Gson();
+
+        // Check if subjects are inside questionsJson (Nested case like in your screenshot)
+        if (subjects == null || subjects.isEmpty()) {
+            try {
+                String jsonStr = (questionsJson instanceof String) ? (String) questionsJson : gson.toJson(questionsJson);
+                Map<String, Object> map = gson.fromJson(jsonStr, new TypeToken<Map<String, Object>>(){}.getType());
+                
+                if (map != null && map.containsKey("subjects")) {
+                    Type subjectListType = new TypeToken<List<SubjectModel>>(){}.getType();
+                    subjects = gson.fromJson(gson.toJson(map.get("subjects")), subjectListType);
+                    
+                    if (map.containsKey("test_type")) {
+                        testType = (String) map.get("test_type");
+                    }
+                    if (map.containsKey("is_subject_timer_enabled")) {
+                        isSubjectTimerEnabled = (boolean) map.get("is_subject_timer_enabled");
                     }
                 }
-            } else {
-                // Try parsing as List<Question> (Old Format: Flat List)
-                Type listType = new TypeToken<List<Question>>(){}.getType();
-                List<Question> flatList = gson.fromJson(jsonStr, listType);
-                if (flatList != null) {
-                    allQuestions.addAll(flatList);
-                }
-            }
-        } catch (Exception e) {
-            // Fallback for any parsing errors
-            try {
-                Type listType = new TypeToken<List<Question>>(){}.getType();
-                List<Question> flatList = gson.fromJson(jsonStr, listType);
-                if (flatList != null) {
-                    allQuestions.addAll(flatList);
-                }
-            } catch (Exception e2) {
-                // Simple error handling
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
+        if ("type2".equalsIgnoreCase(testType) || "subject_wise".equalsIgnoreCase(testType)) {
+            isSubjectTimerEnabled = true;
+        } else if ("type1".equalsIgnoreCase(testType) || "universal".equalsIgnoreCase(testType)) {
+            isSubjectTimerEnabled = false;
+        }
+
+        if (isSubjectTimerEnabled && duration <= 0 && subjects != null) {
+            int totalMins = 0;
+            for (SubjectModel sm : subjects) {
+                totalMins += sm.duration;
+            }
+            duration = totalMins;
+        }
+
+        if (subjects != null) {
+            for (SubjectModel sm : subjects) {
+                String jsonStr = gson.toJson(sm.questionsJson);
+                Type listType = new TypeToken<List<Question>>(){}.getType();
+                List<Question> qs = gson.fromJson(jsonStr, listType);
+                if (qs != null) allQuestions.addAll(qs);
+            }
+        }
         return new Test(String.valueOf(id), title, description, duration, allQuestions);
     }
 }

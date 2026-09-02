@@ -124,7 +124,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void fetchFeaturedTests(View rootView) {
-        ApiClient.getInterface().getTests().enqueue(new Callback<List<SupabaseTest>>() {
+        ApiClient.getInterface().getFeaturedTests().enqueue(new Callback<List<SupabaseTest>>() {
             @Override
             public void onResponse(Call<List<SupabaseTest>> call, Response<List<SupabaseTest>> response) {
                 if (response.isSuccessful() && response.body() != null) {

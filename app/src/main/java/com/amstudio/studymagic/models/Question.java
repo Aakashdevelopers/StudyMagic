@@ -14,6 +14,9 @@ public class Question implements Serializable {
     
     @SerializedName("correct_option_index")
     public int correctOptionIndex;
+
+    @SerializedName("explanation")
+    public String explanation;
     
     private Integer selectedOptionIndex = null;
     private boolean isMarkedForReview = false;

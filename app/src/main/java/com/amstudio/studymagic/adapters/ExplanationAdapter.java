@@ -36,6 +36,13 @@ public class ExplanationAdapter extends RecyclerView.Adapter<ExplanationAdapter.
         String yourAns = q.getSelectedOptionIndex() != null ? q.getOptions().get(q.getSelectedOptionIndex()) : "Not Attempted";
         holder.tvYourAns.setText("Your Answer: " + yourAns);
         holder.tvCorrectAns.setText("Correct Answer: " + q.getOptions().get(q.getCorrectOptionIndex()));
+
+        if (q.explanation != null && !q.explanation.isEmpty()) {
+            holder.llExplanation.setVisibility(View.VISIBLE);
+            holder.tvExplanation.setText(q.explanation);
+        } else {
+            holder.llExplanation.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -44,13 +51,16 @@ public class ExplanationAdapter extends RecyclerView.Adapter<ExplanationAdapter.
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvQuestion, tvYourAns, tvCorrectAns;
+        TextView tvQuestion, tvYourAns, tvCorrectAns, tvExplanation;
+        View llExplanation;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvQuestion = itemView.findViewById(R.id.tvQuestionText);
             tvYourAns = itemView.findViewById(R.id.tvYourAnswer);
             tvCorrectAns = itemView.findViewById(R.id.tvCorrectAnswer);
+            tvExplanation = itemView.findViewById(R.id.tvExplanationText);
+            llExplanation = itemView.findViewById(R.id.llExplanation);
         }
     }
 }

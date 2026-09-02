@@ -12,7 +12,7 @@
         android:id="@+id/llTopBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/colorPrimary"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingHorizontal="12dp"
@@ -24,7 +24,7 @@
             android:layout_height="40dp"
             android:padding="8dp"
             android:src="@drawable/ic_pause"
-            app:tint="@color/textPrimary"
+            app:tint="@color/white"
             android:background="?attr/selectableItemBackgroundBorderless" />
 
         <LinearLayout
@@ -32,14 +32,15 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingVertical="8dp">
 
             <TextView
                 android:id="@+id/tvTimer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="00:14:57"
-                android:textColor="@color/textPrimary"
+                android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -50,19 +51,10 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="All India Mock Test"
-                android:textColor="@color/textSecondary"
+                android:textColor="@color/surfaceVariant"
                 android:textSize="12sp" />
 
         </LinearLayout>
-
-        <ImageView
-            android:id="@+id/btnLanguage"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:padding="8dp"
-            android:src="@drawable/ic_language"
-            app:tint="@color/textPrimary"
-            android:background="?attr/selectableItemBackgroundBorderless" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSubmitTop"
@@ -70,7 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="SUBMIT"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/white"
             android:textSize="13sp"
             android:textStyle="bold" />
 
@@ -80,7 +72,7 @@
             android:layout_height="40dp"
             android:padding="8dp"
             android:src="@drawable/ic_menu_quiz"
-            app:tint="@color/textPrimary"
+            app:tint="@color/white"
             android:background="?attr/selectableItemBackgroundBorderless" />
 
     </LinearLayout>

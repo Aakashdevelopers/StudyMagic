@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
+import com.google.android.material.appbar.MaterialToolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,12 +40,11 @@ public class TestListFragment extends Fragment {
         String topicId = getArguments() != null ? getArguments().getString("topicId") : "";
         String title = getArguments() != null ? getArguments().getString("topicName", getArguments().getString("categoryName", "Tests")) : "Tests";
 
-        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        MaterialToolbar toolbar = view.findViewById(R.id.toolbar);
         com.amstudio.studymagic.utils.WindowInsetsUtil.applyTopInset(toolbar);
         com.amstudio.studymagic.utils.WindowInsetsUtil.setLightStatusBar(getActivity(), false);
 
         toolbar.setTitle(title);
-        toolbar.setNavigationIcon(android.R.drawable.ic_menu_revert);
         toolbar.setNavigationOnClickListener(v -> getParentFragmentManager().popBackStack());
 
         RecyclerView rvTests = view.findViewById(R.id.rvTests);

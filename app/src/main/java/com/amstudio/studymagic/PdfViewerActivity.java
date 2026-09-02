@@ -7,7 +7,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import com.google.android.material.appbar.MaterialToolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
@@ -27,8 +27,10 @@ public class PdfViewerActivity extends AppCompatActivity {
 
     private PDFView pdfView;
     private ProgressBar progressBar;
-    private Toolbar toolbar;
+    private MaterialToolbar toolbar;
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private byte[] pdfBytes;
+    private boolean isNightMode = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +76,29 @@ public class PdfViewerActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_pdf_viewer, menu);
+        android.view.MenuItem item = menu.findItem(R.id.action_night_mode);
+        if (item != null) {
+            item.setIcon(isNightMode ? R.drawable.ic_light_mode : R.drawable.ic_night_mode);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        if (item.getItemId() == R.id.action_night_mode) {
+            isNightMode = !isNightMode;
+            item.setIcon(isNightMode ? R.drawable.ic_light_mode : R.drawable.ic_night_mode);
+            if (pdfBytes != null) {
+                displayPdf(pdfBytes);
+            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void loadPdfFromUrl(String urlString) {
         progressBar.setVisibility(View.VISIBLE);
         executorService.execute(() -> {
@@ -82,18 +107,14 @@ public class PdfViewerActivity extends AppCompatActivity {
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 if (connection.getResponseCode() == 200) {
                     InputStream inputStream = new BufferedInputStream(connection.getInputStream());
-                    runOnUiThread(() -> {
-                        pdfView.fromStream(inputStream)
-                                .onLoad(nbPages -> progressBar.setVisibility(View.GONE))
-                                .onError(t -> {
-                                    progressBar.setVisibility(View.GONE);
-                                    Toast.makeText(PdfViewerActivity.this, "Error loading PDF", Toast.LENGTH_SHORT).show();
-                                })
-                                .onPageError((page, t) -> {
-                                    Toast.makeText(PdfViewerActivity.this, "Error on page " + page, Toast.LENGTH_SHORT).show();
-                                })
-                                .load();
-                    });
+                    java.io.ByteArrayOutputStream outputStream = new java.io.ByteArrayOutputStream();
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
+                    pdfBytes = outputStream.toByteArray();
+                    runOnUiThread(() -> displayPdf(pdfBytes));
                 }
             } catch (Exception e) {
                 runOnUiThread(() -> {
@@ -102,6 +123,37 @@ public class PdfViewerActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    private void displayPdf(byte[] bytes) {
+        View main = findViewById(R.id.main);
+        if (isNightMode) {
+            main.setBackgroundColor(android.graphics.Color.BLACK);
+            toolbar.setBackgroundColor(android.graphics.Color.parseColor("#80000000"));
+            toolbar.setTitleTextColor(android.graphics.Color.WHITE);
+            toolbar.setNavigationIconTint(android.graphics.Color.WHITE);
+            progressBar.getIndeterminateDrawable().setTint(android.graphics.Color.WHITE);
+            WindowInsetsUtil.setLightStatusBar(this, false);
+        } else {
+            main.setBackgroundColor(android.graphics.Color.WHITE);
+            toolbar.setBackgroundColor(android.graphics.Color.parseColor("#F8F9FA"));
+            toolbar.setTitleTextColor(android.graphics.Color.BLACK);
+            toolbar.setNavigationIconTint(android.graphics.Color.BLACK);
+            progressBar.getIndeterminateDrawable().setTint(android.graphics.Color.BLACK);
+            WindowInsetsUtil.setLightStatusBar(this, true);
+        }
+
+        pdfView.fromBytes(bytes)
+                .nightMode(isNightMode)
+                .onLoad(nbPages -> progressBar.setVisibility(View.GONE))
+                .onError(t -> {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(PdfViewerActivity.this, "Error loading PDF", Toast.LENGTH_SHORT).show();
+                })
+                .onPageError((page, t) -> {
+                    Toast.makeText(PdfViewerActivity.this, "Error on page " + page, Toast.LENGTH_SHORT).show();
+                })
+                .load();
     }
 
     @Override

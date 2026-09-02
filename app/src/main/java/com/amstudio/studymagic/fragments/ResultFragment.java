@@ -144,6 +144,12 @@ public class ResultFragment extends Fragment {
     }
 
     private void fetchAIPerformanceAnalysis(Test test) {
+        if (Constants.OPENROUTER_KEY == null || Constants.OPENROUTER_KEY.isEmpty()) {
+            aiLoading.setVisibility(View.GONE);
+            tvAIAnalysis.setText("AI analysis is not configured for this build. Please contact support.");
+            return;
+        }
+
         aiLoading.setVisibility(View.VISIBLE);
         tvAIAnalysis.setText("Analysing your performance...");
 

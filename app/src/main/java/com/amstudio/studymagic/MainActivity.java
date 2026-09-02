@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import com.amstudio.studymagic.fragments.AboutDeveloperFragment;
 import com.amstudio.studymagic.fragments.ExamsFragment;
 import com.amstudio.studymagic.fragments.HomeFragment;
+import com.amstudio.studymagic.fragments.MockupListFragment;
 import com.amstudio.studymagic.fragments.NotesFragment;
 import com.amstudio.studymagic.utils.WindowInsetsUtil;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -26,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(R.layout.activity_main);
 
-        WindowInsetsUtil.setLightStatusBar(this, true); // Dark icons for light background
+        WindowInsetsUtil.setLightStatusBar(this, false); // Light icons (white) for dark headers
         WindowInsetsUtil.applyBottomInset(findViewById(R.id.bottom_navigation));
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
@@ -40,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
                 selectedFragment = new ExamsFragment();
             } else if (itemId == R.id.nav_notes) {
                 selectedFragment = new NotesFragment();
-            } else if (itemId == R.id.nav_about) {
-                selectedFragment = new AboutDeveloperFragment();
+            } else if (itemId == R.id.nav_mockups) {
+                selectedFragment = new MockupListFragment();
             }
 
             if (selectedFragment != null) {
