@@ -1,430 +1,1221 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudyMagic - Mockup Test Creator & Supabase Uploader</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study Magic - Admin Control</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0d0f13;color:#fff;font-family:Arial,sans-serif}
+button,input,textarea,select{font:inherit}
+.topbar{height:64px;background:#15181e;border-bottom:1px solid #292d35;display:flex;align-items:center;padding:0 14px;gap:12px;position:sticky;top:0;z-index:20}
+.brand{font-size:19px;font-weight:700;flex:1}
+.page{max-width:1100px;margin:auto;padding:20px 14px 45px}
+.screen{display:none}.screen.active{display:block}
+h1,h2,h3{margin-top:0}.sub{color:#9299a5;line-height:1.5}
+.status,.card,.item{background:#191c22;border:1px solid #292d35;border-radius:16px}
+.status{padding:12px;text-align:center;margin-bottom:18px}
+.card{padding:18px;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.stat{min-height:115px}.stat .icon{font-size:25px}.stat .num{font-size:28px;font-weight:700;margin-top:7px}.stat .label{color:#9299a5;font-size:13px}
+.action{cursor:pointer}.action:hover{border-color:#4f7cff}
+button{width:100%;padding:13px;border:0;border-radius:10px;background:#4f7cff;color:#fff;font-weight:700;cursor:pointer;margin-bottom:10px}
+button:hover{opacity:.9}.secondary{background:#292e38}.save{background:#198754}.danger{background:#702b2b}.back{width:auto;background:#292e38}
+label{display:block;color:#aeb4bf;font-size:14px;margin-bottom:6px}
+input,textarea,select{width:100%;padding:13px;background:#242832;color:#fff;border:1px solid #353b46;border-radius:10px;outline:none;margin-bottom:15px}
+textarea{min-height:100px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.type-box{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+.type-card{background:#242832;border:2px solid #353b46;border-radius:12px;padding:14px;cursor:pointer;transition:.2s}
+.type-card.active{border-color:#4f7cff;background:#1c2436}
+.type-title{font-weight:700;margin-bottom:4px;color:#fff}
+.type-desc{font-size:12px;color:#9299a5}
+.subject-card{background:#12151a;border:1px solid #2e3440;border-radius:14px;padding:16px;margin-bottom:14px;position:relative}
+.subject-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;border-bottom:1px solid #292d35;pb:10px}
+.json-box{background:#12151a;border:1px dashed #3b424f;border-radius:15px;padding:17px;margin:18px 0}
+.json-box p{color:#8e95a1;font-size:13px;line-height:1.5}
+.json-preview{background:#0f1217;border:1px solid #2c313b;border-radius:12px;padding:13px;overflow:auto;margin-top:10px}
+pre{margin:0;white-space:pre-wrap;word-break:break-word;font-size:12px;color:#c9ced7}
+.success{color:#55dc91}.error{color:#ff6868}.info{color:#8ab4ff}.empty{text-align:center;padding:28px;color:#818793}
+.item{padding:17px;margin-bottom:13px}.item-title{font-size:19px;font-weight:700;margin-bottom:7px}.item-desc{color:#969da8;font-size:14px;margin-bottom:11px}
+.meta{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}.badge{background:#292e38;color:#c3c8d0;padding:6px 9px;border-radius:8px;font-size:12px}
+.subject-title{color:#82a7ff;font-weight:700;margin:16px 0 8px}.question-preview{background:#242832;border-radius:12px;padding:13px;margin-bottom:10px}
+.question-text{font-weight:700;margin-bottom:9px}.option{background:#191c22;padding:9px;border-radius:8px;margin:5px 0}.option.correct{border:1px solid #2d9b5c}
+.explanation{color:#9198a4;font-size:13px;margin-top:9px}.pdf-link{color:#8ab4ff;text-decoration:none;display:block;margin:10px 0 13px;word-break:break-all}
+.small{font-size:12px;color:#9299a5}.section-title{margin:20px 0 10px;font-size:16px;color:#cdd2da}.hierarchy{background:#111419;border:1px solid #303641;border-radius:12px;padding:12px;margin:10px 0}.hierarchy-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:6px 0}.hierarchy-label{color:#8f97a4;font-size:12px;min-width:82px}.hierarchy-value{background:#242832;border-radius:8px;padding:7px 10px;color:#e7e9ed;font-size:13px}.details{display:none;margin-top:10px}.details.open{display:block}.show-btn{background:#252b34!important}
+@media(max-width:720px){.grid,.row,.three,.type-box{grid-template-columns:1fr}.page{padding:15px 10px 35px}}
+</style>
 </head>
-<body class="p-4 md:p-8 max-w-5xl mx-auto text-slate-800">
+<body>
 
-    <!-- Header -->
-    <div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-2xl p-6 shadow-lg mb-8">
-        <div class="flex items-center justify-between">
-            <div>
-                <h1 class="text-2xl md:text-3xl font-bold flex items-center gap-3">
-                    <i class="fa-solid fa-file-pen"></i> StudyMagic Mockup Test Creator
-                </h1>
-                <p class="text-blue-100 text-sm mt-1">Generate JSON and directly upload Type 1 & Type 2 Mockup Tests to Supabase</p>
-            </div>
-            <span class="bg-white/20 backdrop-blur-md px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider">Admin Panel</span>
-        </div>
-    </div>
+<header class="topbar">
+<button style="width:auto;margin:0;background:#292e38" onclick="showScreen('home')">⌂</button>
+<div class="brand">Study Magic • Admin Control</div>
+</header>
 
-    <!-- Main Container -->
-    <div class="grid grid-cols-1 gap-8">
+<main class="page">
 
-        <!-- 1. Supabase Database Configuration -->
-        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-            <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-database text-blue-600"></i> 1. Supabase Connection Credentials
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Supabase Project URL</label>
-                    <input type="text" id="sbUrl" value="https://crafyflxsvgjvvuzdftm.supabase.co" placeholder="https://your-project.supabase.co" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Supabase Anon Key</label>
-                    <input type="text" id="sbKey" value="sb_publishable_NxzsXWLHPGkNi0jTVx5k1Q_QYoRwGFo" placeholder="eyJhYmdj..." class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Table Name</label>
-                    <input type="text" id="sbTable" value="mockup_tests" placeholder="mockup_tests" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                </div>
-            </div>
-        </div>
+<!-- HOME -->
+<section id="home" class="screen active">
+<h1>Admin Control</h1>
+<p class="sub">Manage Mockups, Tests, Notes, Categories, Subjects, Chapters and Topics.</p>
+<div class="status" id="homeStatus">Connecting...</div>
 
-        <!-- 2. Test Basic Info & Type Selector -->
-        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-            <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-[#007acc] fa-sliders text-indigo-600"></i> 2. Test Configuration & Type
-            </h2>
+<div class="grid">
+<div class="card stat"><div class="icon">📝</div><div class="num" id="statMockups">—</div><div class="label">Mockups</div></div>
+<div class="card stat"><div class="icon">🧪</div><div class="num" id="statTests">—</div><div class="label">Tests</div></div>
+<div class="card stat"><div class="icon">📚</div><div class="num" id="statNotes">—</div><div class="label">Notes</div></div>
+<div class="card stat"><div class="icon">📂</div><div class="num" id="statChapters">—</div><div class="label">Chapters</div></div>
+</div>
 
-            <!-- Type Selection -->
-            <div class="mb-6">
-                <label class="block text-xs font-semibold text-slate-600 mb-2">Select Mockup Test Type</label>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <label id="lblType1" class="border-2 border-blue-500 bg-blue-50/50 p-4 rounded-xl cursor-pointer flex items-start gap-3 transition">
-                        <input type="radio" name="testType" value="type1" checked onchange="handleTypeChange()" class="mt-1 accent-blue-600">
-                        <div>
-                            <div class="font-bold text-blue-900 text-sm">Type 1: Universal Duration</div>
-                            <div class="text-xs text-slate-600 mt-1">One total test duration. Free navigation between subjects.</div>
-                        </div>
-                    </label>
+<div class="grid" style="margin-top:16px">
+<div class="card action" onclick="showScreen('manageMockups')">
+<h2>📝 Manage Mockups</h2><p class="sub">Type 1 & Type 2 Subject-wise Mockups.</p><button>Open Mockups →</button>
+</div>
+<div class="card action" onclick="showScreen('manageTests')">
+<h2>🧪 Manage Tests</h2><p class="sub">Category → Chapter → Topic based tests.</p><button>Open Tests →</button>
+</div>
+<div class="card action" onclick="showScreen('manageNotes')">
+<h2>📚 Manage Notes</h2><p class="sub">Upload PDFs to the notes bucket.</p><button>Open Notes →</button>
+</div>
+<div class="card action" onclick="showScreen('manageStructure')">
+<h2>🗂️ Chapters & Topics</h2><p class="sub">Add and manage categories, subjects, chapters and topics.</p><button>Open Structure →</button>
+</div>
+</div>
 
-                    <label id="lblType2" class="border-2 border-slate-200 p-4 rounded-xl cursor-pointer flex items-start gap-3 transition hover:border-slate-300">
-                        <input type="radio" name="testType" value="type2" onchange="handleTypeChange()" class="mt-1 accent-blue-600">
-                        <div>
-                            <div class="font-bold text-slate-800 text-sm">Type 2: Subject-Wise Timed</div>
-                            <div class="text-xs text-slate-600 mt-1">Separate timer for each subject. Sectional lock until timeout.</div>
-                        </div>
-                    </label>
-                </div>
-            </div>
+<button class="secondary" onclick="refreshDashboard()">🔄 Refresh Dashboard</button>
+</section>
 
-            <!-- Fields -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Test Title *</label>
-                    <input type="text" id="testTitle" placeholder="e.g. SSC CGL Tier 1 Full Mock Test 01" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Test Description</label>
-                    <input type="text" id="testDesc" placeholder="e.g. Based on latest TCS pattern with detailed solutions" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                </div>
-            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div id="divUniversalDuration">
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Universal Test Duration (Minutes) *</label>
-                    <input type="number" id="universalDuration" value="60" placeholder="60" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Category ID (Optional)</label>
-                    <input type="text" id="categoryId" placeholder="e.g. 1" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Topic ID (Optional)</label>
-                    <input type="text" id="topicId" placeholder="e.g. t1" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                </div>
-            </div>
-        </div>
+<!-- MOCKUPS -->
+<section id="manageMockups" class="screen">
+<button class="back" onclick="showScreen('home')">← Admin Control</button>
+<h1>📝 Manage Mockups</h1>
+<div class="status" id="manageStatus">Ready</div>
 
-        <!-- 3. Subjects & Questions Builder -->
-        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                    <i class="fa-solid fa-layer-group text-emerald-600"></i> 3. Subjects & Questions
-                </h2>
-                <button onclick="addSubjectCard()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center gap-2 transition shadow-sm">
-                    <i class="fa-solid fa-plus"></i> Add Subject
-                </button>
-            </div>
+<div class="card">
+<h2>➕ Create Mockup Test</h2>
 
-            <!-- Subjects Container -->
-            <div id="subjectsContainer" class="space-y-6">
-                <!-- Dynamic Subjects will be added here -->
-            </div>
-        </div>
+<!-- TYPE SELECTION -->
+<label>Mockup Test Type</label>
+<div class="type-box">
+<div id="cardType1" class="type-card active" onclick="selectMockupType('type1')">
+<div class="type-title">Type 1: Universal Duration</div>
+<div class="type-desc">One total test duration. Free movement between subjects.</div>
+</div>
+<div id="cardType2" class="type-card" onclick="selectMockupType('type2')">
+<div class="type-title">Type 2: Subject-Wise Timed</div>
+<div class="type-desc">Separate timer for each subject. Sectional lock until timeout.</div>
+</div>
+</div>
 
-        <!-- 4. Output Actions -->
-        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-            <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-code text-purple-600"></i> 4. Generate JSON & Upload
-            </h2>
+<label>Mockup Title</label><input id="title" placeholder="Example: SSC CGL Full Mock Test 01">
+<label>Description</label><textarea id="description" placeholder="Enter description..."></textarea>
 
-            <div class="flex flex-wrap gap-3 mb-4">
-                <button onclick="generateJSON()" class="bg-slate-800 hover:bg-slate-900 text-white px-5 py-2.5 rounded-lg text-sm font-semibold flex items-center gap-2 transition">
-                    <i class="fa-solid fa-gears"></i> Generate Preview JSON
-                </button>
-                <button onclick="copyJSON()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg text-sm font-semibold flex items-center gap-2 transition">
-                    <i class="fa-solid fa-copy"></i> Copy JSON
-                </button>
-                <button onclick="uploadToSupabase()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-lg text-sm font-semibold flex items-center gap-2 transition shadow-md">
-                    <i class="fa-solid fa-cloud-arrow-up"></i> Direct Upload to Supabase
-                </button>
-            </div>
+<div class="row">
+<div id="divUniversalDuration">
+<label>Universal Duration (Minutes)</label>
+<input id="duration" type="number" min="1" value="60">
+</div>
+<div>
+<label>Featured</label>
+<div style="margin:10px 0 18px"><input id="isFeatured" type="checkbox" style="width:auto;margin:0"> ⭐ Mark as featured</div>
+</div>
+</div>
 
-            <!-- Status Alert -->
-            <div id="statusAlert" class="hidden p-4 rounded-xl text-sm font-medium mb-4"></div>
+<!-- DYNAMIC SUBJECT BUILDER -->
+<div style="display:flex;justify-content:space-between;align-items:center;margin:20px 0 12px">
+<h3 style="margin:0">📚 Subjects & Questions Builder</h3>
+<button type="button" class="secondary" style="width:auto;margin:0" onclick="addSubjectBuilderCard()">➕ Add Subject</button>
+</div>
 
-            <!-- Output Textarea -->
-            <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Generated Output JSON</label>
-                <textarea id="outputJson" rows="10" readonly placeholder="Click 'Generate Preview JSON' to view JSON output..." class="w-full p-3 font-mono text-xs bg-slate-900 text-emerald-400 rounded-xl border border-slate-800 outline-none"></textarea>
-            </div>
-        </div>
+<div id="subjectsContainer">
+<!-- Dynamic Subject Cards Added Here -->
+</div>
 
-    </div>
+<button class="save" onclick="saveMockup()">💾 Save & Upload Mockup</button>
+<div id="addMessage"></div>
+</div>
 
-    <!-- JavaScript Logic -->
-    <script>
-        let subjectCount = 0;
+<div class="card">
+<h2>📋 Existing Mockups</h2>
+<button class="secondary" onclick="loadMockups()">🔄 Refresh Mockups</button>
+<div id="mockupsContainer"><div class="empty">Loading...</div></div>
+</div>
+</section>
 
-        // Initialize with 1 default subject
-        window.onload = function() {
-            addSubjectCard("Mathematics");
-        };
 
-        function handleTypeChange() {
-            const selectedType = document.querySelector('input[name="testType"]:checked').value;
-            const lblType1 = document.getElementById('lblType1');
-            const lblType2 = document.getElementById('lblType2');
-            const universalDiv = document.getElementById('divUniversalDuration');
+<!-- TESTS -->
+<section id="manageTests" class="screen">
+<button class="back" onclick="showScreen('home')">← Admin Control</button>
+<h1>🧪 Manage Tests</h1>
+<p class="sub">Test table: <b>tests</b>. Category and Topic are stored in the existing columns.</p>
+<div class="status" id="testStatus">Ready</div>
 
-            if (selectedType === 'type1') {
-                lblType1.className = "border-2 border-blue-500 bg-blue-50/50 p-4 rounded-xl cursor-pointer flex items-start gap-3 transition";
-                lblType2.className = "border-2 border-slate-200 p-4 rounded-xl cursor-pointer flex items-start gap-3 transition hover:border-slate-300";
-                universalDiv.style.opacity = '1';
-                document.getElementById('universalDuration').disabled = false;
-            } else {
-                lblType2.className = "border-2 border-indigo-500 bg-indigo-50/50 p-4 rounded-xl cursor-pointer flex items-start gap-3 transition";
-                lblType1.className = "border-2 border-slate-200 p-4 rounded-xl cursor-pointer flex items-start gap-3 transition hover:border-slate-300";
-                universalDiv.style.opacity = '0.5';
-                document.getElementById('universalDuration').disabled = true;
-            }
+<div class="card">
+<h2>➕ Create Test</h2>
 
-            // Update subject duration field states
-            document.querySelectorAll('.subject-duration-input').forEach(input => {
-                input.disabled = (selectedType === 'type1');
-            });
-        }
+<label>Test Title</label>
+<input id="testTitle" placeholder="Example: Mathematics Chapter Test">
 
-        function addSubjectCard(defaultName = "") {
-            subjectCount++;
-            const id = subjectCount;
-            const selectedType = document.querySelector('input[name="testType"]:checked').value;
-            const isDisabled = (selectedType === 'type1') ? 'disabled' : '';
+<label>Description</label>
+<textarea id="testDescription" placeholder="Enter test description..."></textarea>
 
-            const sampleQuestionsStr = JSON.stringify([
-                {
-                    "id": "q1",
-                    "question_text": "What is the square root of 144?",
-                    "options": ["10", "11", "12", "14"],
-                    "correct_option_index": 2,
-                    "explanation": "12 * 12 = 144"
-                },
-                {
-                    "id": "q2",
-                    "question_text": "Solve: 25 + 75 = ?",
-                    "options": ["90", "100", "110", "120"],
-                    "correct_option_index": 1,
-                    "explanation": "25 + 75 = 100"
-                }
-            ], null, 2);
+<div class="row">
+<div>
+<label>Duration (Minutes)</label>
+<input id="testDuration" type="number" min="1" value="30">
+</div>
+<div>
+<label>📂 Category</label>
+<select id="testCategory" onchange="loadTestSubjects();updateTestHierarchy()">
+<option value="">Loading categories...</option>
+</select>
+</div>
+</div>
 
-            const cardHtml = `
-                <div id="subjectCard_${id}" class="subject-card border border-slate-200 bg-slate-50/50 rounded-xl p-5 relative shadow-sm">
-                    <div class="flex items-center justify-between mb-3 border-b border-slate-200 pb-2">
-                        <span class="font-bold text-sm text-slate-700 flex items-center gap-2">
-                            <i class="fa-solid fa-book-bookmark text-blue-500"></i> Subject #${id}
-                        </span>
-                        <button onclick="removeSubjectCard(${id})" class="text-red-500 hover:text-red-700 text-xs font-semibold flex items-center gap-1">
-                            <i class="fa-solid fa-trash"></i> Remove
-                        </button>
-                    </div>
+<label>📘 Subject</label>
+<select id="testSubject" onchange="loadTestChapters();updateTestHierarchy()">
+<option value="">Select category first</option>
+</select>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Subject Name *</label>
-                            <input type="text" class="subject-name w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-blue-500 outline-none" value="${defaultName}" placeholder="e.g. Mathematics">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-600 mb-1">Subject Duration (Mins) <span class="text-xs text-indigo-600">(Type 2 only)</span></label>
-                            <input type="number" class="subject-duration subject-duration-input w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-blue-500 outline-none" ${isDisabled} value="20" placeholder="e.g. 20">
-                        </div>
-                    </div>
+<label>📖 Chapter</label>
+<select id="testChapter" onchange="loadTestTopics();updateTestHierarchy()">
+<option value="">Select subject first</option>
+</select>
 
-                    <div>
-                        <div class="flex items-center justify-between mb-1">
-                            <label class="block text-xs font-semibold text-slate-600">Questions JSON Array *</label>
-                            <button onclick="insertSampleQuestions(${id})" class="text-xs text-blue-600 hover:text-blue-800 font-semibold underline">
-                                Insert Sample Format
-                            </button>
-                        </div>
-                        <textarea id="qJson_${id}" rows="6" placeholder="Paste array of question objects here..." class="subject-questions w-full p-3 font-mono text-xs bg-white border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">${sampleQuestionsStr}</textarea>
-                    </div>
-                </div>
-            `;
+<label>🏷️ Topic</label>
+<select id="testTopic" onchange="updateTestHierarchy()">
+<option value="">Select chapter first</option>
+</select>
 
-            document.getElementById('subjectsContainer').insertAdjacentHTML('beforeend', cardHtml);
-        }
+<div class="hierarchy">
+<div class="hierarchy-row"><span class="hierarchy-label">Category</span><span class="hierarchy-value">📂 Select Category</span></div>
+<div class="hierarchy-row"><span class="hierarchy-label">Subject</span><span class="hierarchy-value">📘 Select Subject</span></div>
+<div class="hierarchy-row"><span class="hierarchy-label">Chapter</span><span class="hierarchy-value">📖 Select Chapter</span></div>
+<div class="hierarchy-row"><span class="hierarchy-label">Topic</span><span class="hierarchy-value">🏷️ Select Topic</span></div>
+</div>
 
-        function removeSubjectCard(id) {
-            const card = document.getElementById(`subjectCard_${id}`);
-            if (card) card.remove();
-        }
+<div class="json-box">
+<h3>📋 Test Questions JSON</h3>
+<p>Test JSON root array hona chahiye. Har question mein unique id, question_text, options aur correct_option_index rakho.</p>
+<textarea id="testJsonInput" style="min-height:330px;font-family:monospace;font-size:13px" placeholder='[
+  {
+    "id": "q1",
+    "question_text": "What is 25% of 400?",
+    "options": [
+      "50",
+      "100",
+      "150",
+      "200"
+    ],
+    "correct_option_index": 1
+  }
+]'></textarea>
+<button class="secondary" onclick="validateTestJSON()">🔍 Validate Test JSON</button>
+<div id="testJsonStatus"></div>
+<div id="testJsonPreview" class="json-preview" style="display:none"><pre id="testJsonPreviewText"></pre></div>
+</div>
 
-        function insertSampleQuestions(id) {
-            const sample = [
-                {
-                    "id": "q1",
-                    "question_text": "Sample Question Text Here?",
-                    "options": ["Option A", "Option B", "Option C", "Option D"],
-                    "correct_option_index": 0,
-                    "explanation": "Detailed explanation of option A."
-                }
-            ];
-            document.getElementById(`qJson_${id}`).value = JSON.stringify(sample, null, 2);
-        }
+<button class="save" onclick="saveTest()">💾 Save Test</button>
+<div id="testMessage"></div>
+</div>
 
-        function buildDataObject() {
-            const testType = document.querySelector('input[name="testType"]:checked').value;
-            const title = document.getElementById('testTitle').value.trim();
-            const description = document.getElementById('testDesc').value.trim();
-            const categoryId = document.getElementById('categoryId').value.trim();
-            const topicId = document.getElementById('topicId').value.trim();
-            const isSubjectTimerEnabled = (testType === 'type2');
+<div class="card">
+<h2>📋 Existing Tests</h2>
+<button class="secondary" onclick="loadTests()">🔄 Refresh Tests</button>
+<div id="testsContainer"><div class="empty">Loading...</div></div>
+</div>
+</section>
 
-            if (!title) {
-                showStatus("Please enter Test Title!", "error");
-                return null;
-            }
 
-            let universalDuration = parseInt(document.getElementById('universalDuration').value) || 0;
+<!-- NOTES -->
+<section id="manageNotes" class="screen">
+<button class="back" onclick="showScreen('home')">← Admin Control</button>
+<h1>📚 Manage Notes</h1>
+<p class="sub">PDF files are uploaded to Storage bucket <b>notes</b>.</p>
+<div class="status" id="notesStatus">Ready</div>
 
-            const subjectCards = document.querySelectorAll('.subject-card');
-            if (subjectCards.length === 0) {
-                showStatus("Please add at least one subject!", "error");
-                return null;
-            }
+<div class="card">
+<h2>➕ Add Note</h2>
+<label>Note Title</label><input id="noteTitle" placeholder="Example: Algebra Notes">
+<label>Description</label><textarea id="noteDescription" placeholder="Enter note description..."></textarea>
+<label>PDF File</label><input id="noteFile" type="file" accept="application/pdf">
+<div class="small" id="fileInfo">Only PDF files are allowed.</div>
+<button class="save" onclick="saveNote()">☁️ Upload & Save Note</button>
+<div id="noteMessage"></div>
+</div>
 
-            const subjectsArray = [];
-            let totalCalculatedDuration = 0;
+<div class="card">
+<h2>📋 Existing Notes</h2>
+<button class="secondary" onclick="loadNotes()">🔄 Refresh Notes</button>
+<div id="notesContainer"><div class="empty">Loading...</div></div>
+</div>
+</section>
 
-            for (let i = 0; i < subjectCards.length; i++) {
-                const card = subjectCards[i];
-                const subjectName = card.querySelector('.subject-name').value.trim();
-                const subjectDuration = parseInt(card.querySelector('.subject-duration').value) || 0;
-                const questionsRaw = card.querySelector('.subject-questions').value.trim();
 
-                if (!subjectName) {
-                    showStatus(`Subject #${i + 1} name is required!`, "error");
-                    return null;
-                }
+<!-- STRUCTURE -->
+<section id="manageStructure" class="screen">
+<button class="back" onclick="showScreen('home')">← Admin Control</button>
+<h1>🗂️ Manage Chapters & Topics</h1>
+<p class="sub">Category → Subject → Chapter → Topic hierarchy manage karo.</p>
+<div class="status" id="structureStatus">Ready</div>
 
-                let questionsObj = [];
-                try {
-                    questionsObj = JSON.parse(questionsRaw);
-                    if (!Array.isArray(questionsObj)) {
-                        throw new Error("Must be a JSON array");
-                    }
-                } catch (e) {
-                    showStatus(`Invalid Questions JSON in Subject #${i + 1}: ${e.message}`, "error");
-                    return null;
-                }
+<!-- CATEGORY -->
+<div class="card">
+<h2>📂 Categories</h2>
+<label>Category Name</label>
+<input id="categoryName" placeholder="Example: SSC">
+<button class="save" onclick="addCategory()">➕ Add Category</button>
+<div id="categoryMessage"></div>
+<div id="categoryList"><div class="empty">Loading...</div></div>
+</div>
 
-                totalCalculatedDuration += subjectDuration;
+<!-- SUBJECT -->
+<div class="card">
+<h2>📘 Subjects</h2>
+<label>Category</label>
+<select id="subjectCategory"><option value="">Select category</option></select>
+<label>Subject Name</label>
+<input id="subjectName" placeholder="Example: Mathematics">
+<button class="save" onclick="addSubject()">➕ Add Subject</button>
+<div id="subjectMessage"></div>
+<div id="subjectList"><div class="empty">Loading...</div></div>
+</div>
 
-                subjectsArray.push({
-                    "id": "sub_" + (i + 1),
-                    "subject_name": subjectName,
-                    "duration": (testType === 'type2') ? subjectDuration : 0,
-                    "questions_json": questionsObj
-                });
-            }
+<!-- CHAPTER -->
+<div class="card">
+<h2>📖 Chapters</h2>
+<label>Subject</label>
+<select id="chapterSubject"><option value="">Select subject</option></select>
+<label>Chapter Name</label>
+<input id="chapterName" placeholder="Example: Percentage">
+<button class="save" onclick="addChapter()">➕ Add Chapter</button>
+<div id="chapterMessage"></div>
+<div id="chapterList"><div class="empty">Loading...</div></div>
+</div>
 
-            const finalDuration = (testType === 'type1') ? universalDuration : totalCalculatedDuration;
+<!-- TOPIC -->
+<div class="card">
+<h2>🏷️ Topics</h2>
+<label>Chapter</label>
+<select id="topicChapter"><option value="">Select chapter</option></select>
+<label>Topic Name</label>
+<input id="topicName" placeholder="Example: Basic Percentage">
+<button class="save" onclick="addTopic()">➕ Add Topic</button>
+<div id="topicMessage"></div>
+<div id="topicList"><div class="empty">Loading...</div></div>
+</div>
+</section>
 
-            const questionsJsonObject = {
-                "test_type": testType,
-                "is_subject_timer_enabled": isSubjectTimerEnabled,
-                "subjects": subjectsArray
-            };
+</main>
 
-            const finalData = {
-                "title": title,
-                "description": description,
-                "duration": finalDuration,
-                "test_type": testType,
-                "is_subject_timer_enabled": isSubjectTimerEnabled,
-                "questions_json": questionsJsonObject,
-                "subjects": subjectsArray
-            };
+<script>
+/* =====================================================
+   SUPABASE CLIENT
+===================================================== */
+const SUPABASE_URL="https://crafyflxsvgjvvuzdftm.supabase.co";
+const SUPABASE_KEY="sb_publishable_NxzsXWLHPGkNi0jTVx5k1Q_QYoRwGFo";
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-            if (categoryId) finalData["category_id"] = categoryId;
-            if (topicId) finalData["topic_id"] = topicId;
+let categories=[];
+let subjects=[];
+let chapters=[];
+let topics=[];
 
-            return finalData;
-        }
+let currentMockupType = "type1";
+let subjectCardCount = 0;
 
-        function generateJSON() {
-            const data = buildDataObject();
-            if (data) {
-                document.getElementById('outputJson').value = JSON.stringify(data, null, 2);
-                showStatus("JSON Generated Successfully!", "success");
-            }
-        }
+/* =====================================================
+   NAVIGATION
+===================================================== */
+function showScreen(name){
+document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+document.getElementById(name).classList.add("active");
 
-        function copyJSON() {
-            const textarea = document.getElementById('outputJson');
-            if (!textarea.value) {
-                generateJSON();
-            }
-            if (textarea.value) {
-                navigator.clipboard.writeText(textarea.value);
-                showStatus("JSON Copied to Clipboard!", "success");
-            }
-        }
+if(name==="home")refreshDashboard();
+if(name==="manageMockups")initMockupPage();
+if(name==="manageTests")initTestPage();
+if(name==="manageNotes")loadNotes();
+if(name==="manageStructure")initStructure();
+}
 
-        async function uploadToSupabase() {
-            let sbUrl = document.getElementById('sbUrl').value.trim();
-            const sbKey = document.getElementById('sbKey').value.trim();
-            const sbTable = document.getElementById('sbTable').value.trim() || 'mockup_tests';
 
-            if (!sbUrl || !sbKey) {
-                showStatus("Please enter your Supabase URL and Anon Key at the top!", "error");
-                return;
-            }
+/* =====================================================
+   DASHBOARD
+===================================================== */
+async function refreshDashboard(){
+const status=document.getElementById("homeStatus");
 
-            const data = buildDataObject();
-            if (!data) return;
+const [m,t,n,c]=await Promise.all([
+supabaseClient.from("mockup_tests").select("id,questions_json"),
+supabaseClient.from("tests").select("id"),
+supabaseClient.from("notes").select("id"),
+supabaseClient.from("chapters").select("id")
+]);
 
-            document.getElementById('outputJson').value = JSON.stringify(data, null, 2);
+if(m.error){status.className="error";status.innerText="❌ Mockups: "+m.error.message;return}
+if(t.error){status.className="error";status.innerText="❌ Tests: "+t.error.message;return}
+if(n.error){status.className="error";status.innerText="❌ Notes: "+n.error.message;return}
+if(c.error){status.className="error";status.innerText="❌ Chapters: "+c.error.message;return}
 
-            showStatus("Uploading to Supabase...", "info");
+let q=0;
+m.data.forEach(x=>{
+let j=x.questions_json;
+if(typeof j==="string"){try{j=JSON.parse(j)}catch{j={}}}
+q+=countQuestions(j);
+});
 
-            try {
-                // Clean and normalize URL to prevent duplicate /rest/v1 paths or trailing slashes
-                let cleanUrl = sbUrl.replace(/\/+$/, '');
-                if (cleanUrl.endsWith('/rest/v1')) {
-                    cleanUrl = cleanUrl.substring(0, cleanUrl.length - 8);
-                }
-                const endpoint = `${cleanUrl}/rest/v1/${sbTable}`;
+document.getElementById("statMockups").innerText=m.data.length;
+document.getElementById("statTests").innerText=t.data.length;
+document.getElementById("statNotes").innerText=n.data.length;
+document.getElementById("statChapters").innerText=c.data.length;
 
-                const response = await fetch(endpoint, {
-                    method: 'POST',
-                    headers: {
-                        'apikey': sbKey,
-                        'Authorization': `Bearer ${sbKey}`,
-                        'Content-Type': 'application/json',
-                        'Prefer': 'return=representation'
-                    },
-                    body: JSON.stringify(data)
-                });
+status.className="";
+status.innerText="✅ Supabase connected";
+}
 
-                if (response.ok) {
-                    const result = await response.json();
-                    showStatus("Successfully Uploaded Test to Supabase!", "success");
-                } else {
-                    const errText = await response.text();
-                    showStatus(`Upload Failed (${response.status}): ${errText}`, "error");
-                }
-            } catch (err) {
-                showStatus(`Network/Upload Error: ${err.message}`, "error");
-            }
-        }
 
-        function showStatus(msg, type) {
-            const alert = document.getElementById('statusAlert');
-            alert.classList.remove('hidden', 'bg-red-100', 'text-red-800', 'bg-emerald-100', 'text-emerald-800', 'bg-blue-100', 'text-blue-800');
+/* =====================================================
+   MOCKUPS & SUBJECT BUILDER
+===================================================== */
+function initMockupPage(){
+if(document.querySelectorAll(".subject-card").length === 0) {
+addSubjectBuilderCard("Mathematics");
+}
+loadMockups();
+}
 
-            if (type === 'error') {
-                alert.classList.add('bg-red-100', 'text-red-800');
-            } else if (type === 'success') {
-                alert.classList.add('bg-emerald-100', 'text-emerald-800');
-            } else {
-                alert.classList.add('bg-blue-100', 'text-blue-800');
-            }
+function selectMockupType(type) {
+currentMockupType = type;
+const card1 = document.getElementById("cardType1");
+const card2 = document.getElementById("cardType2");
+const univDiv = document.getElementById("divUniversalDuration");
 
-            alert.innerHTML = msg;
-        }
-    </script>
+if(type === "type1") {
+card1.classList.add("active");
+card2.classList.remove("active");
+univDiv.style.opacity = "1";
+document.getElementById("duration").disabled = false;
+} else {
+card2.classList.add("active");
+card1.classList.remove("active");
+univDiv.style.opacity = "0.5";
+document.getElementById("duration").disabled = true;
+}
+
+document.querySelectorAll(".subject-duration-field").forEach(input => {
+input.disabled = (type === "type1");
+});
+}
+
+function addSubjectBuilderCard(defaultName = "") {
+subjectCardCount++;
+const id = subjectCardCount;
+const disabledAttr = (currentMockupType === "type1") ? "disabled" : "";
+
+const sampleJsonStr = JSON.stringify([
+  {
+    "id": "q1",
+    "question_text": "What is 15 * 12?",
+    "options": ["180", "160", "175", "190"],
+    "correct_option_index": 0,
+    "explanation": "15 * 12 = 180"
+  },
+  {
+    "id": "q2",
+    "question_text": "Find the average of first 5 prime numbers.",
+    "options": ["5.2", "5.6", "6.2", "7.0"],
+    "correct_option_index": 1,
+    "explanation": "First 5 prime numbers are 2, 3, 5, 7, 11. Sum = 28. Average = 5.6"
+  }
+], null, 2);
+
+const html = `
+<div id="subCard_${id}" class="subject-card">
+<div class="subject-card-header">
+<span style="font-weight:700;color:#82a7ff">📘 Subject #${id}</span>
+<button type="button" class="danger" style="width:auto;margin:0;padding:6px 12px;font-size:12px" onclick="removeSubjectBuilderCard(${id})">🗑️ Remove</button>
+</div>
+
+<div class="row">
+<div>
+<label>Subject Name *</label>
+<input id="subName_${id}" class="sub-name-input" value="${esc(defaultName)}" placeholder="e.g. Mathematics">
+</div>
+<div>
+<label>Subject Duration (Mins) <span class="small" style="color:#82a7ff">(Type 2 only)</span></label>
+<input id="subDur_${id}" type="number" class="subject-duration-field" ${disabledAttr} value="20" placeholder="20">
+</div>
+</div>
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+<label style="margin:0">Questions JSON Array *</label>
+<button type="button" class="secondary" style="width:auto;margin:0;padding:4px 10px;font-size:11px" onclick="insertSampleQuestions(${id})">⚡ Insert Sample Format</button>
+</div>
+<textarea id="subJson_${id}" class="sub-json-input" style="min-height:160px;font-family:monospace;font-size:12px" placeholder="Paste questions JSON array here...">${esc(sampleJsonStr)}</textarea>
+</div>
+`;
+
+document.getElementById("subjectsContainer").insertAdjacentHTML("beforeend", html);
+}
+
+function removeSubjectBuilderCard(id) {
+const card = document.getElementById(`subCard_${id}`);
+if(card) card.remove();
+}
+
+function insertSampleQuestions(id) {
+const sample = [
+  {
+    "id": "q1",
+    "question_text": "Sample Question Text Here?",
+    "options": ["Option A", "Option B", "Option C", "Option D"],
+    "correct_option_index": 0,
+    "explanation": "Detailed explanation of option A."
+  }
+];
+document.getElementById(`subJson_${id}`).value = JSON.stringify(sample, null, 2);
+}
+
+async function saveMockup(){
+const msg=document.getElementById("addMessage");
+const title=document.getElementById("title").value.trim();
+const description=document.getElementById("description").value.trim();
+const univDuration=parseInt(document.getElementById("duration").value) || 0;
+const isFeatured=document.getElementById("isFeatured").checked;
+
+if(!title){showMsg(msg,"Please enter mockup title.","error");return}
+
+const cards = document.querySelectorAll(".subject-card");
+if(cards.length === 0) {
+showMsg(msg, "Please add at least one subject!", "error");
+return;
+}
+
+const subjectsArray = [];
+let totalCalculatedMins = 0;
+
+for(let i = 0; i < cards.length; i++) {
+const card = cards[i];
+const subNameInput = card.querySelector(".sub-name-input");
+const subDurInput = card.querySelector(".subject-duration-field");
+const subJsonInput = card.querySelector(".sub-json-input");
+
+const subName = subNameInput ? subNameInput.value.trim() : "";
+const subDur = subDurInput ? (parseInt(subDurInput.value) || 0) : 0;
+const subJsonText = subJsonInput ? subJsonInput.value.trim() : "";
+
+if(!subName) {
+showMsg(msg, `Subject #${i + 1} name is required!`, "error");
+return;
+}
+
+let qArray = [];
+try {
+qArray = JSON.parse(subJsonText);
+if(!Array.isArray(qArray)) throw new Error("Must be a JSON array");
+if(qArray.length === 0) throw new Error("Questions array cannot be empty");
+} catch(e) {
+showMsg(msg, `Invalid Questions JSON in Subject #${i + 1}: ${e.message}`, "error");
+return;
+}
+
+totalCalculatedMins += subDur;
+
+subjectsArray.push({
+"id": "sub_" + (i + 1),
+"subject_name": subName,
+"duration": (currentMockupType === "type2") ? subDur : 0,
+"questions_json": qArray
+});
+}
+
+const finalDuration = (currentMockupType === "type1") ? univDuration : totalCalculatedMins;
+
+const questionsJsonObject = {
+"test_type": currentMockupType,
+"is_subject_timer_enabled": (currentMockupType === "type2"),
+"subjects": subjectsArray
+};
+
+showMsg(msg,"Uploading mockup to Supabase...","info");
+
+const {error}=await supabaseClient.from("mockup_tests").insert({
+title: title,
+description: description,
+duration: finalDuration,
+is_featured: isFeatured,
+test_type: currentMockupType,
+is_subject_timer_enabled: (currentMockupType === "type2"),
+questions_json: questionsJsonObject,
+subjects: subjectsArray
+});
+
+if(error){showMsg(msg,error.message,"error");return}
+
+showMsg(msg,"Mockup saved & uploaded successfully!","success");
+document.getElementById("title").value="";
+document.getElementById("description").value="";
+document.getElementById("duration").value="60";
+document.getElementById("isFeatured").checked=false;
+document.getElementById("subjectsContainer").innerHTML="";
+addSubjectBuilderCard("Mathematics");
+loadMockups();refreshDashboard();
+}
+
+async function loadMockups(){
+const c=document.getElementById("mockupsContainer"),s=document.getElementById("manageStatus");
+s.className="";s.innerText="Loading mockups...";
+
+const {data,error}=await supabaseClient.from("mockup_tests").select("*").order("id",{ascending:false});
+
+if(error){s.className="error";s.innerText="❌ "+error.message;c.innerHTML='<div class="empty">Unable to load.</div>';return}
+s.innerText=`✅ ${data.length} mockups loaded`;
+
+if(!data.length){c.innerHTML='<div class="empty">No mockups found.</div>';return}
+c.innerHTML="";
+
+data.forEach(m=>{
+let q=m.questions_json;
+if(typeof q==="string"){try{q=JSON.parse(q)}catch{q={}}}
+
+const isType2 = (m.test_type === "type2" || m.is_subject_timer_enabled === true);
+const typeTag = isType2 ? "⏱️ Type 2 (Subject Timed)" : "🌐 Type 1 (Universal)";
+
+const d=document.createElement("div");
+d.className="item";
+d.innerHTML=`
+<div class="item-title">${esc(m.title||"")}</div>
+<div class="item-desc">${esc(m.description||"")}</div>
+<div class="meta">
+<span class="badge" style="background:#1c2436;color:#82a7ff">${typeTag}</span>
+<span class="badge">⏱️ ${m.duration||0} min total</span>
+<span class="badge">❓ ${countQuestions(q)} Questions</span>
+${m.is_featured?'<span class="badge">⭐ Featured</span>':""}
+</div>
+<button class="secondary" onclick="toggle('mq-${m.id}')">👁️ View Questions</button>
+<div id="mq-${m.id}" style="display:none">${createPreview(q)}</div>
+<button class="danger" onclick="deleteMockup(${m.id})">🗑️ Delete Mockup</button>
+`;
+c.appendChild(d);
+});
+}
+
+async function deleteMockup(id){
+if(!confirm("Delete this mockup?"))return;
+const {error}=await supabaseClient.from("mockup_tests").delete().eq("id",id);
+if(error){alert("❌ "+error.message);return}
+loadMockups();refreshDashboard();
+}
+
+
+/* =====================================================
+   TESTS
+===================================================== */
+async function initTestPage(){
+await loadAllStructure();
+fillCategorySelects();
+document.getElementById("testSubject").innerHTML='<option value="">Select category first</option>';
+document.getElementById("testChapter").innerHTML='<option value="">Select subject first</option>';
+document.getElementById("testTopic").innerHTML='<option value="">Select chapter first</option>';
+loadTests();
+}
+
+async function loadTestSubjects(){
+const categoryId=document.getElementById("testCategory").value;
+const s=document.getElementById("testSubject");
+const ch=document.getElementById("testChapter");
+const tp=document.getElementById("testTopic");
+
+s.innerHTML='<option value="">Loading subjects...</option>';
+ch.innerHTML='<option value="">Select subject first</option>';
+tp.innerHTML='<option value="">Select chapter first</option>';
+
+if(!categoryId){s.innerHTML='<option value="">Select category first</option>';return}
+
+const {data,error}=await supabaseClient.from("subjects").select("id,name,category_id").eq("category_id",parseInt(categoryId)).order("name");
+if(error){s.innerHTML='<option value="">Unable to load subjects</option>';return}
+
+s.innerHTML='<option value="">Select subject</option>';
+(data||[]).forEach(x=>addOption(s,x.id,x.name));
+}
+
+async function loadTestChapters(){
+const subjectId=document.getElementById("testSubject").value;
+const ch=document.getElementById("testChapter");
+const tp=document.getElementById("testTopic");
+
+ch.innerHTML='<option value="">Loading chapters...</option>';
+tp.innerHTML='<option value="">Select chapter first</option>';
+
+if(!subjectId){ch.innerHTML='<option value="">Select subject first</option>';return}
+
+const {data,error}=await supabaseClient.from("chapters").select("id,name,subject_id").eq("subject_id",parseInt(subjectId)).order("name");
+if(error){ch.innerHTML='<option value="">Unable to load chapters</option>';return}
+
+ch.innerHTML='<option value="">Select chapter</option>';
+(data||[]).forEach(x=>addOption(ch,x.id,x.name));
+}
+
+async function loadTestTopics(){
+const chapterId=document.getElementById("testChapter").value;
+const tp=document.getElementById("testTopic");
+
+tp.innerHTML='<option value="">Loading topics...</option>';
+
+if(!chapterId){tp.innerHTML='<option value="">Select chapter first</option>';return}
+
+const {data,error}=await supabaseClient.from("topics").select("id,name,chapter_id").eq("chapter_id",parseInt(chapterId)).order("name");
+if(error){tp.innerHTML='<option value="">Unable to load topics</option>';return}
+
+tp.innerHTML='<option value="">Select topic</option>';
+(data||[]).forEach(x=>addOption(tp,x.id,x.name));
+}
+
+function updateTestHierarchy(){
+const ids=[['testCategory','📂'],['testSubject','📘'],['testChapter','📖'],['testTopic','🏷️']];
+const box=document.querySelector('#manageTests .card .hierarchy');
+if(!box)return;
+const vals=ids.map(([id,icon])=>{const el=document.getElementById(id);const text=el&&el.value?el.options[el.selectedIndex].text:'Not selected';return `<div class="hierarchy-row"><span class="hierarchy-label">${icon} ${id.replace('test','')}</span><span class="hierarchy-value">${esc(text)}</span></div>`}).join('');
+box.innerHTML=vals;
+}
+
+function validateTestQuestions(json){
+if(!Array.isArray(json))throw new Error("Test JSON root must be an array.");
+if(!json.length)throw new Error("Test must contain at least one question.");
+
+json.forEach((q,i)=>{
+if(!q||typeof q!=="object")throw new Error(`Invalid question ${i+1}.`);
+if(typeof q.id!=="string"||!q.id.trim())throw new Error(`Question ${i+1}: id is required (example: q1).`);
+if(typeof q.question_text!=="string"||!q.question_text.trim())throw new Error(`Question ${i+1}: question_text is required.`);
+if(!Array.isArray(q.options)||q.options.length<2)throw new Error(`Question ${i+1}: at least 2 options are required.`);
+q.options.forEach((o,j)=>{if(typeof o!=="string"||!o.trim())throw new Error(`Question ${i+1}: option ${j+1} is empty.`)});
+if(!Number.isInteger(q.correct_option_index)||q.correct_option_index<0||q.correct_option_index>=q.options.length)throw new Error(`Question ${i+1}: invalid correct_option_index.`);
+if(q.explanation!==undefined && typeof q.explanation!=="string")q.explanation=String(q.explanation);
+});
+}
+
+function validateTestJSON(){
+const text=document.getElementById("testJsonInput").value.trim();
+const s=document.getElementById("testJsonStatus");
+const p=document.getElementById("testJsonPreview");
+
+try{
+if(!text)throw new Error("Please paste test JSON first.");
+const json=JSON.parse(text);
+validateTestQuestions(json);
+s.className="success";s.innerText=`✅ Valid test JSON • ${json.length} Questions`;
+document.getElementById("testJsonPreviewText").textContent=JSON.stringify(json,null,2);
+p.style.display="block";return true;
+}catch(e){
+s.className="error";s.innerText="❌ "+e.message;p.style.display="none";return false;
+}
+}
+
+async function saveTest(){
+const msg=document.getElementById("testMessage");
+const title=document.getElementById("testTitle").value.trim();
+const description=document.getElementById("testDescription").value.trim();
+const duration=parseInt(document.getElementById("testDuration").value);
+const categoryId=document.getElementById("testCategory").value;
+const topicId=document.getElementById("testTopic").value||null;
+const text=document.getElementById("testJsonInput").value.trim();
+
+if(!title){showMsg(msg,"Please enter test title.","error");return}
+if(!duration||duration<1){showMsg(msg,"Enter valid duration.","error");return}
+if(!categoryId){showMsg(msg,"Please select a category.","error");return}
+
+let questions;
+try{questions=JSON.parse(text);validateTestQuestions(questions)}
+catch(e){showMsg(msg,"Invalid Test JSON: "+e.message,"error");return}
+
+showMsg(msg,"Saving test...","info");
+
+const {error}=await supabaseClient.from("tests").insert({
+title,
+description,
+duration,
+category_id:parseInt(categoryId),
+topic_id:topicId?parseInt(topicId):null,
+questions_json:JSON.stringify(questions)
+});
+
+if(error){showMsg(msg,error.message,"error");return}
+
+showMsg(msg,"Test saved successfully!","success");
+document.getElementById("testTitle").value="";
+document.getElementById("testDescription").value="";
+document.getElementById("testDuration").value="30";
+document.getElementById("testCategory").value="";
+document.getElementById("testSubject").innerHTML='<option value="">Select category first</option>';
+document.getElementById("testChapter").innerHTML='<option value="">Select subject first</option>';
+document.getElementById("testTopic").innerHTML='<option value="">Select chapter first</option>';
+document.getElementById("testJsonInput").value="";
+document.getElementById("testJsonStatus").innerText="";
+document.getElementById("testJsonPreview").style.display="none";
+loadTests();refreshDashboard();
+}
+
+async function loadTests(){
+const c=document.getElementById("testsContainer"),s=document.getElementById("testStatus");
+s.className="";s.innerText="Loading tests...";
+
+const {data,error}=await supabaseClient.from("tests").select("*").order("id",{ascending:false});
+
+if(error){s.className="error";s.innerText="❌ "+error.message;c.innerHTML='<div class="empty">Unable to load tests.</div>';return}
+
+s.innerText=`✅ ${data.length} tests loaded`;
+if(!data.length){c.innerHTML='<div class="empty">No tests found.</div>';return}
+c.innerHTML="";
+
+data.forEach(t=>{
+let q=t.questions_json;
+try{if(typeof q==="string")q=JSON.parse(q)}catch{q=[]}
+
+const d=document.createElement("div");
+d.className="item";
+const info=getTestHierarchy(t);
+d.innerHTML=`
+<div class="item-title">${esc(t.title||"")}</div>
+<div class="item-desc">${esc(t.description||"No description")}</div>
+<div class="meta">
+<span class="badge">⏱️ ${t.duration||0} min</span>
+<span class="badge">❓ ${Array.isArray(q)?q.length:0} Questions</span>
+</div>
+<div class="hierarchy">
+<div class="hierarchy-row"><span class="hierarchy-label">📂 Category</span><span class="hierarchy-value">${esc(info.category)}</span></div>
+<div class="hierarchy-row"><span class="hierarchy-label">📘 Subject</span><span class="hierarchy-value">${esc(info.subject)}</span></div>
+<div class="hierarchy-row"><span class="hierarchy-label">📖 Chapter</span><span class="hierarchy-value">${esc(info.chapter)}</span></div>
+<div class="hierarchy-row"><span class="hierarchy-label">🏷️ Topic</span><span class="hierarchy-value">${esc(info.topic)}</span></div>
+</div>
+<button class="secondary show-btn" onclick="toggle('td-${t.id}')">👁️ Show Existing Data</button>
+<div id="td-${t.id}" class="details">
+<div class="small" style="margin-bottom:8px">Test ID: ${esc(t.id)} • Category ID: ${esc(t.category_id??'—')} • Topic ID: ${esc(t.topic_id??'—')}</div>
+<button class="secondary" onclick="toggle('tq-${t.id}')">📋 Show Questions JSON</button>
+<div id="tq-${t.id}" class="details">${createTestPreview(q)}</div>
+</div>
+<button class="danger" onclick="deleteTest(${t.id})">🗑️ Delete Test</button>
+`;
+c.appendChild(d);
+});
+}
+
+function createTestPreview(json){
+if(!Array.isArray(json))return '<div class="empty">No questions found.</div>';
+let h="";
+json.forEach((q,i)=>{
+h+=`<div class="question-preview"><div class="small">ID: ${esc(q.id||("q"+(i+1)))}</div><div class="question-text">${i+1}. ${esc(q.question_text||"")}</div>`;
+if(Array.isArray(q.options))q.options.forEach((o,j)=>{
+const ok=j===Number(q.correct_option_index);
+h+=`<div class="option ${ok?"correct":""}">${ok?"✅ ":""}${esc(String(o))}</div>`;
+});
+if(q.explanation)h+=`<div class="explanation">💡 ${esc(q.explanation)}</div>`;
+h+="</div>";
+});
+return h;
+}
+
+function getTestHierarchy(t){
+const topic=topics.find(x=>String(x.id)===String(t.topic_id));
+const chapter=topic?chapters.find(x=>String(x.id)===String(topic.chapter_id)):null;
+const subject=chapter?subjects.find(x=>String(x.id)===String(chapter.subject_id)):null;
+const category=categories.find(x=>String(x.id)===String(t.category_id)) || (subject?categories.find(x=>String(x.id)===String(subject.category_id)):null);
+return {category:category?category.name:`ID ${t.category_id||'—'}`,subject:subject?subject.name:'—',chapter:chapter?chapter.name:'—',topic:topic?topic.name:`ID ${t.topic_id||'—'}`};
+}
+
+async function deleteTest(id){
+if(!confirm("Delete this test?"))return;
+const {error}=await supabaseClient.from("tests").delete().eq("id",id);
+if(error){alert("❌ "+error.message);return}
+loadTests();refreshDashboard();
+}
+
+
+/* =====================================================
+   NOTES
+===================================================== */
+document.getElementById("noteFile").addEventListener("change",function(){
+const info=document.getElementById("fileInfo"),f=this.files[0];
+if(!f){info.innerText="Only PDF files are allowed.";return}
+if(f.type!=="application/pdf"){info.className="error";info.innerText="❌ Only PDF files are allowed.";this.value="";return}
+info.className="small";info.innerText=`Selected: ${f.name} • ${(f.size/1024/1024).toFixed(2)} MB`;
+});
+
+async function saveNote(){
+const msg=document.getElementById("noteMessage");
+const title=document.getElementById("noteTitle").value.trim();
+const description=document.getElementById("noteDescription").value.trim();
+const file=document.getElementById("noteFile").files[0];
+
+if(!title){showMsg(msg,"Please enter note title.","error");return}
+if(!file){showMsg(msg,"Please select a PDF.","error");return}
+if(file.type!=="application/pdf"){showMsg(msg,"Only PDF files are allowed.","error");return}
+
+showMsg(msg,"Uploading PDF...","info");
+
+const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+const path=Date.now()+"_"+Math.random().toString(36).slice(2,9)+"_"+safe;
+
+const {error:up}=await supabaseClient.storage.from("notes").upload(
+path,file,{contentType:"application/pdf",upsert:false}
+);
+
+if(up){showMsg(msg,"PDF upload failed: "+up.message,"error");return}
+
+const {data:urlData}=supabaseClient.storage.from("notes").getPublicUrl(path);
+
+const {error:db}=await supabaseClient.from("notes").insert({
+title,description,pdf_url:urlData.publicUrl
+});
+
+if(db){
+await supabaseClient.storage.from("notes").remove([path]);
+showMsg(msg,"Note save failed: "+db.message,"error");return;
+}
+
+showMsg(msg,"Note uploaded and saved successfully!","success");
+document.getElementById("noteTitle").value="";
+document.getElementById("noteDescription").value="";
+document.getElementById("noteFile").value="";
+document.getElementById("fileInfo").innerText="Only PDF files are allowed.";
+loadNotes();refreshDashboard();
+}
+
+async function loadNotes(){
+const c=document.getElementById("notesContainer"),s=document.getElementById("notesStatus");
+s.className="";s.innerText="Loading notes...";
+
+const {data,error}=await supabaseClient.from("notes").select("*").order("id",{ascending:false});
+
+if(error){s.className="error";s.innerText="❌ "+error.message;c.innerHTML='<div class="empty">Unable to load notes.</div>';return}
+
+s.innerText=`✅ ${data.length} notes loaded`;
+if(!data.length){c.innerHTML='<div class="empty">No notes found.</div>';return}
+c.innerHTML="";
+
+data.forEach(n=>{
+const d=document.createElement("div");
+d.className="item";
+d.innerHTML=`
+<div class="item-title">${esc(n.title||"")}</div>
+<div class="item-desc">${esc(n.description||"")}</div>
+${n.pdf_url?`<a class="pdf-link" href="${attr(n.pdf_url)}" target="_blank" rel="noopener">📄 Open PDF</a>`:""}
+<div class="meta"><span class="badge">🆔 ${n.id}</span>${n.created_at?`<span class="badge">📅 ${new Date(n.created_at).toLocaleString()}</span>`:""}</div>
+<button class="danger" onclick="deleteNote(${n.id},${JSON.stringify(n.pdf_url||"")})">🗑️ Delete Note</button>
+`;
+c.appendChild(d);
+});
+}
+
+async function deleteNote(id,url){
+if(!confirm("Delete this note and its PDF?"))return;
+const {error}=await supabaseClient.from("notes").delete().eq("id",id);
+if(error){alert("❌ "+error.message);return}
+const path=getStoragePath(url);
+if(path)await supabaseClient.storage.from("notes").remove([path]);
+loadNotes();refreshDashboard();
+}
+
+function getStoragePath(url){
+if(!url)return null;
+const marker="/storage/v1/object/public/notes/";
+const i=url.indexOf(marker);
+return i<0?null:decodeURIComponent(url.substring(i+marker.length));
+}
+
+
+/* =====================================================
+   CATEGORY / SUBJECT / CHAPTER / TOPIC MANAGEMENT
+===================================================== */
+async function initStructure(){
+await loadAllStructure();
+}
+
+async function loadAllStructure(){
+const s=document.getElementById("structureStatus");
+s.className="";s.innerText="Loading structure...";
+
+const [c,sub,ch,t]=await Promise.all([
+supabaseClient.from("categories").select("*").order("name"),
+supabaseClient.from("subjects").select("*").order("name"),
+supabaseClient.from("chapters").select("*").order("name"),
+supabaseClient.from("topics").select("*").order("name")
+]);
+
+if(c.error||sub.error||ch.error||t.error){
+const e=c.error||sub.error||ch.error||t.error;
+s.className="error";s.innerText="❌ "+e.message;return;
+}
+
+categories=c.data||[];
+subjects=sub.data||[];
+chapters=ch.data||[];
+topics=t.data||[];
+
+fillCategorySelects();
+fillSubjectSelects();
+fillChapterSelects();
+renderStructureLists();
+
+s.className="success";s.innerText="✅ Structure loaded";
+}
+
+function fillCategorySelects(){
+const ids=["subjectCategory","testCategory"];
+ids.forEach(id=>{
+const el=document.getElementById(id);
+if(!el)return;
+const current=el.value;
+el.innerHTML='<option value="">Select category</option>';
+categories.forEach(x=>addOption(el,x.id,x.name));
+if(current)el.value=current;
+});
+}
+
+function fillSubjectSelects(){
+const el=document.getElementById("chapterSubject");
+const current=el.value;
+el.innerHTML='<option value="">Select subject</option>';
+subjects.forEach(x=>{
+const cat=categories.find(c=>String(c.id)===String(x.category_id));
+addOption(el,x.id,cat?`${x.name} • ${cat.name}`:x.name);
+});
+if(current)el.value=current;
+}
+
+function fillChapterSelects(){
+const el=document.getElementById("topicChapter");
+const current=el.value;
+el.innerHTML='<option value="">Select chapter</option>';
+chapters.forEach(x=>{
+const sub=subjects.find(s=>String(s.id)===String(x.subject_id));
+addOption(el,x.id,sub?`${x.name} • ${sub.name}`:x.name);
+});
+if(current)el.value=current;
+}
+
+async function addCategory(){
+const msg=document.getElementById("categoryMessage");
+const name=document.getElementById("categoryName").value.trim();
+if(!name){showMsg(msg,"Enter category name.","error");return}
+const {error}=await supabaseClient.from("categories").insert({name});
+if(error){showMsg(msg,error.message,"error");return}
+document.getElementById("categoryName").value="";
+showMsg(msg,"Category added.","success");
+loadAllStructure();
+}
+
+async function addSubject(){
+const msg=document.getElementById("subjectMessage");
+const category_id=document.getElementById("subjectCategory").value;
+const name=document.getElementById("subjectName").value.trim();
+if(!category_id){showMsg(msg,"Select category.","error");return}
+if(!name){showMsg(msg,"Enter subject name.","error");return}
+const {error}=await supabaseClient.from("subjects").insert({name,category_id:parseInt(category_id)});
+if(error){showMsg(msg,error.message,"error");return}
+document.getElementById("subjectName").value="";
+showMsg(msg,"Subject added.","success");
+loadAllStructure();
+}
+
+async function addChapter(){
+const msg=document.getElementById("chapterMessage");
+const subject_id=document.getElementById("chapterSubject").value;
+const name=document.getElementById("chapterName").value.trim();
+if(!subject_id){showMsg(msg,"Select subject.","error");return}
+if(!name){showMsg(msg,"Enter chapter name.","error");return}
+const {error}=await supabaseClient.from("chapters").insert({name,subject_id:parseInt(subject_id)});
+if(error){showMsg(msg,error.message,"error");return}
+document.getElementById("chapterName").value="";
+showMsg(msg,"Chapter added.","success");
+loadAllStructure();refreshDashboard();
+}
+
+async function addTopic(){
+const msg=document.getElementById("topicMessage");
+const chapter_id=document.getElementById("topicChapter").value;
+const name=document.getElementById("topicName").value.trim();
+if(!chapter_id){showMsg(msg,"Select chapter.","error");return}
+if(!name){showMsg(msg,"Enter topic name.","error");return}
+const {error}=await supabaseClient.from("topics").insert({name,chapter_id:parseInt(chapter_id)});
+if(error){showMsg(msg,error.message,"error");return}
+document.getElementById("topicName").value="";
+showMsg(msg,"Topic added.","success");
+loadAllStructure();
+}
+
+function renderStructureLists(){
+const catList=document.getElementById("categoryList");
+catList.innerHTML="";
+if(!categories.length)catList.innerHTML='<div class="empty">No categories.</div>';
+categories.forEach(c=>{
+const d=document.createElement("div");d.className="item";
+d.innerHTML=`<div class="item-title">${esc(c.name)}</div><div class="small">ID: ${c.id}</div><button class="danger" onclick="deleteCategory(${c.id})">🗑️ Delete</button>`;
+catList.appendChild(d);
+});
+
+const subList=document.getElementById("subjectList");
+subList.innerHTML="";
+if(!subjects.length)subList.innerHTML='<div class="empty">No subjects.</div>';
+subjects.forEach(x=>{
+const cat=categories.find(c=>String(c.id)===String(x.category_id));
+const d=document.createElement("div");d.className="item";
+d.innerHTML=`<div class="item-title">${esc(x.name)}</div><div class="meta"><span class="badge">📂 ${esc(cat?cat.name:"Unknown category")}</span><span class="badge">ID: ${x.id}</span></div><button class="danger" onclick="deleteSubject(${x.id})">🗑️ Delete</button>`;
+subList.appendChild(d);
+});
+
+const chList=document.getElementById("chapterList");
+chList.innerHTML="";
+if(!chapters.length)chList.innerHTML='<div class="empty">No chapters.</div>';
+chapters.forEach(x=>{
+const sub=subjects.find(s=>String(s.id)===String(x.subject_id));
+const d=document.createElement("div");d.className="item";
+d.innerHTML=`<div class="item-title">${esc(x.name)}</div><div class="meta"><span class="badge">📘 ${esc(sub?sub.name:"Unknown subject")}</span><span class="badge">ID: ${x.id}</span></div><button class="danger" onclick="deleteChapter(${x.id})">🗑️ Delete</button>`;
+chList.appendChild(d);
+});
+
+const tpList=document.getElementById("topicList");
+tpList.innerHTML="";
+if(!topics.length)tpList.innerHTML='<div class="empty">No topics.</div>';
+topics.forEach(x=>{
+const ch=chapters.find(c=>String(c.id)===String(x.chapter_id));
+const d=document.createElement("div");d.className="item";
+d.innerHTML=`<div class="item-title">${esc(x.name)}</div><div class="meta"><span class="badge">📖 ${esc(ch?ch.name:"Unknown chapter")}</span><span class="badge">ID: ${x.id}</span></div><button class="danger" onclick="deleteTopic(${x.id})">🗑️ Delete</button>`;
+tpList.appendChild(d);
+});
+}
+
+async function deleteCategory(id){
+if(!confirm("Delete category? It may fail if subjects/tests depend on it."))return;
+const {error}=await supabaseClient.from("categories").delete().eq("id",id);
+if(error){alert("❌ "+error.message);return}
+loadAllStructure();refreshDashboard();
+}
+
+async function deleteSubject(id){
+if(!confirm("Delete subject? It may fail if chapters depend on it."))return;
+const {error}=await supabaseClient.from("subjects").delete().eq("id",id);
+if(error){alert("❌ "+error.message);return}
+loadAllStructure();
+}
+
+async function deleteChapter(id){
+if(!confirm("Delete chapter? It may fail if topics depend on it."))return;
+const {error}=await supabaseClient.from("chapters").delete().eq("id",id);
+if(error){alert("❌ "+error.message);return}
+loadAllStructure();refreshDashboard();
+}
+
+async function deleteTopic(id){
+if(!confirm("Delete topic? Tests using this topic may prevent deletion."))return;
+const {error}=await supabaseClient.from("topics").delete().eq("id",id);
+if(error){alert("❌ "+error.message);return}
+loadAllStructure();
+}
+
+
+/* =====================================================
+   HELPERS
+===================================================== */
+function addOption(select,value,text){
+const o=document.createElement("option");o.value=value;o.textContent=text;select.appendChild(o);
+}
+
+function countQuestions(j){
+if(!j||typeof j!=="object")return 0;
+
+if(Array.isArray(j.subjects)) {
+let n = 0;
+j.subjects.forEach(s => {
+if(Array.isArray(s.questions_json)) n += s.questions_json.length;
+});
+return n;
+}
+
+let n=0;
+Object.values(j).forEach(a=>{if(Array.isArray(a))n+=a.length});
+return n;
+}
+
+function createPreview(j){
+if(!j||typeof j!=="object")return '<div class="empty">No questions found.</div>';
+let h="",n=0;
+
+if(Array.isArray(j.subjects)) {
+j.subjects.forEach(sub => {
+h += `<div class="subject-title">📚 ${esc(sub.subject_name || "Subject")} ${sub.duration ? `(${sub.duration} min)` : ''}</div>`;
+const qs = sub.questions_json;
+if(Array.isArray(qs)) {
+qs.forEach(q => {
+n++;
+h += `<div class="question-preview"><div class="question-text">${n}. ${esc(q.question_text||"")}</div>`;
+if(Array.isArray(q.options)) {
+q.options.forEach((o,i) => {
+const ok = i === Number(q.correct_option_index);
+h += `<div class="option ${ok ? "correct" : ""}">${ok ? "✅ " : ""}${esc(String(o))}</div>`;
+});
+}
+if(q.explanation) h += `<div class="explanation">💡 ${esc(q.explanation)}</div>`;
+h += "</div>";
+});
+}
+});
+return h || '<div class="empty">No questions found.</div>';
+}
+
+Object.entries(j).forEach(([sub,qs])=>{
+if(sub === 'test_type' || sub === 'is_subject_timer_enabled') return;
+h+=`<div class="subject-title">📚 ${esc(sub)}</div>`;
+if(!Array.isArray(qs))return;
+qs.forEach(q=>{
+n++;
+h+=`<div class="question-preview"><div class="question-text">${n}. ${esc(q.question_text||"")}</div>`;
+if(Array.isArray(q.options))q.options.forEach((o,i)=>{
+const ok=i===Number(q.correct_option_index);
+h+=`<div class="option ${ok?"correct":""}">${ok?"✅ ":""}${esc(String(o))}</div>`;
+});
+if(q.explanation)h+=`<div class="explanation">💡 ${esc(q.explanation)}</div>`;
+h+="</div>";
+});
+});
+return h || '<div class="empty">No questions found.</div>';
+}
+
+function toggle(id){
+const e=document.getElementById(id);
+e.style.display=e.style.display==="none"?"block":"none";
+}
+
+function showMsg(e,t,type){
+e.className=type||"";
+e.innerText=(type==="error"?"❌ ":"")+t;
+}
+
+function esc(t){
+return String(t||"")
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+}
+
+function attr(t){
+return String(t||"")
+.replace(/&/g,"&amp;")
+.replace(/"/g,"&quot;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;");
+}
+
+
+/* =====================================================
+   START
+===================================================== */
+refreshDashboard();
+</script>
 </body>
 </html>
