@@ -22,7 +22,7 @@
         android:contentDescription="Locked"
         android:src="@drawable/ic_lock"
         android:visibility="gone"
-        app:tint="#757575"
+        app:tint="@color/textSecondary"
         tools:visibility="visible" />
 
     <TextView

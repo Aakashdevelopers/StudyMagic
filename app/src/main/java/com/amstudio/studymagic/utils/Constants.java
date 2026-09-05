@@ -1,7 +1,7 @@
 package com.amstudio.studymagic.utils;
 
 public class Constants {
-    public static final boolean DEBUG = true; // Set to false for production
+    public static final boolean DEBUG = com.amstudio.studymagic.BuildConfig.DEBUG; // Automatically false for release builds
     public static final String SUPABASE_URL = "https://crafyflxsvgjvvuzdftm.supabase.co/rest/v1/";
     public static final String SUPABASE_KEY = "sb_publishable_NxzsXWLHPGkNi0jTVx5k1Q_QYoRwGFo";
     

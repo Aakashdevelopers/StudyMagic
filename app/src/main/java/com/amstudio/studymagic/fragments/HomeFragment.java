@@ -22,6 +22,7 @@ import com.amstudio.studymagic.models.Category;
 import com.amstudio.studymagic.models.SupabaseTest;
 import com.amstudio.studymagic.models.Test;
 import com.amstudio.studymagic.utils.MockData;
+import com.amstudio.studymagic.utils.DialogUtils;
 import com.amstudio.studymagic.utils.WindowInsetsUtil;
 
 import java.util.ArrayList;
@@ -48,17 +49,7 @@ public class HomeFragment extends Fragment {
 
         RecyclerView rvCategories = view.findViewById(R.id.rvCategories);
         categoryAdapter = new CategoryAdapter(categoryList, category -> {
-            Bundle bundle = new Bundle();
-            bundle.putString("categoryId", category.getId());
-            bundle.putString("categoryName", category.getName());
-            
-            SubjectListFragment fragment = new SubjectListFragment();
-            fragment.setArguments(bundle);
-            
-            getParentFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-                    .addToBackStack(null)
-                    .commit();
+            showCategoryOptionsDialog(category);
         });
         rvCategories.setAdapter(categoryAdapter);
 
@@ -142,5 +133,9 @@ public class HomeFragment extends Fragment {
                 // Handle error
             }
         });
+    }
+
+    private void showCategoryOptionsDialog(Category category) {
+        DialogUtils.showCategoryOptionsDialog(requireContext(), getParentFragmentManager(), category);
     }
 }

@@ -13,6 +13,7 @@ import com.amstudio.studymagic.R;
 import com.amstudio.studymagic.adapters.CategoryAdapter;
 import com.amstudio.studymagic.api.ApiClient;
 import com.amstudio.studymagic.models.Category;
+import com.amstudio.studymagic.utils.DialogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,17 +38,7 @@ public class ExamsFragment extends Fragment {
 
         RecyclerView rvExams = view.findViewById(R.id.rvExams);
         categoryAdapter = new CategoryAdapter(categoryList, R.layout.item_category_grid, category -> {
-            Bundle bundle = new Bundle();
-            bundle.putString("categoryId", category.getId());
-            bundle.putString("categoryName", category.getName());
-
-            SubjectListFragment fragment = new SubjectListFragment();
-            fragment.setArguments(bundle);
-
-            getParentFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-                    .addToBackStack(null)
-                    .commit();
+            showCategoryOptionsDialog(category);
         });
         rvExams.setAdapter(categoryAdapter);
 
@@ -72,5 +63,9 @@ public class ExamsFragment extends Fragment {
                 // Handle error
             }
         });
+    }
+
+    private void showCategoryOptionsDialog(Category category) {
+        DialogUtils.showCategoryOptionsDialog(requireContext(), getParentFragmentManager(), category);
     }
 }

@@ -96,6 +96,23 @@ pre{margin:0;white-space:pre-wrap;word-break:break-word;font-size:12px;color:#c9
 <div class="status" id="manageStatus">Ready</div>
 
 <div class="card">
+<h2>🖼️ Question Image Uploader (ImgBB)</h2>
+<p class="sub">Upload question or option diagrams to ImgBB and copy the direct URL for <code>image_url</code>.</p>
+<div class="row">
+<div>
+<label>ImgBB API Key</label>
+<input id="imgbbApiKey" value="98b5b00cee79645e2ea44a187446c2e3">
+</div>
+<div>
+<label>Select Image File</label>
+<input id="imgbbFile" type="file" accept="image/*">
+</div>
+</div>
+<button class="save" onclick="uploadImageToImgBB()">🚀 Upload to ImgBB</button>
+<div id="imgbbResult"></div>
+</div>
+
+<div class="card">
 <h2>➕ Create Mockup Test</h2>
 
 <!-- TYPE SELECTION -->
@@ -120,9 +137,13 @@ pre{margin:0;white-space:pre-wrap;word-break:break-word;font-size:12px;color:#c9
 <input id="duration" type="number" min="1" value="60">
 </div>
 <div>
+<label>📂 Category</label>
+<select id="mockupCategory"><option value="">Select category (Optional)</option></select>
+</div>
+</div>
+<div>
 <label>Featured</label>
 <div style="margin:10px 0 18px"><input id="isFeatured" type="checkbox" style="width:auto;margin:0"> ⭐ Mark as featured</div>
-</div>
 </div>
 
 <!-- DYNAMIC SUBJECT BUILDER -->
@@ -201,6 +222,53 @@ pre{margin:0;white-space:pre-wrap;word-break:break-word;font-size:12px;color:#c9
 <div class="json-box">
 <h3>📋 Test Questions JSON</h3>
 <p>Test JSON root array hona chahiye. Har question mein unique id, question_text, options aur correct_option_index rakho.</p>
+
+<div style="background:#13161c;border:1px solid #2e3440;border-radius:12px;padding:14px;margin-bottom:14px">
+<h4 style="margin:0 0 10px;color:#82a7ff">🖼️ Visual Question Builder (Text + Image Options)</h4>
+<label>Question Text *</label>
+<input id="testVisQText" placeholder="Enter question text...">
+<label>Question Image URL (Optional)</label>
+<input id="testVisQImg" placeholder="https://i.ibb.co/...">
+
+<div class="row">
+<div>
+<label>Option 1 (Text or Image URL) *</label>
+<input id="testVisOpt0" placeholder="Option A text or image URL">
+</div>
+<div>
+<label>Option 2 (Text or Image URL) *</label>
+<input id="testVisOpt1" placeholder="Option B text or image URL">
+</div>
+</div>
+<div class="row">
+<div>
+<label>Option 3 (Text or Image URL) *</label>
+<input id="testVisOpt2" placeholder="Option C text or image URL">
+</div>
+<div>
+<label>Option 4 (Text or Image URL) *</label>
+<input id="testVisOpt3" placeholder="Option D text or image URL">
+</div>
+</div>
+
+<div class="row">
+<div>
+<label>Correct Option</label>
+<select id="testVisCorrect">
+<option value="0">Option 1</option>
+<option value="1">Option 2</option>
+<option value="2">Option 3</option>
+<option value="3">Option 4</option>
+</select>
+</div>
+<div>
+<label>Explanation (Optional)</label>
+<input id="testVisExp" placeholder="Explanation...">
+</div>
+</div>
+<button type="button" class="save" style="margin-top:10px" onclick="addVisualQuestionToTest()">➕ Add Visual Question to Test JSON</button>
+</div>
+
 <textarea id="testJsonInput" style="min-height:330px;font-family:monospace;font-size:13px" placeholder='[
   {
     "id": "q1",
@@ -211,7 +279,8 @@ pre{margin:0;white-space:pre-wrap;word-break:break-word;font-size:12px;color:#c9
       "150",
       "200"
     ],
-    "correct_option_index": 1
+    "correct_option_index": 1,
+    "e": "25% of 400 = 100"
   }
 ]'></textarea>
 <button class="secondary" onclick="validateTestJSON()">🔍 Validate Test JSON</button>
@@ -381,7 +450,12 @@ status.innerText="✅ Supabase connected";
 /* =====================================================
    MOCKUPS & SUBJECT BUILDER
 ===================================================== */
-function initMockupPage(){
+async function initMockupPage(){
+if(categories.length === 0) {
+  await loadAllStructure();
+} else {
+  fillCategorySelects();
+}
 if(document.querySelectorAll(".subject-card").length === 0) {
 addSubjectBuilderCard("Mathematics");
 }
@@ -419,17 +493,23 @@ const disabledAttr = (currentMockupType === "type1") ? "disabled" : "";
 const sampleJsonStr = JSON.stringify([
   {
     "id": "q1",
-    "question_text": "What is 15 * 12?",
-    "options": ["180", "160", "175", "190"],
-    "correct_option_index": 0,
-    "explanation": "15 * 12 = 180"
+    "question_text": "Q.3 एक कागज को नीचे दर्शाए गए अनुसार मोड़कर पंच किया जाता है?",
+    "image_url": "https://example.com/paper_folding.png",
+    "options": [
+      "https://i.ibb.co/optionA.png",
+      "https://i.ibb.co/optionB.png",
+      "https://i.ibb.co/optionC.png",
+      "https://i.ibb.co/optionD.png"
+    ],
+    "correct_option_index": 2,
+    "e": "Detailed explanation..."
   },
   {
     "id": "q2",
     "question_text": "Find the average of first 5 prime numbers.",
     "options": ["5.2", "5.6", "6.2", "7.0"],
     "correct_option_index": 1,
-    "explanation": "First 5 prime numbers are 2, 3, 5, 7, 11. Sum = 28. Average = 5.6"
+    "e": "First 5 prime numbers are 2, 3, 5, 7, 11. Sum = 28. Average = 5.6"
   }
 ], null, 2);
 
@@ -455,6 +535,53 @@ const html = `
 <label style="margin:0">Questions JSON Array *</label>
 <button type="button" class="secondary" style="width:auto;margin:0;padding:4px 10px;font-size:11px" onclick="insertSampleQuestions(${id})">⚡ Insert Sample Format</button>
 </div>
+
+<div style="background:#13161c;border:1px solid #2e3440;border-radius:12px;padding:14px;margin-bottom:14px">
+<h4 style="margin:0 0 10px;color:#82a7ff">🖼️ Visual Question Builder (Text + Image Options)</h4>
+<label>Question Text *</label>
+<input id="visQText_${id}" placeholder="Enter question text...">
+<label>Question Image URL (Optional)</label>
+<input id="visQImg_${id}" placeholder="https://i.ibb.co/...">
+
+<div class="row">
+<div>
+<label>Option 1 (Text or Image URL) *</label>
+<input id="visOpt0_${id}" placeholder="Option A text or image URL">
+</div>
+<div>
+<label>Option 2 (Text or Image URL) *</label>
+<input id="visOpt1_${id}" placeholder="Option B text or image URL">
+</div>
+</div>
+<div class="row">
+<div>
+<label>Option 3 (Text or Image URL) *</label>
+<input id="visOpt2_${id}" placeholder="Option C text or image URL">
+</div>
+<div>
+<label>Option 4 (Text or Image URL) *</label>
+<input id="visOpt3_${id}" placeholder="Option D text or image URL">
+</div>
+</div>
+
+<div class="row">
+<div>
+<label>Correct Option</label>
+<select id="visCorrect_${id}">
+<option value="0">Option 1</option>
+<option value="1">Option 2</option>
+<option value="2">Option 3</option>
+<option value="3">Option 4</option>
+</select>
+</div>
+<div>
+<label>Explanation (Optional)</label>
+<input id="visExp_${id}" placeholder="Explanation...">
+</div>
+</div>
+<button type="button" class="save" style="margin-top:10px" onclick="addVisualQuestionToSubject(${id})">➕ Add Visual Question to Subject JSON</button>
+</div>
+
 <textarea id="subJson_${id}" class="sub-json-input" style="min-height:160px;font-family:monospace;font-size:12px" placeholder="Paste questions JSON array here...">${esc(sampleJsonStr)}</textarea>
 </div>
 `;
@@ -474,7 +601,7 @@ const sample = [
     "question_text": "Sample Question Text Here?",
     "options": ["Option A", "Option B", "Option C", "Option D"],
     "correct_option_index": 0,
-    "explanation": "Detailed explanation of option A."
+    "e": "Detailed explanation of option A."
   }
 ];
 document.getElementById(`subJson_${id}`).value = JSON.stringify(sample, null, 2);
@@ -541,6 +668,8 @@ const questionsJsonObject = {
 "subjects": subjectsArray
 };
 
+const mockupCat = document.getElementById("mockupCategory").value;
+
 showMsg(msg,"Uploading mockup to Supabase...","info");
 
 const {error}=await supabaseClient.from("mockup_tests").insert({
@@ -548,6 +677,7 @@ title: title,
 description: description,
 duration: finalDuration,
 is_featured: isFeatured,
+category_id: mockupCat ? parseInt(mockupCat) : null,
 test_type: currentMockupType,
 is_subject_timer_enabled: (currentMockupType === "type2"),
 questions_json: questionsJsonObject,
@@ -694,7 +824,9 @@ if(typeof q.question_text!=="string"||!q.question_text.trim())throw new Error(`Q
 if(!Array.isArray(q.options)||q.options.length<2)throw new Error(`Question ${i+1}: at least 2 options are required.`);
 q.options.forEach((o,j)=>{if(typeof o!=="string"||!o.trim())throw new Error(`Question ${i+1}: option ${j+1} is empty.`)});
 if(!Number.isInteger(q.correct_option_index)||q.correct_option_index<0||q.correct_option_index>=q.options.length)throw new Error(`Question ${i+1}: invalid correct_option_index.`);
+if(q.e!==undefined && typeof q.e!=="string")q.e=String(q.e);
 if(q.explanation!==undefined && typeof q.explanation!=="string")q.explanation=String(q.explanation);
+if(q.image_url!==undefined && typeof q.image_url!=="string")q.image_url=String(q.image_url);
 });
 }
 
@@ -808,11 +940,13 @@ if(!Array.isArray(json))return '<div class="empty">No questions found.</div>';
 let h="";
 json.forEach((q,i)=>{
 h+=`<div class="question-preview"><div class="small">ID: ${esc(q.id||("q"+(i+1)))}</div><div class="question-text">${i+1}. ${esc(q.question_text||"")}</div>`;
+if(q.image_url) h+=`<img src="${esc(q.image_url)}" style="max-width:100%;height:auto;border-radius:8px;margin-top:8px" alt="Question Image" />`;
 if(Array.isArray(q.options))q.options.forEach((o,j)=>{
 const ok=j===Number(q.correct_option_index);
 h+=`<div class="option ${ok?"correct":""}">${ok?"✅ ":""}${esc(String(o))}</div>`;
 });
-if(q.explanation)h+=`<div class="explanation">💡 ${esc(q.explanation)}</div>`;
+const exp = q.e || q.explanation;
+if(exp)h+=`<div class="explanation">💡 ${esc(exp)}</div>`;
 h+="</div>";
 });
 return h;
@@ -964,7 +1098,7 @@ s.className="success";s.innerText="✅ Structure loaded";
 }
 
 function fillCategorySelects(){
-const ids=["subjectCategory","testCategory"];
+const ids=["subjectCategory","testCategory","mockupCategory"];
 ids.forEach(id=>{
 const el=document.getElementById(id);
 if(!el)return;
@@ -1152,13 +1286,15 @@ if(Array.isArray(qs)) {
 qs.forEach(q => {
 n++;
 h += `<div class="question-preview"><div class="question-text">${n}. ${esc(q.question_text||"")}</div>`;
+if(q.image_url) h += `<img src="${esc(q.image_url)}" style="max-width:100%;height:auto;border-radius:8px;margin-top:8px" alt="Question Image" />`;
 if(Array.isArray(q.options)) {
 q.options.forEach((o,i) => {
 const ok = i === Number(q.correct_option_index);
 h += `<div class="option ${ok ? "correct" : ""}">${ok ? "✅ " : ""}${esc(String(o))}</div>`;
 });
 }
-if(q.explanation) h += `<div class="explanation">💡 ${esc(q.explanation)}</div>`;
+const exp = q.e || q.explanation;
+if(exp) h += `<div class="explanation">💡 ${esc(exp)}</div>`;
 h += "</div>";
 });
 }
@@ -1173,11 +1309,13 @@ if(!Array.isArray(qs))return;
 qs.forEach(q=>{
 n++;
 h+=`<div class="question-preview"><div class="question-text">${n}. ${esc(q.question_text||"")}</div>`;
+if(q.image_url) h+=`<img src="${esc(q.image_url)}" style="max-width:100%;height:auto;border-radius:8px;margin-top:8px" alt="Question Image" />`;
 if(Array.isArray(q.options))q.options.forEach((o,i)=>{
 const ok=i===Number(q.correct_option_index);
 h+=`<div class="option ${ok?"correct":""}">${ok?"✅ ":""}${esc(String(o))}</div>`;
 });
-if(q.explanation)h+=`<div class="explanation">💡 ${esc(q.explanation)}</div>`;
+const exp = q.e || q.explanation;
+if(exp)h+=`<div class="explanation">💡 ${esc(exp)}</div>`;
 h+="</div>";
 });
 });
@@ -1201,6 +1339,158 @@ return String(t||"")
 .replace(/>/g,"&gt;")
 .replace(/"/g,"&quot;")
 .replace(/'/g,"&#039;");
+}
+
+async function uploadImageToImgBB() {
+  const fileInput = document.getElementById("imgbbFile");
+  const apiKeyInput = document.getElementById("imgbbApiKey");
+  const resultDiv = document.getElementById("imgbbResult");
+
+  if(!fileInput.files || fileInput.files.length === 0) {
+    alert("Please select an image file first.");
+    return;
+  }
+  const file = fileInput.files[0];
+  const apiKey = apiKeyInput.value.trim() || "98b5b00cee79645e2ea44a187446c2e3";
+
+  resultDiv.innerHTML = "<p class='info'>⏳ Uploading image to ImgBB...</p>";
+
+  try {
+    const formData = new FormData();
+    formData.append("image", file);
+
+    const response = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+      method: "POST",
+      body: formData
+    });
+
+    const result = await response.json();
+    if(result.success) {
+      const imageUrl = result.data.url;
+      resultDiv.innerHTML = `
+        <div style="background:#12151a;padding:14px;border-radius:12px;margin-top:12px;border:1px solid #2e3440">
+          <p class="success" style="margin:0 0 8px;font-weight:700">✅ Upload Successful!</p>
+          <img src="${imageUrl}" style="max-height:140px;border-radius:8px;display:block;margin-bottom:10px" alt="Uploaded Preview" />
+          <label class="small">Direct Image URL (Use in Question / Option):</label>
+          <div style="display:flex;gap:8px">
+            <input type="text" value="${imageUrl}" id="uploadedImgUrl" readonly style="margin:0" />
+            <button class="secondary" style="width:auto;margin:0" onclick="navigator.clipboard.writeText('${imageUrl}').then(()=>alert('Image URL copied to clipboard!'))">📋 Copy</button>
+          </div>
+        </div>
+      `;
+    } else {
+      resultDiv.innerHTML = `<p class="error">❌ Upload failed: ${result.error?.message || "Unknown error"}</p>`;
+    }
+  } catch(e) {
+    resultDiv.innerHTML = `<p class="error">❌ Error: ${e.message}</p>`;
+  }
+}
+
+function addVisualQuestionToSubject(id) {
+  const qText = document.getElementById(`visQText_${id}`).value.trim();
+  const qImg = document.getElementById(`visQImg_${id}`).value.trim();
+  const opt0 = document.getElementById(`visOpt0_${id}`).value.trim();
+  const opt1 = document.getElementById(`visOpt1_${id}`).value.trim();
+  const opt2 = document.getElementById(`visOpt2_${id}`).value.trim();
+  const opt3 = document.getElementById(`visOpt3_${id}`).value.trim();
+  const correct = parseInt(document.getElementById(`visCorrect_${id}`).value);
+  const exp = document.getElementById(`visExp_${id}`).value.trim();
+
+  if(!qText && !qImg) {
+    alert("Please enter question text or question image.");
+    return;
+  }
+  if(!opt0 || !opt1 || !opt2 || !opt3) {
+    alert("All 4 options (text or image URLs) are required.");
+    return;
+  }
+
+  const textarea = document.getElementById(`subJson_${id}`);
+  let questions = [];
+  try {
+    const val = textarea.value.trim();
+    if(val) questions = JSON.parse(val);
+    if(!Array.isArray(questions)) questions = [];
+  } catch(e) {
+    questions = [];
+  }
+
+  const newQ = {
+    "id": "q" + (questions.length + 1),
+    "question_text": qText || "Question with diagram",
+    "options": [opt0, opt1, opt2, opt3],
+    "correct_option_index": correct
+  };
+  if(qImg) newQ.image_url = qImg;
+  if(exp) newQ.e = exp;
+
+  questions.push(newQ);
+  textarea.value = JSON.stringify(questions, null, 2);
+
+  // Clear inputs
+  document.getElementById(`visQText_${id}`).value = "";
+  document.getElementById(`visQImg_${id}`).value = "";
+  document.getElementById(`visOpt0_${id}`).value = "";
+  document.getElementById(`visOpt1_${id}`).value = "";
+  document.getElementById(`visOpt2_${id}`).value = "";
+  document.getElementById(`visOpt3_${id}`).value = "";
+  document.getElementById(`visExp_${id}`).value = "";
+
+  alert("✅ Question added and combined into Subject JSON successfully!");
+}
+
+function addVisualQuestionToTest() {
+  const qText = document.getElementById("testVisQText").value.trim();
+  const qImg = document.getElementById("testVisQImg").value.trim();
+  const opt0 = document.getElementById("testVisOpt0").value.trim();
+  const opt1 = document.getElementById("testVisOpt1").value.trim();
+  const opt2 = document.getElementById("testVisOpt2").value.trim();
+  const opt3 = document.getElementById("testVisOpt3").value.trim();
+  const correct = parseInt(document.getElementById("testVisCorrect").value);
+  const exp = document.getElementById("testVisExp").value.trim();
+
+  if(!qText && !qImg) {
+    alert("Please enter question text or question image.");
+    return;
+  }
+  if(!opt0 || !opt1 || !opt2 || !opt3) {
+    alert("All 4 options (text or image URLs) are required.");
+    return;
+  }
+
+  const textarea = document.getElementById("testJsonInput");
+  let questions = [];
+  try {
+    const val = textarea.value.trim();
+    if(val) questions = JSON.parse(val);
+    if(!Array.isArray(questions)) questions = [];
+  } catch(e) {
+    questions = [];
+  }
+
+  const newQ = {
+    "id": "q" + (questions.length + 1),
+    "question_text": qText || "Question with diagram",
+    "options": [opt0, opt1, opt2, opt3],
+    "correct_option_index": correct
+  };
+  if(qImg) newQ.image_url = qImg;
+  if(exp) newQ.e = exp;
+
+  questions.push(newQ);
+  textarea.value = JSON.stringify(questions, null, 2);
+  validateTestJSON();
+
+  // Clear inputs
+  document.getElementById("testVisQText").value = "";
+  document.getElementById("testVisQImg").value = "";
+  document.getElementById("testVisOpt0").value = "";
+  document.getElementById("testVisOpt1").value = "";
+  document.getElementById("testVisOpt2").value = "";
+  document.getElementById("testVisOpt3").value = "";
+  document.getElementById("testVisExp").value = "";
+
+  alert("✅ Visual question added to Test JSON successfully!");
 }
 
 function attr(t){

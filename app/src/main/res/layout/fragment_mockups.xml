@@ -26,7 +26,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Full Mock Tests"
-                android:textColor="@color/white"
+                android:textColor="@color/headerTextColor"
                 android:textSize="22sp"
                 android:fontFamily="sans-serif-medium" />
 
@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:text="Exam-like experience with detailed analysis"
-                android:textColor="@color/surfaceVariant"
+                android:textColor="@color/headerSubtitleColor"
                 android:textSize="14sp" />
 
         </LinearLayout>

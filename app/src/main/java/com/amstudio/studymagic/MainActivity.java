@@ -10,7 +10,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
-import com.amstudio.studymagic.fragments.AboutDeveloperFragment;
 import com.amstudio.studymagic.fragments.ExamsFragment;
 import com.amstudio.studymagic.fragments.HomeFragment;
 import com.amstudio.studymagic.fragments.MockupListFragment;
@@ -24,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         setContentView(R.layout.activity_main);
 
         WindowInsetsUtil.setLightStatusBar(this, false); // Light icons (white) for dark headers

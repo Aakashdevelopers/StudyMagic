@@ -15,8 +15,11 @@ public class Question implements Serializable {
     @SerializedName("correct_option_index")
     public int correctOptionIndex;
 
-    @SerializedName("explanation")
+    @SerializedName(value = "e", alternate = {"explanation"})
     public String explanation;
+
+    @SerializedName("image_url")
+    public String imageUrl;
     
     private Integer selectedOptionIndex = null;
     private boolean isMarkedForReview = false;
@@ -30,6 +33,7 @@ public class Question implements Serializable {
 
     public String getId() { return id; }
     public String getQuestionText() { return questionText; }
+    public String getImageUrl() { return imageUrl; }
     public List<String> getOptions() { return options; }
     public int getCorrectOptionIndex() { return correctOptionIndex; }
     public Integer getSelectedOptionIndex() { return selectedOptionIndex; }

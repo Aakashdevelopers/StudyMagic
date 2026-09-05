@@ -24,6 +24,7 @@ import com.amstudio.studymagic.adapters.PaletteAdapter;
 import com.amstudio.studymagic.fragments.ResultFragment;
 import com.amstudio.studymagic.models.Question;
 import com.amstudio.studymagic.models.Test;
+import com.squareup.picasso.Picasso;
 import com.amstudio.studymagic.utils.WindowInsetsUtil;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
@@ -37,6 +38,9 @@ public class QuizActivity extends AppCompatActivity {
     private int currentQuestionIndex = 0;
     
     private TextView tvTimer, tvQuizTitle, tvQuestionNoPill, tvQuestionText;
+    private TextView tvOptText1, tvOptText2, tvOptText3, tvOptText4;
+    private ImageView ivQuestionImage, ivOpt1, ivOpt2, ivOpt3, ivOpt4;
+    private LinearLayout llOpt1, llOpt2, llOpt3, llOpt4;
     private com.google.android.material.progressindicator.LinearProgressIndicator quizProgress;
     private RadioGroup rgOptions;
     private RadioButton rb1, rb2, rb3, rb4;
@@ -98,6 +102,24 @@ public class QuizActivity extends AppCompatActivity {
         rb2 = findViewById(R.id.rbOption2);
         rb3 = findViewById(R.id.rbOption3);
         rb4 = findViewById(R.id.rbOption4);
+        ivQuestionImage = findViewById(R.id.ivQuestionImage);
+        tvOptText1 = findViewById(R.id.tvOptText1);
+        tvOptText2 = findViewById(R.id.tvOptText2);
+        tvOptText3 = findViewById(R.id.tvOptText3);
+        tvOptText4 = findViewById(R.id.tvOptText4);
+        ivOpt1 = findViewById(R.id.ivOption1);
+        ivOpt2 = findViewById(R.id.ivOption2);
+        ivOpt3 = findViewById(R.id.ivOption3);
+        ivOpt4 = findViewById(R.id.ivOption4);
+        llOpt1 = findViewById(R.id.llOption1);
+        llOpt2 = findViewById(R.id.llOption2);
+        llOpt3 = findViewById(R.id.llOption3);
+        llOpt4 = findViewById(R.id.llOption4);
+
+        setupOptionClick(llOpt1, rb1, 0);
+        setupOptionClick(llOpt2, rb2, 1);
+        setupOptionClick(llOpt3, rb3, 2);
+        setupOptionClick(llOpt4, rb4, 3);
         
         btnSaveNext = findViewById(R.id.btnSaveNext);
         btnMarkNext = findViewById(R.id.btnMarkNext);
@@ -190,20 +212,26 @@ public class QuizActivity extends AppCompatActivity {
         updateProgress();
         updateInfoStripIcons();
         
-        rb1.setText(q.getOptions().get(0));
-        rb2.setText(q.getOptions().get(1));
-        rb3.setText(q.getOptions().get(2));
-        rb4.setText(q.getOptions().get(3));
-
-        rgOptions.clearCheck();
-        if (q.getSelectedOptionIndex() != null) {
-            switch (q.getSelectedOptionIndex()) {
-                case 0: rb1.setChecked(true); break;
-                case 1: rb2.setChecked(true); break;
-                case 2: rb3.setChecked(true); break;
-                case 3: rb4.setChecked(true); break;
-            }
+        if (q.getImageUrl() != null && !q.getImageUrl().trim().isEmpty()) {
+            ivQuestionImage.setVisibility(View.VISIBLE);
+            Picasso.get().load(q.getImageUrl()).into(ivQuestionImage, new com.squareup.picasso.Callback() {
+                @Override
+                public void onSuccess() {}
+                @Override
+                public void onError(Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        } else {
+            ivQuestionImage.setVisibility(View.GONE);
         }
+
+        bindOption(tvOptText1, ivOpt1, rb1, q.getOptions().get(0));
+        bindOption(tvOptText2, ivOpt2, rb2, q.getOptions().get(1));
+        bindOption(tvOptText3, ivOpt3, rb3, q.getOptions().get(2));
+        bindOption(tvOptText4, ivOpt4, rb4, q.getOptions().get(3));
+
+        updateOptionUI();
         
         paletteAdapter.notifyDataSetChanged(); 
         
@@ -230,19 +258,57 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void saveSelectedOption() {
-        int checkedId = rgOptions.getCheckedRadioButtonId();
-        if (checkedId == -1) {
-            questions.get(currentQuestionIndex).setSelectedOptionIndex(null);
-        } else if (checkedId == R.id.rbOption1) {
-            questions.get(currentQuestionIndex).setSelectedOptionIndex(0);
-        } else if (checkedId == R.id.rbOption2) {
-            questions.get(currentQuestionIndex).setSelectedOptionIndex(1);
-        } else if (checkedId == R.id.rbOption3) {
-            questions.get(currentQuestionIndex).setSelectedOptionIndex(2);
-        } else if (checkedId == R.id.rbOption4) {
-            questions.get(currentQuestionIndex).setSelectedOptionIndex(3);
-        }
         paletteAdapter.notifyItemChanged(currentQuestionIndex);
+    }
+
+    private void bindOption(TextView tvText, ImageView iv, RadioButton rb, String optionValue) {
+        if (optionValue != null) {
+            String trimmed = optionValue.trim();
+            if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+                tvText.setVisibility(View.GONE);
+                iv.setVisibility(View.VISIBLE);
+                Picasso.get().load(trimmed).into(iv, new com.squareup.picasso.Callback() {
+                    @Override
+                    public void onSuccess() {}
+                    @Override
+                    public void onError(Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+                return;
+            }
+        }
+        tvText.setVisibility(View.VISIBLE);
+        tvText.setText(optionValue);
+        iv.setVisibility(View.GONE);
+    }
+
+    private void setupOptionClick(LinearLayout layout, RadioButton rb, int optionIndex) {
+        View.OnClickListener listener = v -> selectOption(optionIndex);
+        layout.setOnClickListener(listener);
+        rb.setOnClickListener(listener);
+    }
+
+    private void selectOption(int optionIndex) {
+        Question q = questions.get(currentQuestionIndex);
+        q.setSelectedOptionIndex(optionIndex);
+        updateOptionUI();
+        paletteAdapter.notifyItemChanged(currentQuestionIndex);
+    }
+
+    private void updateOptionUI() {
+        Question q = questions.get(currentQuestionIndex);
+        Integer sel = q.getSelectedOptionIndex();
+
+        setOptionSelected(llOpt1, rb1, sel != null && sel == 0);
+        setOptionSelected(llOpt2, rb2, sel != null && sel == 1);
+        setOptionSelected(llOpt3, rb3, sel != null && sel == 2);
+        setOptionSelected(llOpt4, rb4, sel != null && sel == 3);
+    }
+
+    private void setOptionSelected(LinearLayout layout, RadioButton rb, boolean isSelected) {
+        rb.setChecked(isSelected);
+        layout.setSelected(isSelected);
     }
 
     private void startTimer() {

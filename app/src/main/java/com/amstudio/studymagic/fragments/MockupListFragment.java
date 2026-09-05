@@ -32,11 +32,16 @@ public class MockupListFragment extends Fragment {
     private ProgressBar progressBar;
     private SwipeRefreshLayout swipeRefresh;
     private List<SupabaseTest> mockupList = new ArrayList<>();
+    private String filterCategoryId = null;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mockups, container, false);
+
+        if (getArguments() != null) {
+            filterCategoryId = getArguments().getString("categoryId");
+        }
 
         View header = view.findViewById(R.id.llHeader);
         WindowInsetsUtil.applyTopInset(header);
@@ -71,7 +76,12 @@ public class MockupListFragment extends Fragment {
                 swipeRefresh.setRefreshing(false);
                 if (response.isSuccessful() && response.body() != null) {
                     mockupList.clear();
-                    mockupList.addAll(response.body());
+                    for (SupabaseTest test : response.body()) {
+                        if (filterCategoryId == null || filterCategoryId.isEmpty() ||
+                                String.valueOf(test.categoryId).equals(String.valueOf(filterCategoryId))) {
+                            mockupList.add(test);
+                        }
+                    }
                     adapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(getContext(), "Failed to load mockups", Toast.LENGTH_SHORT).show();

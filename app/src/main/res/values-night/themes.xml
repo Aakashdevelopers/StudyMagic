@@ -9,6 +9,14 @@
         <item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
         <item name="colorOnSecondary">@color/colorOnSecondary</item>
         <item name="android:windowBackground">@color/backgroundColor</item>
-        <item name="android:statusBarColor">#000000</item>
+        <item name="android:statusBarColor">@color/purpleHeader</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
+    <!-- Splash Screen Theme -->
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/purpleHeader</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
+        <item name="postSplashScreenTheme">@style/Theme.StudyMagic</item>
     </style>
 </resources>

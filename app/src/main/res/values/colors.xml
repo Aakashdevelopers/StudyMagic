@@ -4,6 +4,7 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="colorPrimary">#1A237E</color>
+    <color name="purpleHeader">#1A237E</color>
     <color name="colorPrimaryVariant">#3949AB</color>
     <color name="colorOnPrimary">#FFFFFF</color>
 
@@ -26,4 +27,6 @@
     <color name="optionSelectedBackground">#E8EAF6</color>
     <color name="optionBorder">#DADCE0</color>
     <color name="dividerColor">#EEEEEE</color>
+    <color name="headerTextColor">#FFFFFF</color>
+    <color name="headerSubtitleColor">#E0E0E0</color>
 </resources>

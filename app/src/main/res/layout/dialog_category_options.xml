@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="24dp"
+    app:cardBackgroundColor="@color/surfaceColor"
+    app:cardCornerRadius="28dp"
+    app:cardElevation="16dp"
+    app:strokeWidth="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="28dp"
+        android:paddingBottom="20dp">
+
+        <!-- Top Icon Badge -->
+        <FrameLayout
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="@drawable/bg_category_icon">
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_exam"
+                app:tint="@color/colorPrimary" />
+        </FrameLayout>
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/tvDialogTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="Select Test Type"
+            android:textColor="@color/textPrimary"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvDialogCategoryName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:text="Category Name"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <!-- Side-by-Side Action Buttons with Icons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <!-- Mock Test Button (Orange / Secondary) -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/cardMockTest"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="6dp"
+                android:text="Mock Test"
+                android:textAllCaps="false"
+                android:textColor="@color/colorOnSecondary"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/colorSecondary"
+                app:cornerRadius="16dp"
+                app:icon="@drawable/ic_menu_quiz"
+                app:iconGravity="textStart"
+                app:iconSize="18dp"
+                app:iconTint="@color/colorOnSecondary" />
+
+            <!-- Section Test Button (Purple / Primary) -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/cardPracticeTest"
+                android:layout_width="0dp"
+                android:layout_height="52dp"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:text="Section Test"
+                android:textAllCaps="false"
+                android:textColor="@color/colorOnPrimary"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/colorPrimary"
+                app:cornerRadius="16dp"
+                app:icon="@drawable/ic_notes"
+                app:iconGravity="textStart"
+                app:iconSize="18dp"
+                app:iconTint="@color/colorOnPrimary" />
+
+        </LinearLayout>
+
+        <!-- Cancel Text Button -->
+        <TextView
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            android:text="Cancel"
+            android:textColor="@color/textSecondary"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
