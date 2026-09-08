@@ -12,7 +12,7 @@
         android:id="@+id/llTopBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:background="@color/purpleHeader"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingHorizontal="12dp"
@@ -89,7 +89,7 @@
             android:id="@+id/llInfoStrip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@color/surfaceColor"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="12dp">
@@ -109,7 +109,7 @@
                 android:layout_width="1dp"
                 android:layout_height="24dp"
                 android:layout_marginHorizontal="12dp"
-                android:background="#EEEEEE" />
+                android:background="@color/colorOutline" />
 
             <ImageView
                 android:layout_width="16dp"
@@ -355,48 +355,67 @@
         android:id="@+id/llBottomActions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/surfaceColor"
         android:elevation="16dp"
         android:orientation="horizontal"
-        android:padding="12dp"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="10dp"
         app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnPrevious"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="0.8"
+            android:paddingHorizontal="2dp"
+            android:text="Prev"
+            android:textAllCaps="false"
+            android:textColor="@color/textPrimary"
+            android:textSize="11sp"
+            app:cornerRadius="8dp"
+            app:strokeColor="@color/colorOutline" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnMarkNext"
             style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="4dp"
             android:layout_weight="1"
+            android:paddingHorizontal="2dp"
             android:text="Mark &amp; Next"
             android:textAllCaps="false"
             android:textColor="@color/textPrimary"
-            android:textSize="12sp"
+            android:textSize="11sp"
             app:cornerRadius="8dp"
-            app:strokeColor="@color/dividerColor" />
+            app:strokeColor="@color/colorOutline" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnClear"
             style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="0.8"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="0.7"
+            android:paddingHorizontal="2dp"
             android:text="Clear"
             android:textAllCaps="false"
             android:textColor="@color/textPrimary"
-            android:textSize="12sp"
+            android:textSize="11sp"
             app:cornerRadius="8dp"
-            app:strokeColor="@color/dividerColor" />
+            app:strokeColor="@color/colorOutline" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSaveNext"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_weight="1.2"
+            android:layout_weight="1.1"
+            android:paddingHorizontal="2dp"
             android:text="Save &amp; Next"
             android:textAllCaps="false"
-            android:textSize="13sp"
+            android:textSize="11sp"
             android:textStyle="bold"
             app:cornerRadius="8dp" />
 

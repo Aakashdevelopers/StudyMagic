@@ -44,7 +44,7 @@ public class QuizActivity extends AppCompatActivity {
     private com.google.android.material.progressindicator.LinearProgressIndicator quizProgress;
     private RadioGroup rgOptions;
     private RadioButton rb1, rb2, rb3, rb4;
-    private Button btnSaveNext, btnMarkNext, btnClear, btnSubmitTop;
+    private Button btnSaveNext, btnMarkNext, btnClear, btnSubmitTop, btnPrevious;
     private ImageView btnPause, btnMenu, btnMarkForReviewStar;
     private PaletteAdapter paletteAdapter;
     
@@ -125,6 +125,7 @@ public class QuizActivity extends AppCompatActivity {
         btnMarkNext = findViewById(R.id.btnMarkNext);
         btnClear = findViewById(R.id.btnClear);
         btnSubmitTop = findViewById(R.id.btnSubmitTop);
+        btnPrevious = findViewById(R.id.btnPrevious);
         
         btnPause = findViewById(R.id.btnPause);
         btnMenu = findViewById(R.id.btnMenu);
@@ -162,6 +163,8 @@ public class QuizActivity extends AppCompatActivity {
             goToNextQuestion();
         });
 
+        btnPrevious.setOnClickListener(view -> goToPreviousQuestion());
+
         btnSubmitTop.setOnClickListener(view -> finishTest());
 
         btnMarkForReviewStar.setOnClickListener(view -> {
@@ -173,10 +176,20 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void showPaletteBottomSheet() {
+        if (paletteAdapter == null) {
+            paletteAdapter = new PaletteAdapter(questions, index -> {
+                currentQuestionIndex = index;
+                showQuestion(index);
+            });
+        } else {
+            paletteAdapter.notifyDataSetChanged();
+        }
+
         BottomSheetDialog dialog = new BottomSheetDialog(this);
         View view = getLayoutInflater().inflate(R.layout.layout_quiz_palette, null);
         
         RecyclerView rvPalette = view.findViewById(R.id.rvQuestionPalette);
+        rvPalette.setLayoutManager(new androidx.recyclerview.widget.GridLayoutManager(this, 5));
         rvPalette.setAdapter(paletteAdapter);
         
         // Update selection logic for bottom sheet
@@ -195,6 +208,16 @@ public class QuizActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    private void goToPreviousQuestion() {
+        saveSelectedOption();
+        if (currentQuestionIndex > 0) {
+            currentQuestionIndex--;
+            showQuestion(currentQuestionIndex);
+        } else {
+            Toast.makeText(this, "This is the first question", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void goToNextQuestion() {
         if (currentQuestionIndex < questions.size() - 1) {
             currentQuestionIndex++;
@@ -205,9 +228,11 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void showQuestion(int index) {
+        if (questions == null || index < 0 || index >= questions.size()) return;
         Question q = questions.get(index);
+        q.setVisited(true);
         tvQuestionNoPill.setText(String.valueOf(index + 1));
-        tvQuestionText.setText(q.getQuestionText());
+        tvQuestionText.setText(q.getQuestionText() != null ? q.getQuestionText() : "");
         
         updateProgress();
         updateInfoStripIcons();
@@ -226,15 +251,20 @@ public class QuizActivity extends AppCompatActivity {
             ivQuestionImage.setVisibility(View.GONE);
         }
 
-        bindOption(tvOptText1, ivOpt1, rb1, q.getOptions().get(0));
-        bindOption(tvOptText2, ivOpt2, rb2, q.getOptions().get(1));
-        bindOption(tvOptText3, ivOpt3, rb3, q.getOptions().get(2));
-        bindOption(tvOptText4, ivOpt4, rb4, q.getOptions().get(3));
+        bindOptions(q);
 
         updateOptionUI();
         
-        paletteAdapter.notifyDataSetChanged(); 
+        if (paletteAdapter != null) {
+            paletteAdapter.notifyDataSetChanged(); 
+        }
         
+        if (btnPrevious != null) {
+            boolean canGoPrev = currentQuestionIndex > 0;
+            btnPrevious.setEnabled(canGoPrev);
+            btnPrevious.setAlpha(canGoPrev ? 1.0f : 0.5f);
+        }
+
         // Update button text for last question
         if (index == questions.size() - 1) {
             btnSaveNext.setText("FINISH");
@@ -244,6 +274,7 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void updateProgress() {
+        if (questions == null || questions.isEmpty()) return;
         int attemptedCount = 0;
         for (Question q : questions) {
             if (q.getSelectedOptionIndex() != null) attemptedCount++;
@@ -253,34 +284,49 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void updateInfoStripIcons() {
+        if (questions == null || currentQuestionIndex >= questions.size()) return;
         Question q = questions.get(currentQuestionIndex);
         btnMarkForReviewStar.setColorFilter(q.isMarkedForReview() ? 0xFFFF1744 : 0xFF757575);
     }
 
     private void saveSelectedOption() {
-        paletteAdapter.notifyItemChanged(currentQuestionIndex);
+        if (paletteAdapter != null) {
+            paletteAdapter.notifyItemChanged(currentQuestionIndex);
+        }
     }
 
-    private void bindOption(TextView tvText, ImageView iv, RadioButton rb, String optionValue) {
-        if (optionValue != null) {
-            String trimmed = optionValue.trim();
-            if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
-                tvText.setVisibility(View.GONE);
-                iv.setVisibility(View.VISIBLE);
-                Picasso.get().load(trimmed).into(iv, new com.squareup.picasso.Callback() {
-                    @Override
-                    public void onSuccess() {}
-                    @Override
-                    public void onError(Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-                return;
-            }
+    private void bindOptions(Question q) {
+        List<String> opts = q.getOptions();
+
+        bindOption(llOpt1, tvOptText1, ivOpt1, rb1, (opts != null && opts.size() > 0) ? opts.get(0) : null);
+        bindOption(llOpt2, tvOptText2, ivOpt2, rb2, (opts != null && opts.size() > 1) ? opts.get(1) : null);
+        bindOption(llOpt3, tvOptText3, ivOpt3, rb3, (opts != null && opts.size() > 2) ? opts.get(2) : null);
+        bindOption(llOpt4, tvOptText4, ivOpt4, rb4, (opts != null && opts.size() > 3) ? opts.get(3) : null);
+    }
+
+    private void bindOption(LinearLayout container, TextView tvText, ImageView iv, RadioButton rb, String optionValue) {
+        if (optionValue == null) {
+            container.setVisibility(View.GONE);
+            return;
         }
-        tvText.setVisibility(View.VISIBLE);
-        tvText.setText(optionValue);
-        iv.setVisibility(View.GONE);
+        container.setVisibility(View.VISIBLE);
+        String trimmed = optionValue.trim();
+        if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+            tvText.setVisibility(View.GONE);
+            iv.setVisibility(View.VISIBLE);
+            Picasso.get().load(trimmed).into(iv, new com.squareup.picasso.Callback() {
+                @Override
+                public void onSuccess() {}
+                @Override
+                public void onError(Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        } else {
+            tvText.setVisibility(View.VISIBLE);
+            tvText.setText(optionValue);
+            iv.setVisibility(View.GONE);
+        }
     }
 
     private void setupOptionClick(LinearLayout layout, RadioButton rb, int optionIndex) {
@@ -290,13 +336,17 @@ public class QuizActivity extends AppCompatActivity {
     }
 
     private void selectOption(int optionIndex) {
+        if (questions == null || currentQuestionIndex >= questions.size()) return;
         Question q = questions.get(currentQuestionIndex);
         q.setSelectedOptionIndex(optionIndex);
         updateOptionUI();
-        paletteAdapter.notifyItemChanged(currentQuestionIndex);
+        if (paletteAdapter != null) {
+            paletteAdapter.notifyItemChanged(currentQuestionIndex);
+        }
     }
 
     private void updateOptionUI() {
+        if (questions == null || currentQuestionIndex >= questions.size()) return;
         Question q = questions.get(currentQuestionIndex);
         Integer sel = q.getSelectedOptionIndex();
 

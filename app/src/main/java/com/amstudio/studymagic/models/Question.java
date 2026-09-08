@@ -23,6 +23,7 @@ public class Question implements Serializable {
     
     private Integer selectedOptionIndex = null;
     private boolean isMarkedForReview = false;
+    private boolean isVisited = false;
 
     public Question(String id, String questionText, List<String> options, int correctOptionIndex) {
         this.id = id;
@@ -34,10 +35,17 @@ public class Question implements Serializable {
     public String getId() { return id; }
     public String getQuestionText() { return questionText; }
     public String getImageUrl() { return imageUrl; }
-    public List<String> getOptions() { return options; }
+    public List<String> getOptions() {
+        if (options == null) {
+            options = new java.util.ArrayList<>();
+        }
+        return options;
+    }
     public int getCorrectOptionIndex() { return correctOptionIndex; }
     public Integer getSelectedOptionIndex() { return selectedOptionIndex; }
     public void setSelectedOptionIndex(Integer selectedOptionIndex) { this.selectedOptionIndex = selectedOptionIndex; }
     public boolean isMarkedForReview() { return isMarkedForReview; }
     public void setMarkedForReview(boolean markedForReview) { isMarkedForReview = markedForReview; }
+    public boolean isVisited() { return isVisited; }
+    public void setVisited(boolean visited) { isVisited = visited; }
 }

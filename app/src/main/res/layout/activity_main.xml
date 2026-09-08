@@ -15,12 +15,13 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
+        style="@style/Widget.StudyMagic.BottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/surfaceColor"
-        app:elevation="8dp"
+        app:elevation="@dimen/elevation_high"
         app:itemIconTint="@color/nav_item_color"
+        app:itemRippleColor="?attr/colorControlHighlight"
         app:itemTextColor="@color/nav_item_color"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/bottom_nav_menu" />

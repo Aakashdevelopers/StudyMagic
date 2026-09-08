@@ -31,11 +31,32 @@ public class ExplanationAdapter extends RecyclerView.Adapter<ExplanationAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Question q = questions.get(position);
-        holder.tvQuestion.setText(q.getQuestionText());
+        holder.tvQuestion.setText(q.getQuestionText() != null ? q.getQuestionText() : "");
         
-        String yourAns = q.getSelectedOptionIndex() != null ? q.getOptions().get(q.getSelectedOptionIndex()) : "Not Attempted";
+        List<String> opts = q.getOptions();
+        String yourAns = "Not Attempted";
+        if (q.getSelectedOptionIndex() != null && opts != null) {
+            int selIdx = q.getSelectedOptionIndex();
+            if (selIdx >= 0 && selIdx < opts.size()) {
+                yourAns = opts.get(selIdx);
+            } else {
+                yourAns = "Option " + (selIdx + 1);
+            }
+        }
         holder.tvYourAns.setText("Your Answer: " + yourAns);
-        holder.tvCorrectAns.setText("Correct Answer: " + q.getOptions().get(q.getCorrectOptionIndex()));
+
+        String correctAns = "N/A";
+        if (opts != null && !opts.isEmpty()) {
+            int correctIdx = q.getCorrectOptionIndex();
+            if (correctIdx >= 0 && correctIdx < opts.size()) {
+                correctAns = opts.get(correctIdx);
+            } else if (correctIdx - 1 >= 0 && correctIdx - 1 < opts.size()) {
+                correctAns = opts.get(correctIdx - 1);
+            } else {
+                correctAns = "Option " + correctIdx;
+            }
+        }
+        holder.tvCorrectAns.setText("Correct Answer: " + correctAns);
 
         if (q.explanation != null && !q.explanation.isEmpty()) {
             holder.llExplanation.setVisibility(View.VISIBLE);

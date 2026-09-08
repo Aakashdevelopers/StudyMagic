@@ -62,7 +62,7 @@ public class MockupQuizActivity extends AppCompatActivity {
     private com.google.android.material.progressindicator.LinearProgressIndicator quizProgress;
     private RadioGroup rgOptions;
     private RadioButton rb1, rb2, rb3, rb4;
-    private Button btnSaveNext, btnMarkNext, btnClear, btnSubmitTop;
+    private Button btnSaveNext, btnMarkNext, btnClear, btnSubmitTop, btnPrevious;
     private ImageView btnPause, btnMenu, btnMarkForReviewStar;
     private RecyclerView rvSubjects;
     private SubjectTabAdapter subjectAdapter;
@@ -88,7 +88,8 @@ public class MockupQuizActivity extends AppCompatActivity {
             parseQuestions();
         }
 
-        if (subjects.isEmpty()) {
+        if (supabaseTest == null || subjects.isEmpty()) {
+            Toast.makeText(this, "No questions found for this test", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -104,35 +105,52 @@ public class MockupQuizActivity extends AppCompatActivity {
             supabaseTest.duration = totalMins;
         }
 
-        timeLeftInMillis = supabaseTest.duration * 60 * 1000L;
+        timeLeftInMillis = supabaseTest.duration > 0 ? supabaseTest.duration * 60 * 1000L : 30 * 60 * 1000L;
         startTimer();
         showQuestion(0);
     }
 
     private void parseQuestions() {
+        if (supabaseTest == null) return;
         Gson gson = new Gson();
 
         if (supabaseTest.subjects == null || supabaseTest.subjects.isEmpty()) {
             try {
-                String jsonStr = (supabaseTest.questionsJson instanceof String) ?
-                        (String) supabaseTest.questionsJson : gson.toJson(supabaseTest.questionsJson);
-                Map<String, Object> map = gson.fromJson(jsonStr, new TypeToken<Map<String, Object>>() {}.getType());
+                if (supabaseTest.questionsJson != null) {
+                    String jsonStr = (supabaseTest.questionsJson instanceof String) ?
+                            (String) supabaseTest.questionsJson : gson.toJson(supabaseTest.questionsJson);
 
-                if (map != null && map.containsKey("subjects")) {
-                    Type subjectListType = new TypeToken<List<SupabaseTest.SubjectModel>>() {}.getType();
-                    supabaseTest.subjects = gson.fromJson(gson.toJson(map.get("subjects")), subjectListType);
+                    if (jsonStr != null && !jsonStr.trim().isEmpty()) {
+                        String trimmed = jsonStr.trim();
+                        if (trimmed.startsWith("{")) {
+                            Map<String, Object> map = gson.fromJson(trimmed, new TypeToken<Map<String, Object>>() {}.getType());
 
-                    if (map.containsKey("test_type")) {
-                        String tType = (String) map.get("test_type");
-                        supabaseTest.testType = tType;
-                        if ("type2".equalsIgnoreCase(tType) || "subject_wise".equalsIgnoreCase(tType)) {
-                            supabaseTest.isSubjectTimerEnabled = true;
-                        } else if ("type1".equalsIgnoreCase(tType) || "universal".equalsIgnoreCase(tType)) {
-                            supabaseTest.isSubjectTimerEnabled = false;
+                            if (map != null && map.containsKey("subjects")) {
+                                Type subjectListType = new TypeToken<List<SupabaseTest.SubjectModel>>() {}.getType();
+                                supabaseTest.subjects = gson.fromJson(gson.toJson(map.get("subjects")), subjectListType);
+
+                                if (map.containsKey("test_type")) {
+                                    supabaseTest.testType = (String) map.get("test_type");
+                                }
+                                if (map.containsKey("is_subject_timer_enabled")) {
+                                    supabaseTest.isSubjectTimerEnabled = (boolean) map.get("is_subject_timer_enabled");
+                                }
+                            } else if (map != null && map.containsKey("questions")) {
+                                Type listType = new TypeToken<List<Question>>() {}.getType();
+                                List<Question> qs = gson.fromJson(gson.toJson(map.get("questions")), listType);
+                                if (qs != null && !qs.isEmpty()) {
+                                    subjectWiseQuestions.put("General", qs);
+                                    subjects.add("General");
+                                }
+                            }
+                        } else if (trimmed.startsWith("[")) {
+                            Type listType = new TypeToken<List<Question>>() {}.getType();
+                            List<Question> qs = gson.fromJson(trimmed, listType);
+                            if (qs != null && !qs.isEmpty()) {
+                                subjectWiseQuestions.put("General", qs);
+                                subjects.add("General");
+                            }
                         }
-                    }
-                    if (map.containsKey("is_subject_timer_enabled")) {
-                        supabaseTest.isSubjectTimerEnabled = (boolean) map.get("is_subject_timer_enabled");
                     }
                 }
             } catch (Exception e) {
@@ -146,15 +164,17 @@ public class MockupQuizActivity extends AppCompatActivity {
             supabaseTest.isSubjectTimerEnabled = false;
         }
 
-        if (supabaseTest.subjects == null) return;
-
-        for (SupabaseTest.SubjectModel sm : supabaseTest.subjects) {
-            String jsonStr = gson.toJson(sm.questionsJson);
-            Type listType = new TypeToken<List<Question>>() {}.getType();
-            List<Question> qs = gson.fromJson(jsonStr, listType);
-            if (qs != null && !qs.isEmpty()) {
-                subjectWiseQuestions.put(sm.subjectName, qs);
-                subjects.add(sm.subjectName);
+        if (supabaseTest.subjects != null) {
+            for (SupabaseTest.SubjectModel sm : supabaseTest.subjects) {
+                if (sm.questionsJson == null) continue;
+                String jsonStr = gson.toJson(sm.questionsJson);
+                Type listType = new TypeToken<List<Question>>() {}.getType();
+                List<Question> qs = gson.fromJson(jsonStr, listType);
+                if (qs != null && !qs.isEmpty()) {
+                    String subName = sm.subjectName != null ? sm.subjectName : "Subject";
+                    subjectWiseQuestions.put(subName, qs);
+                    subjects.add(subName);
+                }
             }
         }
     }
@@ -211,6 +231,7 @@ public class MockupQuizActivity extends AppCompatActivity {
         btnMarkNext = findViewById(R.id.btnMarkNext);
         btnClear = findViewById(R.id.btnClear);
         btnSubmitTop = findViewById(R.id.btnSubmitTop);
+        btnPrevious = findViewById(R.id.btnPrevious);
 
         btnPause = findViewById(R.id.btnPause);
         btnMenu = findViewById(R.id.btnMenu);
@@ -263,6 +284,8 @@ public class MockupQuizActivity extends AppCompatActivity {
             saveSelectedOption();
             goToNextQuestion();
         });
+
+        btnPrevious.setOnClickListener(view -> goToPreviousQuestion());
 
         btnSubmitTop.setOnClickListener(view -> finishTest());
 
@@ -343,14 +366,17 @@ public class MockupQuizActivity extends AppCompatActivity {
     }
 
     private void showPaletteBottomSheet() {
-        if (isSubjectTimerRunning) {
-            showSubjectLockedDialog(currentSubject);
-            return;
+        if (paletteAdapter == null) {
+            updatePalette();
+        } else {
+            paletteAdapter.notifyDataSetChanged();
         }
+
         BottomSheetDialog dialog = new BottomSheetDialog(this);
         View view = getLayoutInflater().inflate(R.layout.layout_quiz_palette, null);
 
         RecyclerView rvPalette = view.findViewById(R.id.rvQuestionPalette);
+        rvPalette.setLayoutManager(new androidx.recyclerview.widget.GridLayoutManager(this, 5));
         rvPalette.setAdapter(paletteAdapter);
 
         paletteAdapter.setOnItemClickListener(index -> {
@@ -366,6 +392,29 @@ public class MockupQuizActivity extends AppCompatActivity {
 
         dialog.setContentView(view);
         dialog.show();
+    }
+
+    private void goToPreviousQuestion() {
+        saveSelectedOption();
+        if (currentQuestionIndexInSubject > 0) {
+            currentQuestionIndexInSubject--;
+            showQuestion(currentQuestionIndexInSubject);
+        } else {
+            int subjectIndex = subjects.indexOf(currentSubject);
+            if (subjectIndex > 0) {
+                String prevSubject = subjects.get(subjectIndex - 1);
+                currentSubject = prevSubject;
+                List<Question> prevQs = getCurrentQuestions();
+                currentQuestionIndexInSubject = (prevQs != null && !prevQs.isEmpty()) ? prevQs.size() - 1 : 0;
+                resetSubjectTimer();
+                updateSubjectLockStates();
+                updatePalette();
+                showQuestion(currentQuestionIndexInSubject);
+                Toast.makeText(this, "Previous Subject: " + currentSubject, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "This is the first question", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void goToNextQuestion() {
@@ -397,9 +446,11 @@ public class MockupQuizActivity extends AppCompatActivity {
 
     private void showQuestion(int index) {
         List<Question> currentQs = getCurrentQuestions();
+        if (currentQs == null || index < 0 || index >= currentQs.size()) return;
         Question q = currentQs.get(index);
+        q.setVisited(true);
         tvQuestionNoPill.setText("Q. " + (index + 1));
-        tvQuestionText.setText(q.getQuestionText());
+        tvQuestionText.setText(q.getQuestionText() != null ? q.getQuestionText() : "");
         if (q.getImageUrl() != null && !q.getImageUrl().trim().isEmpty()) {
             ivQuestionImage.setVisibility(View.VISIBLE);
             Picasso.get().load(q.getImageUrl()).into(ivQuestionImage, new com.squareup.picasso.Callback() {
@@ -413,9 +464,9 @@ public class MockupQuizActivity extends AppCompatActivity {
         } else {
             ivQuestionImage.setVisibility(View.GONE);
         }
-        tvSubjectLabel.setText("Subject: " + currentSubject);
+        tvSubjectLabel.setText("Subject: " + (currentSubject != null ? currentSubject : ""));
 
-        if (index == 0 && supabaseTest.isSubjectTimerEnabled) {
+        if (index == 0 && supabaseTest != null && supabaseTest.isSubjectTimerEnabled) {
             startSubjectTimerIfNeeded();
         }
 
@@ -423,12 +474,19 @@ public class MockupQuizActivity extends AppCompatActivity {
         updateProgress();
         updateInfoStripIcons();
 
-        bindOption(tvOptText1, ivOpt1, rb1, q.getOptions().get(0));
-        bindOption(tvOptText2, ivOpt2, rb2, q.getOptions().get(1));
-        bindOption(tvOptText3, ivOpt3, rb3, q.getOptions().get(2));
-        bindOption(tvOptText4, ivOpt4, rb4, q.getOptions().get(3));
+        bindOptions(q);
 
         updateOptionUI();
+
+        if (paletteAdapter != null) {
+            paletteAdapter.notifyDataSetChanged();
+        }
+
+        if (btnPrevious != null) {
+            boolean canGoPrev = currentQuestionIndexInSubject > 0 || subjects.indexOf(currentSubject) > 0;
+            btnPrevious.setEnabled(canGoPrev);
+            btnPrevious.setAlpha(canGoPrev ? 1.0f : 0.5f);
+        }
 
         if (index == currentQs.size() - 1 && subjects.indexOf(currentSubject) == subjects.size() - 1) {
             btnSaveNext.setText("FINISH");
@@ -437,26 +495,38 @@ public class MockupQuizActivity extends AppCompatActivity {
         }
     }
 
-    private void bindOption(TextView tvText, ImageView iv, RadioButton rb, String optionValue) {
-        if (optionValue != null) {
-            String trimmed = optionValue.trim();
-            if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
-                tvText.setVisibility(View.GONE);
-                iv.setVisibility(View.VISIBLE);
-                Picasso.get().load(trimmed).into(iv, new com.squareup.picasso.Callback() {
-                    @Override
-                    public void onSuccess() {}
-                    @Override
-                    public void onError(Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-                return;
-            }
+    private void bindOptions(Question q) {
+        List<String> opts = q.getOptions();
+
+        bindOption(llOpt1, tvOptText1, ivOpt1, rb1, (opts != null && opts.size() > 0) ? opts.get(0) : null);
+        bindOption(llOpt2, tvOptText2, ivOpt2, rb2, (opts != null && opts.size() > 1) ? opts.get(1) : null);
+        bindOption(llOpt3, tvOptText3, ivOpt3, rb3, (opts != null && opts.size() > 2) ? opts.get(2) : null);
+        bindOption(llOpt4, tvOptText4, ivOpt4, rb4, (opts != null && opts.size() > 3) ? opts.get(3) : null);
+    }
+
+    private void bindOption(LinearLayout container, TextView tvText, ImageView iv, RadioButton rb, String optionValue) {
+        if (optionValue == null) {
+            container.setVisibility(View.GONE);
+            return;
         }
-        tvText.setVisibility(View.VISIBLE);
-        tvText.setText(optionValue);
-        iv.setVisibility(View.GONE);
+        container.setVisibility(View.VISIBLE);
+        String trimmed = optionValue.trim();
+        if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+            tvText.setVisibility(View.GONE);
+            iv.setVisibility(View.VISIBLE);
+            Picasso.get().load(trimmed).into(iv, new com.squareup.picasso.Callback() {
+                @Override
+                public void onSuccess() {}
+                @Override
+                public void onError(Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        } else {
+            tvText.setVisibility(View.VISIBLE);
+            tvText.setText(optionValue);
+            iv.setVisibility(View.GONE);
+        }
     }
 
     private void setupOptionClick(LinearLayout layout, RadioButton rb, int optionIndex) {
@@ -466,13 +536,20 @@ public class MockupQuizActivity extends AppCompatActivity {
     }
 
     private void selectOption(int optionIndex) {
-        Question q = getCurrentQuestions().get(currentQuestionIndexInSubject);
+        List<Question> currentQs = getCurrentQuestions();
+        if (currentQs == null || currentQuestionIndexInSubject >= currentQs.size()) return;
+        Question q = currentQs.get(currentQuestionIndexInSubject);
         q.setSelectedOptionIndex(optionIndex);
         updateOptionUI();
+        if (paletteAdapter != null) {
+            paletteAdapter.notifyItemChanged(currentQuestionIndexInSubject);
+        }
     }
 
     private void updateOptionUI() {
-        Question q = getCurrentQuestions().get(currentQuestionIndexInSubject);
+        List<Question> currentQs = getCurrentQuestions();
+        if (currentQs == null || currentQuestionIndexInSubject >= currentQs.size()) return;
+        Question q = currentQs.get(currentQuestionIndexInSubject);
         Integer sel = q.getSelectedOptionIndex();
 
         setOptionSelected(llOpt1, rb1, sel != null && sel == 0);
@@ -490,23 +567,28 @@ public class MockupQuizActivity extends AppCompatActivity {
         int totalQuestions = 0;
         int attemptedCount = 0;
         for (List<Question> list : subjectWiseQuestions.values()) {
+            if (list == null) continue;
             totalQuestions += list.size();
             for (Question q : list) {
                 if (q.getSelectedOptionIndex() != null) attemptedCount++;
             }
         }
+        if (totalQuestions == 0) return;
         int progress = (int) (((float) attemptedCount / totalQuestions) * 100);
         quizProgress.setProgress(progress);
     }
 
     private void updateInfoStripIcons() {
-        Question q = getCurrentQuestions().get(currentQuestionIndexInSubject);
+        List<Question> currentQs = getCurrentQuestions();
+        if (currentQs == null || currentQuestionIndexInSubject >= currentQs.size()) return;
+        Question q = currentQs.get(currentQuestionIndexInSubject);
         btnMarkForReviewStar.setColorFilter(q.isMarkedForReview() ? 0xFFFF1744 : 0xFF757575);
     }
 
     private void saveSelectedOption() {
         int checkedId = rgOptions.getCheckedRadioButtonId();
         List<Question> currentQs = getCurrentQuestions();
+        if (currentQs == null || currentQuestionIndexInSubject >= currentQs.size()) return;
         if (checkedId == -1) {
             currentQs.get(currentQuestionIndexInSubject).setSelectedOptionIndex(null);
         } else if (checkedId == R.id.rbOption1) {
@@ -518,7 +600,9 @@ public class MockupQuizActivity extends AppCompatActivity {
         } else if (checkedId == R.id.rbOption4) {
             currentQs.get(currentQuestionIndexInSubject).setSelectedOptionIndex(3);
         }
-        paletteAdapter.notifyItemChanged(currentQuestionIndexInSubject);
+        if (paletteAdapter != null) {
+            paletteAdapter.notifyItemChanged(currentQuestionIndexInSubject);
+        }
     }
 
     private void startTimer() {

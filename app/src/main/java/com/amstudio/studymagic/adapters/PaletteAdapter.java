@@ -43,29 +43,38 @@ public class PaletteAdapter extends RecyclerView.Adapter<PaletteAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Question q = questions.get(position);
         holder.tvNumber.setText(String.valueOf(position + 1));
-        holder.ivStar.setVisibility(View.GONE);
         
         boolean isAnswered = q.getSelectedOptionIndex() != null;
         boolean isMarked = q.isMarkedForReview();
+        boolean isVisited = q.isVisited();
 
         if (isAnswered && isMarked) {
             // Answered & Marked for Review (Purple)
             holder.tvNumber.setBackgroundResource(R.drawable.bg_palette_answered_marked);
             holder.tvNumber.setTextColor(0xFFFFFFFF);
             holder.ivStar.setVisibility(View.VISIBLE);
+            holder.ivStar.setColorFilter(0xFFFFD54F);
         } else if (isAnswered) {
-            // Answered (Green/Primary)
+            // Answered / Attempted (Green)
             holder.tvNumber.setBackgroundResource(R.drawable.bg_palette_attempted);
             holder.tvNumber.setTextColor(0xFFFFFFFF);
+            holder.ivStar.setVisibility(View.GONE);
         } else if (isMarked) {
-            // Marked for Review (Gray with Star)
+            // Marked for Review (Orange with Star)
             holder.tvNumber.setBackgroundResource(R.drawable.bg_palette_marked);
-            holder.tvNumber.setTextColor(0xFF212121);
+            holder.tvNumber.setTextColor(0xFFFFFFFF);
             holder.ivStar.setVisibility(View.VISIBLE);
+            holder.ivStar.setColorFilter(0xFFFFFFFF);
+        } else if (isVisited) {
+            // Visited, but Not Attempted (Red)
+            holder.tvNumber.setBackgroundResource(R.drawable.bg_palette_unattempted);
+            holder.tvNumber.setTextColor(0xFFFFFFFF);
+            holder.ivStar.setVisibility(View.GONE);
         } else {
-            // Unseen / Unattempted
+            // Unseen / Not Visited (Light Gray)
             holder.tvNumber.setBackgroundResource(R.drawable.bg_palette_unseen);
-            holder.tvNumber.setTextColor(0xFF757575);
+            holder.tvNumber.setTextColor(androidx.core.content.ContextCompat.getColor(holder.itemView.getContext(), R.color.textPrimary));
+            holder.ivStar.setVisibility(View.GONE);
         }
 
         holder.itemView.setOnClickListener(v -> listener.onQuestionClick(position));

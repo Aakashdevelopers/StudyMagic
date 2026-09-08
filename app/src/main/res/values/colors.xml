@@ -3,30 +3,59 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <!-- Primary Palette -->
     <color name="colorPrimary">#1A237E</color>
     <color name="purpleHeader">#1A237E</color>
     <color name="colorPrimaryVariant">#3949AB</color>
     <color name="colorOnPrimary">#FFFFFF</color>
+    <color name="colorPrimaryContainer">#E8EAF6</color>
+    <color name="colorOnPrimaryContainer">#1A237E</color>
 
+    <!-- Secondary Palette -->
     <color name="colorSecondary">#FF6F00</color>
     <color name="colorSecondaryVariant">#FFA000</color>
     <color name="colorOnSecondary">#FFFFFF</color>
+    <color name="colorSecondaryContainer">#FFF3E0</color>
+    <color name="colorOnSecondaryContainer">#E65100</color>
 
+    <!-- Surface & Background -->
     <color name="backgroundColor">#F8F9FA</color>
     <color name="surfaceColor">#FFFFFF</color>
-    <color name="surfaceVariant">#E8EAF6</color>
+    <color name="surfaceVariant">#F0F2F8</color>
+    <color name="colorOutline">#E0E0E0</color>
+    <color name="colorOutlineVariant">#EEEEEE</color>
 
-    <color name="textPrimary">#121212</color>
+    <!-- Typography -->
+    <color name="textPrimary">#1A1C1E</color>
     <color name="textSecondary">#5F6368</color>
     <color name="textTertiary">#9AA0A6</color>
 
+    <!-- Status Colors -->
     <color name="colorSuccess">#2E7D32</color>
+    <color name="colorSuccessContainer">#E8F5E9</color>
     <color name="colorError">#D32F2F</color>
+    <color name="colorErrorContainer">#FFEBEE</color>
     <color name="colorWarning">#F9AA33</color>
+    <color name="colorWarningContainer">#FFF8E1</color>
 
+    <!-- Legacy / Component Specific Aliases -->
     <color name="optionSelectedBackground">#E8EAF6</color>
     <color name="optionBorder">#DADCE0</color>
     <color name="dividerColor">#EEEEEE</color>
     <color name="headerTextColor">#FFFFFF</color>
     <color name="headerSubtitleColor">#E0E0E0</color>
+    <color name="navIndicatorColor">#E8EAF6</color>
+
+    <!-- Search Bar Specific Colors -->
+    <color name="searchBarBackground">#FFFFFF</color>
+    <color name="searchBarStroke">#E2E8F0</color>
+    <color name="searchBarIconContainerBg">#1A1A237E</color>
+    <color name="searchBarIconTint">#1A237E</color>
+    <color name="searchBarText">#5F6368</color>
+
+    <!-- Mock Test Card Specific Colors -->
+    <color name="mockTestContainer">#E0F2F1</color>
+    <color name="mockTestOnContainer">#004D40</color>
+    <color name="mockTestAccent">#00796B</color>
+    <color name="mockTestStroke">#80CBC4</color>
 </resources>

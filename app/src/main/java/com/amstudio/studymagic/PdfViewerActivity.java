@@ -68,7 +68,7 @@ public class PdfViewerActivity extends AppCompatActivity {
         }
         toolbar.setNavigationOnClickListener(v -> finish());
 
-        if (pdfUrl != null) {
+        if (pdfUrl != null && !pdfUrl.trim().isEmpty()) {
             loadPdfFromUrl(pdfUrl);
         } else {
             Toast.makeText(this, "PDF URL not found", Toast.LENGTH_SHORT).show();
@@ -100,60 +100,119 @@ public class PdfViewerActivity extends AppCompatActivity {
     }
 
     private void loadPdfFromUrl(String urlString) {
+        if (urlString == null || urlString.trim().isEmpty()) {
+            Toast.makeText(this, "Invalid PDF URL", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
         progressBar.setVisibility(View.VISIBLE);
         executorService.execute(() -> {
+            HttpURLConnection connection = null;
             try {
-                URL url = new URL(urlString);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                if (connection.getResponseCode() == 200) {
+                URL url = new URL(urlString.trim());
+                connection = (HttpURLConnection) url.openConnection();
+                connection.setConnectTimeout(15000);
+                connection.setReadTimeout(30000);
+                connection.setInstanceFollowRedirects(true);
+
+                int responseCode = connection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_MOVED_TEMP ||
+                    responseCode == HttpURLConnection.HTTP_MOVED_PERM ||
+                    responseCode == HttpURLConnection.HTTP_SEE_OTHER) {
+                    String redirectUrl = connection.getHeaderField("Location");
+                    if (redirectUrl != null) {
+                        connection.disconnect();
+                        url = new URL(redirectUrl);
+                        connection = (HttpURLConnection) url.openConnection();
+                        connection.setConnectTimeout(15000);
+                        connection.setReadTimeout(30000);
+                        responseCode = connection.getResponseCode();
+                    }
+                }
+
+                if (responseCode == HttpURLConnection.HTTP_OK) {
                     InputStream inputStream = new BufferedInputStream(connection.getInputStream());
                     java.io.ByteArrayOutputStream outputStream = new java.io.ByteArrayOutputStream();
-                    byte[] buffer = new byte[4096];
+                    byte[] buffer = new byte[8192];
                     int bytesRead;
                     while ((bytesRead = inputStream.read(buffer)) != -1) {
                         outputStream.write(buffer, 0, bytesRead);
                     }
                     pdfBytes = outputStream.toByteArray();
                     runOnUiThread(() -> displayPdf(pdfBytes));
+                } else {
+                    int code = responseCode;
+                    runOnUiThread(() -> {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(PdfViewerActivity.this, "Failed to load PDF (Code: " + code + ")", Toast.LENGTH_SHORT).show();
+                    });
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 runOnUiThread(() -> {
                     progressBar.setVisibility(View.GONE);
                     Toast.makeText(PdfViewerActivity.this, "Failed to download PDF", Toast.LENGTH_SHORT).show();
                 });
+            } finally {
+                if (connection != null) {
+                    connection.disconnect();
+                }
             }
         });
     }
 
     private void displayPdf(byte[] bytes) {
+        if (isFinishing() || isDestroyed()) return;
+        if (bytes == null || bytes.length == 0) {
+            progressBar.setVisibility(View.GONE);
+            Toast.makeText(this, "PDF content is empty", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         View main = findViewById(R.id.main);
         if (isNightMode) {
-            main.setBackgroundColor(android.graphics.Color.BLACK);
-            toolbar.setBackgroundColor(android.graphics.Color.parseColor("#80000000"));
-            toolbar.setTitleTextColor(android.graphics.Color.WHITE);
-            toolbar.setNavigationIconTint(android.graphics.Color.WHITE);
-            progressBar.getIndeterminateDrawable().setTint(android.graphics.Color.WHITE);
+            if (main != null) main.setBackgroundColor(android.graphics.Color.BLACK);
+            if (toolbar != null) {
+                toolbar.setBackgroundColor(android.graphics.Color.parseColor("#80000000"));
+                toolbar.setTitleTextColor(android.graphics.Color.WHITE);
+                toolbar.setNavigationIconTint(android.graphics.Color.WHITE);
+            }
+            if (progressBar != null && progressBar.getIndeterminateDrawable() != null) {
+                progressBar.getIndeterminateDrawable().setTint(android.graphics.Color.WHITE);
+            }
             WindowInsetsUtil.setLightStatusBar(this, false);
         } else {
-            main.setBackgroundColor(android.graphics.Color.WHITE);
-            toolbar.setBackgroundColor(android.graphics.Color.parseColor("#F8F9FA"));
-            toolbar.setTitleTextColor(android.graphics.Color.BLACK);
-            toolbar.setNavigationIconTint(android.graphics.Color.BLACK);
-            progressBar.getIndeterminateDrawable().setTint(android.graphics.Color.BLACK);
+            if (main != null) main.setBackgroundColor(android.graphics.Color.WHITE);
+            if (toolbar != null) {
+                toolbar.setBackgroundColor(android.graphics.Color.parseColor("#F8F9FA"));
+                toolbar.setTitleTextColor(android.graphics.Color.BLACK);
+                toolbar.setNavigationIconTint(android.graphics.Color.BLACK);
+            }
+            if (progressBar != null && progressBar.getIndeterminateDrawable() != null) {
+                progressBar.getIndeterminateDrawable().setTint(android.graphics.Color.BLACK);
+            }
             WindowInsetsUtil.setLightStatusBar(this, true);
         }
 
-        pdfView.fromBytes(bytes)
-                .nightMode(isNightMode)
-                .onLoad(nbPages -> progressBar.setVisibility(View.GONE))
-                .onError(t -> {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(PdfViewerActivity.this, "Error loading PDF", Toast.LENGTH_SHORT).show();
-                })
-                .onPageError((page, t) -> {
-                    Toast.makeText(PdfViewerActivity.this, "Error on page " + page, Toast.LENGTH_SHORT).show();
-                })
-                .load();
+        try {
+            pdfView.fromBytes(bytes)
+                    .nightMode(isNightMode)
+                    .onLoad(nbPages -> {
+                        if (progressBar != null) progressBar.setVisibility(View.GONE);
+                    })
+                    .onError(t -> {
+                        if (progressBar != null) progressBar.setVisibility(View.GONE);
+                        Toast.makeText(PdfViewerActivity.this, "Error rendering PDF", Toast.LENGTH_SHORT).show();
+                    })
+                    .onPageError((page, t) -> {
+                        Toast.makeText(PdfViewerActivity.this, "Error on page " + page, Toast.LENGTH_SHORT).show();
+                    })
+                    .load();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (progressBar != null) progressBar.setVisibility(View.GONE);
+            Toast.makeText(this, "Failed to open PDF viewer", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

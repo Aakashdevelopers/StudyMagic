@@ -18,17 +18,17 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_home_header"
             android:orientation="vertical"
-            android:paddingHorizontal="20dp"
-            android:paddingTop="20dp"
-            android:paddingBottom="24dp">
+            android:paddingHorizontal="@dimen/spacing_20"
+            android:paddingTop="@dimen/spacing_16"
+            android:paddingBottom="@dimen/spacing_24">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
                 android:text="All Exams"
                 android:textColor="@color/headerTextColor"
-                android:textSize="22sp"
-                android:fontFamily="sans-serif-medium" />
+                android:textSize="@dimen/text_size_headline" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -36,34 +36,55 @@
                 android:layout_marginTop="2dp"
                 android:text="Find your target examination"
                 android:textColor="@color/headerSubtitleColor"
-                android:textSize="14sp" />
+                android:textSize="@dimen/text_size_body" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="20dp"
+                android:layout_height="@dimen/search_bar_height"
+                android:layout_marginTop="@dimen/spacing_20"
                 android:background="@drawable/bg_search_bar"
                 android:gravity="center_vertical"
-                android:paddingHorizontal="16dp">
+                android:paddingHorizontal="@dimen/spacing_12"
+                android:paddingVertical="@dimen/spacing_4">
 
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_search"
-                    app:tint="@color/textSecondary" />
+                <!-- Left Search Icon Container -->
+                <FrameLayout
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="@drawable/bg_search_icon_container">
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_search"
+                        app:tint="@color/searchBarIconTint" />
+                </FrameLayout>
 
                 <EditText
                     android:id="@+id/etSearchExams"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/spacing_12"
+                    android:layout_marginEnd="@dimen/spacing_8"
                     android:background="@null"
                     android:hint="Search exams..."
-                    android:textColor="@color/textPrimary"
-                    android:textColorHint="@color/textSecondary"
-                    android:textSize="14sp"
                     android:imeOptions="actionSearch"
-                    android:inputType="text" />
+                    android:inputType="text"
+                    android:textColor="@color/textPrimary"
+                    android:textColorHint="@color/searchBarText"
+                    android:textSize="@dimen/text_size_body" />
+
+                <!-- Voice Search / Mic Icon -->
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_marginEnd="@dimen/spacing_4"
+                    android:contentDescription="@string/desc_voice_search"
+                    android:src="@drawable/ic_mic"
+                    app:tint="@color/searchBarIconTint" />
 
             </LinearLayout>
 
@@ -76,9 +97,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        android:padding="12dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:padding="@dimen/spacing_12"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:spanCount="2"
         tools:listitem="@layout/item_category_grid" />
 

@@ -1,48 +1,63 @@
 # ProGuard / R8 Rules for Study Magic App
 
-# Keep Gson models and fields so JSON serialization/deserialization works in release builds
--keepattributes Signature
--keepattributes *Annotation*
--keepattributes EnclosingMethod
--keepattributes InnerClasses
+# Preserve Attributes required for Gson Generics, Reflection, and Retrofit Annotations
+-keepattributes Signature, *Annotation*, EnclosingMethod, InnerClasses, SourceFile, LineNumberTable
 
--keepclassmembers enum * {
-    public static **[] values();
-    public static ** valueOf(java.lang.String);
-}
-
-# Preserve model classes
+# Preserve all Data Model classes (and inner classes) for Gson and Intent Serialization
 -keep class com.amstudio.studymagic.models.** { *; }
 -keepclassmembers class com.amstudio.studymagic.models.** { *; }
 
-# Preserve Gson annotations and serialized fields
--keep class com.google.gson.** { *; }
+# Preserve SerializedName fields for Gson
 -keepclassmembers class * {
     @com.google.gson.annotations.SerializedName <fields>;
 }
 
-# Retrofit 2 rules
--keepattributes RuntimeVisibleAnnotations, RuntimeVisibleParameterAnnotations
--keepclassmembers,allowobfuscation interface * {
-    @retrofit2.http.* <methods>;
+# Preserve Serializable implementation rules for Intent Extras
+-keepnames class * implements java.io.Serializable
+-keepclassmembers class * implements java.io.Serializable {
+    static final long serialVersionUID;
+    private static final java.io.ObjectStreamField[] serialPersistentFields;
+    private void writeObject(java.io.ObjectOutputStream);
+    private void readObject(java.io.ObjectInputStream);
+    java.lang.Object writeReplace();
+    java.lang.Object readResolve();
+    <fields>;
 }
--dontwarn retrofit2.**
--keep class retrofit2.** { *; }
 
-# OkHttp rules
+# Preserve Fragments and Adapters
+-keep class com.amstudio.studymagic.fragments.** { *; }
+-keep class com.amstudio.studymagic.adapters.** { *; }
+-keepclassmembers class com.amstudio.studymagic.adapters.** { *; }
+
+# Preserve Retrofit API Interfaces and Annotations
+-keep interface com.amstudio.studymagic.api.** { *; }
+-keep class com.amstudio.studymagic.api.** { *; }
+-keep class retrofit2.** { *; }
+-keepclasseswithmembers class * {
+    @retrofit2.http.** <methods>;
+}
+
+# Gson Rules
+-dontwarn com.google.gson.**
+-keep class com.google.gson.** { *; }
+-keep class com.google.gson.reflect.TypeToken { *; }
+-keep class * extends com.google.gson.reflect.TypeToken { *; }
+
+# OkHttp and Retrofit Suppressions
+-dontwarn retrofit2.**
 -dontwarn okhttp3.**
 -dontwarn okio.**
--keep class okhttp3.** { *; }
 
-# Markwon rules
--dontwarn io.noties.markwon.**
--keep class io.noties.markwon.** { *; }
-
-# AndroidPdfViewer rules
+# AndroidPdfViewer & Pdfium Native JNI Keep Rules (Critical for Release APK)
 -keep class com.github.barteksc.pdfviewer.** { *; }
+-keepclassmembers class com.github.barteksc.pdfviewer.** { *; }
 -dontwarn com.github.barteksc.pdfviewer.**
 
-# Keep activity classes and app components referenced in manifest
--keep public class * extends android.app.Activity
--keep public class * extends android.app.Fragment
--keep public class * extends androidx.fragment.app.Fragment
+-keep class com.shockwave.pdfium.** { *; }
+-keepclassmembers class com.shockwave.pdfium.** { *; }
+-dontwarn com.shockwave.pdfium.**
+
+# Libraries Suppressions & Keep Rules
+-dontwarn io.noties.markwon.**
+-dontwarn com.squareup.picasso.**
+-dontwarn nl.dionsegijn.konfetti.**

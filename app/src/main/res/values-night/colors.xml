@@ -3,30 +3,59 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <!-- Primary Palette Dark -->
     <color name="colorPrimary">#9FA8DA</color>
     <color name="purpleHeader">#1A237E</color>
     <color name="colorPrimaryVariant">#C5CAE9</color>
     <color name="colorOnPrimary">#1A237E</color>
+    <color name="colorPrimaryContainer">#283593</color>
+    <color name="colorOnPrimaryContainer">#E8EAF6</color>
 
+    <!-- Secondary Palette Dark -->
     <color name="colorSecondary">#FFB300</color>
     <color name="colorSecondaryVariant">#FFD54F</color>
     <color name="colorOnSecondary">#000000</color>
+    <color name="colorSecondaryContainer">#E65100</color>
+    <color name="colorOnSecondaryContainer">#FFE0B2</color>
 
+    <!-- Surface & Background Dark -->
     <color name="backgroundColor">#121212</color>
     <color name="surfaceColor">#1E1E1E</color>
     <color name="surfaceVariant">#2C2C2C</color>
+    <color name="colorOutline">#3C4043</color>
+    <color name="colorOutlineVariant">#2C2C2C</color>
 
+    <!-- Typography Dark -->
     <color name="textPrimary">#E8EAED</color>
     <color name="textSecondary">#BCC1C6</color>
     <color name="textTertiary">#9AA0A6</color>
 
+    <!-- Status Colors Dark -->
     <color name="colorSuccess">#81C784</color>
+    <color name="colorSuccessContainer">#1B5E20</color>
     <color name="colorError">#E57373</color>
+    <color name="colorErrorContainer">#B71C1C</color>
     <color name="colorWarning">#FFD54F</color>
+    <color name="colorWarningContainer">#F57F17</color>
 
+    <!-- Legacy / Component Specific Aliases -->
     <color name="optionSelectedBackground">#2C2C2C</color>
     <color name="optionBorder">#444444</color>
     <color name="dividerColor">#3C4043</color>
     <color name="headerTextColor">#E8EAED</color>
     <color name="headerSubtitleColor">#BCC1C6</color>
+    <color name="navIndicatorColor">#283593</color>
+
+    <!-- Search Bar Specific Colors (Glow & Glassmorphism for Night Mode) -->
+    <color name="searchBarBackground">#232A42</color>
+    <color name="searchBarStroke">#3D4B75</color>
+    <color name="searchBarIconContainerBg">#337C4DFF</color>
+    <color name="searchBarIconTint">#9FA8DA</color>
+    <color name="searchBarText">#C5CAE9</color>
+
+    <!-- Mock Test Card Specific Colors (Night Mode) -->
+    <color name="mockTestContainer">#004D40</color>
+    <color name="mockTestOnContainer">#E0F2F1</color>
+    <color name="mockTestAccent">#4DB6AC</color>
+    <color name="mockTestStroke">#00796B</color>
 </resources>

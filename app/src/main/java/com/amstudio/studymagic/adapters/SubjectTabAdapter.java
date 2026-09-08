@@ -69,11 +69,11 @@ public class SubjectTabAdapter extends RecyclerView.Adapter<SubjectTabAdapter.Vi
 
         if (isSelected) {
             holder.container.setBackgroundResource(R.drawable.bg_subject_tab_selected);
-            holder.tvSubject.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.white));
+            holder.tvSubject.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.colorOnPrimary));
             holder.ivLock.setVisibility(View.GONE);
             if (isCompleted) {
                 holder.ivDone.setVisibility(View.VISIBLE);
-                holder.ivDone.setColorFilter(ContextCompat.getColor(holder.itemView.getContext(), R.color.white));
+                holder.ivDone.setColorFilter(ContextCompat.getColor(holder.itemView.getContext(), R.color.colorOnPrimary));
             } else {
                 holder.ivDone.setVisibility(View.GONE);
             }

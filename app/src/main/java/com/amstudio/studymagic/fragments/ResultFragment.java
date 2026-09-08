@@ -114,9 +114,13 @@ public class ResultFragment extends Fragment {
         }
 
         btnHome.setOnClickListener(v -> {
-            getParentFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new HomeFragment())
-                    .commit();
+            if (getActivity() instanceof com.amstudio.studymagic.MainActivity) {
+                getParentFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new HomeFragment())
+                        .commit();
+            } else if (getActivity() != null) {
+                getActivity().finish();
+            }
         });
 
         return view;

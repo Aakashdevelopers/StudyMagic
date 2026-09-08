@@ -52,21 +52,35 @@ public class SupabaseTest implements Serializable {
         List<Question> allQuestions = new ArrayList<>();
         Gson gson = new Gson();
 
-        // Check if subjects are inside questionsJson (Nested case like in your screenshot)
+        // Check if subjects or questions are inside questionsJson
         if (subjects == null || subjects.isEmpty()) {
             try {
-                String jsonStr = (questionsJson instanceof String) ? (String) questionsJson : gson.toJson(questionsJson);
-                Map<String, Object> map = gson.fromJson(jsonStr, new TypeToken<Map<String, Object>>(){}.getType());
-                
-                if (map != null && map.containsKey("subjects")) {
-                    Type subjectListType = new TypeToken<List<SubjectModel>>(){}.getType();
-                    subjects = gson.fromJson(gson.toJson(map.get("subjects")), subjectListType);
-                    
-                    if (map.containsKey("test_type")) {
-                        testType = (String) map.get("test_type");
-                    }
-                    if (map.containsKey("is_subject_timer_enabled")) {
-                        isSubjectTimerEnabled = (boolean) map.get("is_subject_timer_enabled");
+                if (questionsJson != null) {
+                    String jsonStr = (questionsJson instanceof String) ? (String) questionsJson : gson.toJson(questionsJson);
+                    if (jsonStr != null && !jsonStr.trim().isEmpty()) {
+                        String trimmed = jsonStr.trim();
+                        if (trimmed.startsWith("{")) {
+                            Map<String, Object> map = gson.fromJson(trimmed, new TypeToken<Map<String, Object>>(){}.getType());
+                            if (map != null && map.containsKey("subjects")) {
+                                Type subjectListType = new TypeToken<List<SubjectModel>>(){}.getType();
+                                subjects = gson.fromJson(gson.toJson(map.get("subjects")), subjectListType);
+                                
+                                if (map.containsKey("test_type")) {
+                                    testType = (String) map.get("test_type");
+                                }
+                                if (map.containsKey("is_subject_timer_enabled")) {
+                                    isSubjectTimerEnabled = (boolean) map.get("is_subject_timer_enabled");
+                                }
+                            } else if (map != null && map.containsKey("questions")) {
+                                Type listType = new TypeToken<List<Question>>(){}.getType();
+                                List<Question> qs = gson.fromJson(gson.toJson(map.get("questions")), listType);
+                                if (qs != null) allQuestions.addAll(qs);
+                            }
+                        } else if (trimmed.startsWith("[")) {
+                            Type listType = new TypeToken<List<Question>>(){}.getType();
+                            List<Question> qs = gson.fromJson(trimmed, listType);
+                            if (qs != null) allQuestions.addAll(qs);
+                        }
                     }
                 }
             } catch (Exception e) {

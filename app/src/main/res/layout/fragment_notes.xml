@@ -18,17 +18,17 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_home_header"
             android:orientation="vertical"
-            android:paddingHorizontal="20dp"
-            android:paddingTop="20dp"
-            android:paddingBottom="24dp">
+            android:paddingHorizontal="@dimen/spacing_20"
+            android:paddingTop="@dimen/spacing_16"
+            android:paddingBottom="@dimen/spacing_24">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
                 android:text="Study Notes"
                 android:textColor="@color/headerTextColor"
-                android:textSize="22sp"
-                android:fontFamily="sans-serif-medium" />
+                android:textSize="@dimen/text_size_headline" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -36,7 +36,7 @@
                 android:layout_marginTop="2dp"
                 android:text="Access your learning materials"
                 android:textColor="@color/headerSubtitleColor"
-                android:textSize="14sp" />
+                android:textSize="@dimen/text_size_body" />
 
         </LinearLayout>
 
@@ -48,13 +48,61 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvNotes"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:padding="8dp"
-            tools:listitem="@layout/item_note" />
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvNotes"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingVertical="@dimen/spacing_8"
+                tools:listitem="@layout/item_note" />
+
+            <!-- Empty State View -->
+            <LinearLayout
+                android:id="@+id/llEmptyState"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_24"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:alpha="0.4"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_notes"
+                    app:tint="@color/textSecondary" />
+
+                <TextView
+                    android:id="@+id/tvEmptyTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_16"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="No Notes Available"
+                    android:textColor="@color/textPrimary"
+                    android:textSize="@dimen/text_size_subtitle" />
+
+                <TextView
+                    android:id="@+id/tvEmptySubtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_4"
+                    android:gravity="center"
+                    android:text="Check back later for updated study materials."
+                    android:textColor="@color/textSecondary"
+                    android:textSize="@dimen/text_size_body_small" />
+
+            </LinearLayout>
+
+        </FrameLayout>
+
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <ProgressBar

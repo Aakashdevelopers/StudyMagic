@@ -47,6 +47,14 @@ public class HomeFragment extends Fragment {
         WindowInsetsUtil.applyTopInset(header);
         WindowInsetsUtil.setLightStatusBar(getActivity(), false); // Light icons on dark header
 
+        View llSearchBar = view.findViewById(R.id.llSearchBar);
+        if (llSearchBar != null) {
+            llSearchBar.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), com.amstudio.studymagic.SearchActivity.class);
+                startActivity(intent);
+            });
+        }
+
         RecyclerView rvCategories = view.findViewById(R.id.rvCategories);
         categoryAdapter = new CategoryAdapter(categoryList, category -> {
             showCategoryOptionsDialog(category);

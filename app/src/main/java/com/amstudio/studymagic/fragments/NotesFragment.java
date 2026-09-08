@@ -30,6 +30,7 @@ public class NotesFragment extends Fragment {
     private NotesAdapter adapter;
     private ProgressBar progressBar;
     private SwipeRefreshLayout swipeRefresh;
+    private View emptyStateView;
 
     @Nullable
     @Override
@@ -38,11 +39,12 @@ public class NotesFragment extends Fragment {
 
         View header = view.findViewById(R.id.llHeader);
         com.amstudio.studymagic.utils.WindowInsetsUtil.applyTopInset(header);
-        com.amstudio.studymagic.utils.WindowInsetsUtil.setLightStatusBar(getActivity(), false); // Light icons on dark header
+        com.amstudio.studymagic.utils.WindowInsetsUtil.setLightStatusBar(getActivity(), false);
 
         rvNotes = view.findViewById(R.id.rvNotes);
         progressBar = view.findViewById(R.id.progressBar);
         swipeRefresh = view.findViewById(R.id.swipeRefresh);
+        emptyStateView = view.findViewById(R.id.llEmptyState);
 
         rvNotes.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new NotesAdapter(new ArrayList<>(), note -> {
@@ -72,10 +74,13 @@ public class NotesFragment extends Fragment {
                 if (response.isSuccessful() && response.body() != null) {
                     List<Note> notes = response.body();
                     adapter.updateList(notes);
-                    if (notes.isEmpty()) {
-                        Toast.makeText(getContext(), "No notes found in database", Toast.LENGTH_SHORT).show();
+                    if (emptyStateView != null) {
+                        emptyStateView.setVisibility(notes.isEmpty() ? View.VISIBLE : View.GONE);
                     }
                 } else {
+                    if (emptyStateView != null) {
+                        emptyStateView.setVisibility(View.VISIBLE);
+                    }
                     Toast.makeText(getContext(), "Failed to load notes: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -84,6 +89,9 @@ public class NotesFragment extends Fragment {
             public void onFailure(Call<List<Note>> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
                 swipeRefresh.setRefreshing(false);
+                if (emptyStateView != null) {
+                    emptyStateView.setVisibility(View.VISIBLE);
+                }
                 Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

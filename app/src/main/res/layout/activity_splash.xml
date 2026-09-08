@@ -23,6 +23,7 @@
             android:id="@+id/iv_splash_logo"
             android:layout_width="120dp"
             android:layout_height="120dp"
+            android:contentDescription="@null"
             android:src="@drawable/logo"
             app:civ_border_color="@color/white"
             app:civ_border_width="2dp" />
@@ -31,21 +32,22 @@
             android:id="@+id/tv_splash_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="@dimen/spacing_20"
+            android:fontFamily="sans-serif-medium"
             android:text="@string/app_name"
             android:textColor="@color/white"
-            android:textSize="32sp"
+            android:textSize="@dimen/text_size_display"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tv_splash_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="@dimen/spacing_8"
             android:letterSpacing="0.05"
             android:text="Learn, Practice &amp; Succeed"
             android:textColor="#D0D4F7"
-            android:textSize="14sp" />
+            android:textSize="@dimen/text_size_body" />
 
     </LinearLayout>
 
@@ -53,7 +55,7 @@
         android:id="@+id/splash_progress"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="@dimen/spacing_24"
         android:indeterminate="true"
         android:indeterminateTint="@color/white"
         app:layout_constraintBottom_toTopOf="@id/tv_splash_version"
@@ -64,10 +66,10 @@
         android:id="@+id/tv_splash_version"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="@dimen/spacing_24"
         android:text="Version 1.0"
         android:textColor="#A0A8E0"
-        android:textSize="12sp"
+        android:textSize="@dimen/text_size_caption"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

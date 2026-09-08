@@ -13,7 +13,7 @@
         android:layout_height="4dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="12dp"
-        android:background="#DADCE0" />
+        android:background="@color/colorOutline" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,36 +24,18 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ⓘ View Instructions"
+            android:text="Question Palette Legend"
             android:textColor="@color/textPrimary"
+            android:textSize="14sp"
             android:textStyle="bold" />
 
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             android:columnCount="2">
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="4dp">
-                <ImageView
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:src="@drawable/ic_star_quiz"
-                    app:tint="#FF1744" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="Marked for Review"
-                    android:textSize="11sp" />
-            </LinearLayout>
-
+            <!-- Attempted -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -62,56 +44,19 @@
                 android:orientation="horizontal"
                 android:padding="4dp">
                 <View
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:background="@drawable/bg_palette_unseen"
-                    android:backgroundTint="#BDBDBD" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="Unattempted"
-                    android:textSize="11sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="4dp">
-                <View
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:background="@drawable/bg_palette_unseen" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="Unseen"
-                    android:textSize="11sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="4dp">
-                <View
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
                     android:background="@drawable/bg_palette_attempted" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="Attempted"
-                    android:textSize="11sp" />
+                    android:textColor="@color/textPrimary"
+                    android:textSize="12sp" />
             </LinearLayout>
 
+            <!-- Unattempted / Not Answered -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -120,15 +65,79 @@
                 android:orientation="horizontal"
                 android:padding="4dp">
                 <View
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:background="@drawable/bg_palette_unattempted" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Unattempted"
+                    android:textColor="@color/textPrimary"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <!-- Marked for Review -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="4dp">
+                <View
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:background="@drawable/bg_palette_marked" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Marked for Review"
+                    android:textColor="@color/textPrimary"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <!-- Ans & Marked for Review -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="4dp">
+                <View
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
                     android:background="@drawable/bg_palette_answered_marked" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="Ans &amp; Marked"
-                    android:textSize="11sp" />
+                    android:textColor="@color/textPrimary"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <!-- Unseen / Not Visited -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="4dp">
+                <View
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:background="@drawable/bg_palette_unseen" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Unseen"
+                    android:textColor="@color/textPrimary"
+                    android:textSize="12sp" />
             </LinearLayout>
 
         </GridLayout>
@@ -147,10 +156,13 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnSubmitQuiz"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_margin="16dp"
+        android:layout_height="52dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
         android:text="SUBMIT TEST"
+        android:textSize="14sp"
         android:textStyle="bold"
-        app:cornerRadius="8dp" />
+        app:cornerRadius="10dp" />
 
 </LinearLayout>

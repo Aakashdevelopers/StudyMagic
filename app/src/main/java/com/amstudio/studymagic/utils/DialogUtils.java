@@ -19,6 +19,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 public class DialogUtils {
 
     public static void showCategoryOptionsDialog(Context context, FragmentManager fragmentManager, Category category) {
+        if (context == null || fragmentManager == null || category == null) return;
+
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
         View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_category_options, null);
         builder.setView(dialogView);
@@ -29,41 +31,49 @@ public class DialogUtils {
         }
 
         TextView tvCategoryName = dialogView.findViewById(R.id.tvDialogCategoryName);
-        tvCategoryName.setText(category.getName());
+        if (tvCategoryName != null && category.getName() != null) {
+            tvCategoryName.setText(category.getName());
+        }
 
         View cardMockTest = dialogView.findViewById(R.id.cardMockTest);
         View cardPracticeTest = dialogView.findViewById(R.id.cardPracticeTest);
         View btnCancel = dialogView.findViewById(R.id.btnCancel);
 
-        cardMockTest.setOnClickListener(v -> {
-            dialog.dismiss();
-            Bundle bundle = new Bundle();
-            bundle.putString("categoryId", category.getId());
-            bundle.putString("categoryName", category.getName());
+        if (cardMockTest != null) {
+            cardMockTest.setOnClickListener(v -> {
+                dialog.dismiss();
+                Bundle bundle = new Bundle();
+                bundle.putString("categoryId", category.getId());
+                bundle.putString("categoryName", category.getName());
 
-            MockupListFragment fragment = new MockupListFragment();
-            fragment.setArguments(bundle);
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-                    .addToBackStack(null)
-                    .commit();
-        });
+                MockupListFragment fragment = new MockupListFragment();
+                fragment.setArguments(bundle);
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .addToBackStack(null)
+                        .commit();
+            });
+        }
 
-        cardPracticeTest.setOnClickListener(v -> {
-            dialog.dismiss();
-            Bundle bundle = new Bundle();
-            bundle.putString("categoryId", category.getId());
-            bundle.putString("categoryName", category.getName());
+        if (cardPracticeTest != null) {
+            cardPracticeTest.setOnClickListener(v -> {
+                dialog.dismiss();
+                Bundle bundle = new Bundle();
+                bundle.putString("categoryId", category.getId());
+                bundle.putString("categoryName", category.getName());
 
-            SubjectListFragment fragment = new SubjectListFragment();
-            fragment.setArguments(bundle);
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-                    .addToBackStack(null)
-                    .commit();
-        });
+                SubjectListFragment fragment = new SubjectListFragment();
+                fragment.setArguments(bundle);
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .addToBackStack(null)
+                        .commit();
+            });
+        }
 
-        btnCancel.setOnClickListener(v -> dialog.dismiss());
+        if (btnCancel != null) {
+            btnCancel.setOnClickListener(v -> dialog.dismiss());
+        }
 
         dialog.show();
     }
