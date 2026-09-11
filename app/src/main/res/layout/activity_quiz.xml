@@ -218,6 +218,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
+                android:minHeight="120dp"
+                android:maxHeight="320dp"
                 android:scaleType="fitCenter"
                 android:layout_marginTop="12dp"
                 android:contentDescription="Question Image"
@@ -229,120 +231,231 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp">
 
+                <!-- Option 1 -->
                 <LinearLayout
                     android:id="@+id/llOption1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
                     android:layout_marginBottom="12dp"
                     android:background="@drawable/bg_option_selector"
                     android:clickable="true"
                     android:focusable="true"
-                    android:padding="16dp">
+                    android:padding="14dp">
 
-                    <com.google.android.material.radiobutton.MaterialRadioButton
-                        android:id="@+id/rbOption1"
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/tvOptLabel1"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:button="@null"
-                        android:text="Option 1"
-                        android:textColor="@color/textPrimary" />
+                        android:text="1."
+                        android:textColor="@color/textPrimary"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginEnd="12dp" />
 
-                    <ImageView
-                        android:id="@+id/ivOption1"
-                        android:layout_width="match_parent"
-                        android:layout_height="120dp"
-                        android:scaleType="fitCenter"
-                        android:layout_marginTop="8dp"
-                        android:contentDescription="Option Image"
-                        android:visibility="gone" />
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:id="@+id/tvOptText1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/textPrimary"
+                            android:textSize="15sp"
+                            android:visibility="visible" />
+
+                        <ImageView
+                            android:id="@+id/ivOption1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:adjustViewBounds="true"
+                            android:minHeight="60dp"
+                            android:maxHeight="220dp"
+                            android:scaleType="fitCenter"
+                            android:contentDescription="Option Image"
+                            android:visibility="gone" />
+                    </FrameLayout>
+
+                    <RadioButton
+                        android:id="@+id/rbOption1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:layout_marginStart="8dp" />
                 </LinearLayout>
 
+                <!-- Option 2 -->
                 <LinearLayout
                     android:id="@+id/llOption2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
                     android:layout_marginBottom="12dp"
                     android:background="@drawable/bg_option_selector"
                     android:clickable="true"
                     android:focusable="true"
-                    android:padding="16dp">
+                    android:padding="14dp">
 
-                    <com.google.android.material.radiobutton.MaterialRadioButton
-                        android:id="@+id/rbOption2"
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/tvOptLabel2"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:button="@null"
-                        android:text="Option 2"
-                        android:textColor="@color/textPrimary" />
+                        android:text="2."
+                        android:textColor="@color/textPrimary"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginEnd="12dp" />
 
-                    <ImageView
-                        android:id="@+id/ivOption2"
-                        android:layout_width="match_parent"
-                        android:layout_height="120dp"
-                        android:scaleType="fitCenter"
-                        android:layout_marginTop="8dp"
-                        android:contentDescription="Option Image"
-                        android:visibility="gone" />
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:id="@+id/tvOptText2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/textPrimary"
+                            android:textSize="15sp"
+                            android:visibility="visible" />
+
+                        <ImageView
+                            android:id="@+id/ivOption2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:adjustViewBounds="true"
+                            android:minHeight="60dp"
+                            android:maxHeight="220dp"
+                            android:scaleType="fitCenter"
+                            android:contentDescription="Option Image"
+                            android:visibility="gone" />
+                    </FrameLayout>
+
+                    <RadioButton
+                        android:id="@+id/rbOption2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:layout_marginStart="8dp" />
                 </LinearLayout>
 
+                <!-- Option 3 -->
                 <LinearLayout
                     android:id="@+id/llOption3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
                     android:layout_marginBottom="12dp"
                     android:background="@drawable/bg_option_selector"
                     android:clickable="true"
                     android:focusable="true"
-                    android:padding="16dp">
+                    android:padding="14dp">
 
-                    <com.google.android.material.radiobutton.MaterialRadioButton
-                        android:id="@+id/rbOption3"
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/tvOptLabel3"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:button="@null"
-                        android:text="Option 3"
-                        android:textColor="@color/textPrimary" />
+                        android:text="3."
+                        android:textColor="@color/textPrimary"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginEnd="12dp" />
 
-                    <ImageView
-                        android:id="@+id/ivOption3"
-                        android:layout_width="match_parent"
-                        android:layout_height="120dp"
-                        android:scaleType="fitCenter"
-                        android:layout_marginTop="8dp"
-                        android:contentDescription="Option Image"
-                        android:visibility="gone" />
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:id="@+id/tvOptText3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/textPrimary"
+                            android:textSize="15sp"
+                            android:visibility="visible" />
+
+                        <ImageView
+                            android:id="@+id/ivOption3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:adjustViewBounds="true"
+                            android:minHeight="60dp"
+                            android:maxHeight="220dp"
+                            android:scaleType="fitCenter"
+                            android:contentDescription="Option Image"
+                            android:visibility="gone" />
+                    </FrameLayout>
+
+                    <RadioButton
+                        android:id="@+id/rbOption3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:layout_marginStart="8dp" />
                 </LinearLayout>
 
+                <!-- Option 4 -->
                 <LinearLayout
                     android:id="@+id/llOption4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
                     android:layout_marginBottom="12dp"
                     android:background="@drawable/bg_option_selector"
                     android:clickable="true"
                     android:focusable="true"
-                    android:padding="16dp">
+                    android:padding="14dp">
 
-                    <com.google.android.material.radiobutton.MaterialRadioButton
-                        android:id="@+id/rbOption4"
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/tvOptLabel4"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:button="@null"
-                        android:text="Option 4"
-                        android:textColor="@color/textPrimary" />
+                        android:text="4."
+                        android:textColor="@color/textPrimary"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:layout_marginEnd="12dp" />
 
-                    <ImageView
-                        android:id="@+id/ivOption4"
-                        android:layout_width="match_parent"
-                        android:layout_height="120dp"
-                        android:scaleType="fitCenter"
-                        android:layout_marginTop="8dp"
-                        android:contentDescription="Option Image"
-                        android:visibility="gone" />
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:id="@+id/tvOptText4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/textPrimary"
+                            android:textSize="15sp"
+                            android:visibility="visible" />
+
+                        <ImageView
+                            android:id="@+id/ivOption4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:adjustViewBounds="true"
+                            android:maxHeight="160dp"
+                            android:scaleType="fitCenter"
+                            android:contentDescription="Option Image"
+                            android:visibility="gone" />
+                    </FrameLayout>
+
+                    <RadioButton
+                        android:id="@+id/rbOption4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:layout_marginStart="8dp" />
                 </LinearLayout>
 
             </RadioGroup>

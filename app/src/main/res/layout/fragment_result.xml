@@ -281,13 +281,41 @@
                                 app:tint="@color/colorPrimary" />
 
                             <TextView
-                                android:layout_width="wrap_content"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="14dp"
+                                android:layout_marginStart="10dp"
+                                android:layout_weight="1"
                                 android:fontFamily="sans-serif-medium"
-                                android:text="AI Performance Insights"
+                                android:text="AI Insights"
                                 android:textColor="@color/textPrimary"
                                 android:textSize="16sp" />
+
+                            <!-- Language Selector Chips -->
+                            <com.google.android.material.chip.ChipGroup
+                                android:id="@+id/chipGroupLanguage"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:selectionRequired="true"
+                                app:singleSelection="true">
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chipEnglish"
+                                    style="@style/Widget.Material3.Chip.Filter"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="36dp"
+                                    android:checked="true"
+                                    android:text="English"
+                                    android:textSize="11sp" />
+
+                                <com.google.android.material.chip.Chip
+                                    android:id="@+id/chipHindi"
+                                    style="@style/Widget.Material3.Chip.Filter"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="36dp"
+                                    android:text="हिंदी"
+                                    android:textSize="11sp" />
+
+                            </com.google.android.material.chip.ChipGroup>
 
                         </LinearLayout>
 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="96dp"
-    android:layout_height="wrap_content"
+    android:layout_width="100dp"
+    android:layout_height="120dp"
     android:layout_marginHorizontal="@dimen/spacing_4"
     android:layout_marginVertical="@dimen/spacing_4"
     android:clickable="true"
@@ -16,11 +16,11 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        android:paddingHorizontal="@dimen/spacing_8"
-        android:paddingVertical="@dimen/spacing_12">
+        android:paddingHorizontal="@dimen/spacing_6"
+        android:paddingVertical="@dimen/spacing_8">
 
         <FrameLayout
             android:layout_width="@dimen/icon_container_large"
@@ -39,8 +39,8 @@
         <TextView
             android:id="@+id/tvCategoryName"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_8"
+            android:layout_height="36dp"
+            android:layout_marginTop="@dimen/spacing_6"
             android:ellipsize="end"
             android:fontFamily="sans-serif-medium"
             android:gravity="center"

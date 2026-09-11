@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/purpleHeader"
-    tools:context=".SplashActivity">
+    tools:context="com.amstudio.examuplift.SplashActivity">
 
     <LinearLayout
         android:id="@+id/center_content"
@@ -19,14 +19,27 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/iv_splash_logo"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_splash_logo"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:contentDescription="@null"
-            android:src="@drawable/logo"
-            app:civ_border_color="@color/white"
-            app:civ_border_width="2dp" />
+            android:layout_gravity="center"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="32dp"
+            app:cardElevation="12dp"
+            app:cardPreventCornerOverlap="true"
+            app:strokeColor="#40FFFFFF"
+            app:strokeWidth="3dp">
+
+            <ImageView
+                android:id="@+id/iv_splash_logo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@null"
+                android:scaleType="centerCrop"
+                android:src="@drawable/logo" />
+
+        </com.google.android.material.card.MaterialCardView>
 
         <TextView
             android:id="@+id/tv_splash_title"

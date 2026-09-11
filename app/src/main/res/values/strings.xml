@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Study Magic</string>
+    <string name="app_name">Exam Uplift</string>
     <string name="desc_voice_search">Voice Search</string>
     <string name="hint_search_exams">Search for exams, tests&#8230;</string>
 </resources>

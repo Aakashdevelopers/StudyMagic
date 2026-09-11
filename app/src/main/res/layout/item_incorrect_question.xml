@@ -51,6 +51,17 @@
             android:textSize="15sp"
             android:fontFamily="sans-serif-medium" />
 
+        <ImageView
+            android:id="@+id/ivQuestionImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:adjustViewBounds="true"
+            android:maxHeight="220dp"
+            android:scaleType="fitCenter"
+            android:contentDescription="Question Image"
+            android:visibility="gone" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -118,6 +129,18 @@
                 android:text="Detailed explanation goes here..."
                 android:textColor="#37474F"
                 android:textSize="12sp" />
+
+            <ImageView
+                android:id="@+id/ivExplanationImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:adjustViewBounds="true"
+                android:minHeight="100dp"
+                android:maxHeight="300dp"
+                android:scaleType="fitCenter"
+                android:contentDescription="Explanation Image"
+                android:visibility="gone" />
 
         </LinearLayout>
 

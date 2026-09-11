@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Study Magic - Admin Control</title>
+<title>Exam Uplift - Admin Control</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box}
@@ -52,7 +52,7 @@ pre{margin:0;white-space:pre-wrap;word-break:break-word;font-size:12px;color:#c9
 
 <header class="topbar">
 <button style="width:auto;margin:0;background:#292e38" onclick="showScreen('home')">⌂</button>
-<div class="brand">Study Magic • Admin Control</div>
+<div class="brand">Exam Uplift • Admin Control</div>
 </header>
 
 <main class="page">
@@ -158,6 +158,73 @@ pre{margin:0;white-space:pre-wrap;word-break:break-word;font-size:12px;color:#c9
 
 <button class="save" onclick="saveMockup()">💾 Save & Upload Mockup</button>
 <div id="addMessage"></div>
+</div>
+
+<div class="card" style="border:1px solid #4f7cff;background:#151a24">
+<h2>⚡ Quick Question Adder (Add Questions One-by-One)</h2>
+<p class="sub">Select any existing mockup test & subject to rapidly add questions one after another.</p>
+
+<div class="row">
+<div>
+<label>🎯 Target Mockup Test *</label>
+<select id="quickMockupSelect" onchange="updateQuickMockupSubjects()">
+<option value="">Select Mockup Test</option>
+</select>
+</div>
+<div>
+<label>📘 Subject *</label>
+<select id="quickMockupSubSelect">
+<option value="">Select Subject</option>
+</select>
+</div>
+</div>
+
+<div style="background:#11141c;border:1px solid #2e3440;border-radius:12px;padding:14px;margin-top:10px">
+<label>Question Text *</label>
+<input id="quickMQText" placeholder="Enter question text...">
+<label>Question Image URL (Optional)</label>
+<input id="quickMQImg" placeholder="https://i.ibb.co/...">
+
+<div class="row">
+<div>
+<label>Option 1 *</label>
+<input id="quickMQOpt0" placeholder="Option A text or image URL">
+</div>
+<div>
+<label>Option 2 *</label>
+<input id="quickMQOpt1" placeholder="Option B text or image URL">
+</div>
+</div>
+<div class="row">
+<div>
+<label>Option 3 *</label>
+<input id="quickMQOpt2" placeholder="Option C text or image URL">
+</div>
+<div>
+<label>Option 4 *</label>
+<input id="quickMQOpt3" placeholder="Option D text or image URL">
+</div>
+</div>
+
+<div class="row">
+<div>
+<label>Correct Option *</label>
+<select id="quickMQCorrect">
+<option value="0">Option 1</option>
+<option value="1">Option 2</option>
+<option value="2">Option 3</option>
+<option value="3">Option 4</option>
+</select>
+</div>
+<div>
+<label>Explanation (Optional)</label>
+<input id="quickMQExp" placeholder="Explanation...">
+</div>
+</div>
+
+<button type="button" class="save" style="margin-top:10px" onclick="submitQuickMockupQuestion()">🚀 Save & Add Next Question</button>
+<div id="quickMQMsg"></div>
+</div>
 </div>
 
 <div class="card">
@@ -267,6 +334,7 @@ pre{margin:0;white-space:pre-wrap;word-break:break-word;font-size:12px;color:#c9
 </div>
 </div>
 <button type="button" class="save" style="margin-top:10px" onclick="addVisualQuestionToTest()">➕ Add Visual Question to Test JSON</button>
+<div id="testVisList"></div>
 </div>
 
 <textarea id="testJsonInput" style="min-height:330px;font-family:monospace;font-size:13px" placeholder='[
@@ -290,6 +358,65 @@ pre{margin:0;white-space:pre-wrap;word-break:break-word;font-size:12px;color:#c9
 
 <button class="save" onclick="saveTest()">💾 Save Test</button>
 <div id="testMessage"></div>
+</div>
+
+<div class="card" style="border:1px solid #4f7cff;background:#151a24">
+<h2>⚡ Quick Question Adder (Add Questions One-by-One)</h2>
+<p class="sub">Select any existing test to rapidly add questions one after another.</p>
+
+<div>
+<label>🎯 Target Test *</label>
+<select id="quickTestSelect">
+<option value="">Select Test</option>
+</select>
+</div>
+
+<div style="background:#11141c;border:1px solid #2e3440;border-radius:12px;padding:14px;margin-top:10px">
+<label>Question Text *</label>
+<input id="quickTQText" placeholder="Enter question text...">
+<label>Question Image URL (Optional)</label>
+<input id="quickTQImg" placeholder="https://i.ibb.co/...">
+
+<div class="row">
+<div>
+<label>Option 1 *</label>
+<input id="quickTQOpt0" placeholder="Option A text or image URL">
+</div>
+<div>
+<label>Option 2 *</label>
+<input id="quickTQOpt1" placeholder="Option B text or image URL">
+</div>
+</div>
+<div class="row">
+<div>
+<label>Option 3 *</label>
+<input id="quickTQOpt2" placeholder="Option C text or image URL">
+</div>
+<div>
+<label>Option 4 *</label>
+<input id="quickTQOpt3" placeholder="Option D text or image URL">
+</div>
+</div>
+
+<div class="row">
+<div>
+<label>Correct Option *</label>
+<select id="quickTQCorrect">
+<option value="0">Option 1</option>
+<option value="1">Option 2</option>
+<option value="2">Option 3</option>
+<option value="3">Option 4</option>
+</select>
+</div>
+<div>
+<label>Explanation (Optional)</label>
+<input id="quickTQExp" placeholder="Explanation...">
+</div>
+</div>
+
+<button type="button" class="save" style="margin-top:10px" onclick="submitQuickTestQuestion()">🚀 Save & Add Next Question</button>
+<div id="quickTQMsg"></div>
+</div>
 </div>
 
 <div class="card">
@@ -580,6 +707,7 @@ const html = `
 </div>
 </div>
 <button type="button" class="save" style="margin-top:10px" onclick="addVisualQuestionToSubject(${id})">➕ Add Visual Question to Subject JSON</button>
+<div id="visList_${id}"></div>
 </div>
 
 <textarea id="subJson_${id}" class="sub-json-input" style="min-height:160px;font-family:monospace;font-size:12px" placeholder="Paste questions JSON array here...">${esc(sampleJsonStr)}</textarea>
@@ -696,6 +824,90 @@ addSubjectBuilderCard("Mathematics");
 loadMockups();refreshDashboard();
 }
 
+/* =====================================================
+   GLOBAL DATA STORE & EDIT HELPERS
+===================================================== */
+let loadedMockups = {};
+let loadedTests = {};
+let openMockupIds = new Set();
+let openTestIds = new Set();
+
+function generateCategoryOptions(selectedId) {
+  let h = '<option value="">Select Category (Optional)</option>';
+  categories.forEach(c => {
+    const sel = String(c.id) === String(selectedId) ? "selected" : "";
+    h += `<option value="${c.id}" ${sel}>${esc(c.name)}</option>`;
+  });
+  return h;
+}
+
+function renderQuestionEditForm(idPrefix, q, onSaveCode, onCancelCode) {
+  const qText = q ? (q.question_text || q.questionText || q.question || "") : "";
+  const qImg = q ? (q.image_url || q.imageUrl || q.image || "") : "";
+  const opts = q && Array.isArray(q.options) ? q.options : ["", "", "", ""];
+  const correctIdx = q && (q.correct_option_index !== undefined ? q.correct_option_index : q.correctOptionIndex) !== undefined
+    ? parseInt(q.correct_option_index !== undefined ? q.correct_option_index : q.correctOptionIndex) : 0;
+  const exp = q ? (q.e || q.explanation || q.exp || "") : "";
+  const expImg = q ? (q.explanation_image_url || q.exp_image_url || q.e_img || "") : "";
+
+  return `
+<div id="form_${idPrefix}" class="edit-q-card" style="display:none;background:#141820;border:1px solid #4f7cff;border-radius:12px;padding:14px;margin-top:10px">
+  <h4 style="margin:0 0 12px;color:#8ab4ff">${q ? "✏️ Edit Question" : "➕ Add New Question"}</h4>
+
+  <label>Question Text *</label>
+  <input id="qText_${idPrefix}" value="${attr(qText)}" placeholder="Enter question text...">
+
+  <label>Question Image URL (Optional)</label>
+  <input id="qImg_${idPrefix}" value="${attr(qImg)}" placeholder="https://i.ibb.co/...">
+
+  <div class="row">
+    <div>
+      <label>Option 1 (Text or Image URL) *</label>
+      <input id="qOpt0_${idPrefix}" value="${attr(opts[0] || "")}" placeholder="Option 1">
+    </div>
+    <div>
+      <label>Option 2 (Text or Image URL) *</label>
+      <input id="qOpt1_${idPrefix}" value="${attr(opts[1] || "")}" placeholder="Option 2">
+    </div>
+  </div>
+  <div class="row">
+    <div>
+      <label>Option 3 (Text or Image URL) *</label>
+      <input id="qOpt2_${idPrefix}" value="${attr(opts[2] || "")}" placeholder="Option 3">
+    </div>
+    <div>
+      <label>Option 4 (Text or Image URL) *</label>
+      <input id="qOpt3_${idPrefix}" value="${attr(opts[3] || "")}" placeholder="Option 4">
+    </div>
+  </div>
+
+  <div class="row">
+    <div>
+      <label>Correct Option</label>
+      <select id="qCorrect_${idPrefix}">
+        <option value="0" ${correctIdx === 0 ? "selected" : ""}>Option 1</option>
+        <option value="1" ${correctIdx === 1 ? "selected" : ""}>Option 2</option>
+        <option value="2" ${correctIdx === 2 ? "selected" : ""}>Option 3</option>
+        <option value="3" ${correctIdx === 3 ? "selected" : ""}>Option 4</option>
+      </select>
+    </div>
+    <div>
+      <label>Explanation Text (Optional)</label>
+      <input id="qExp_${idPrefix}" value="${attr(exp)}" placeholder="Explanation text...">
+    </div>
+  </div>
+
+  <label>Explanation Image URL (Optional)</label>
+  <input id="qExpImg_${idPrefix}" value="${attr(expImg)}" placeholder="Explanation image URL (https://i.ibb.co/...)">
+
+  <div style="display:flex;gap:10px;margin-top:12px">
+    <button type="button" class="save" style="margin:0;flex:1" onclick="${onSaveCode}">💾 Save Question</button>
+    <button type="button" class="secondary" style="margin:0;flex:1" onclick="${onCancelCode}">❌ Cancel</button>
+  </div>
+</div>
+  `;
+}
+
 async function loadMockups(){
 const c=document.getElementById("mockupsContainer"),s=document.getElementById("manageStatus");
 s.className="";s.innerText="Loading mockups...";
@@ -705,15 +917,31 @@ const {data,error}=await supabaseClient.from("mockup_tests").select("*").order("
 if(error){s.className="error";s.innerText="❌ "+error.message;c.innerHTML='<div class="empty">Unable to load.</div>';return}
 s.innerText=`✅ ${data.length} mockups loaded`;
 
+const qmSel = document.getElementById("quickMockupSelect");
+if(qmSel) {
+  const current = qmSel.value;
+  qmSel.innerHTML = '<option value="">Select Mockup Test</option>';
+  (data||[]).forEach(m => {
+    addOption(qmSel, m.id, `${m.title} (${m.duration||0} min)`);
+  });
+  if(current) qmSel.value = current;
+  updateQuickMockupSubjects();
+}
+
 if(!data.length){c.innerHTML='<div class="empty">No mockups found.</div>';return}
 c.innerHTML="";
 
+loadedMockups = {};
+
 data.forEach(m=>{
+loadedMockups[m.id] = m;
+
 let q=m.questions_json;
 if(typeof q==="string"){try{q=JSON.parse(q)}catch{q={}}}
 
 const isType2 = (m.test_type === "type2" || m.is_subject_timer_enabled === true);
 const typeTag = isType2 ? "⏱️ Type 2 (Subject Timed)" : "🌐 Type 1 (Universal)";
+const isOpen = openMockupIds.has(m.id);
 
 const d=document.createElement("div");
 d.className="item";
@@ -726,12 +954,254 @@ d.innerHTML=`
 <span class="badge">❓ ${countQuestions(q)} Questions</span>
 ${m.is_featured?'<span class="badge">⭐ Featured</span>':""}
 </div>
-<button class="secondary" onclick="toggle('mq-${m.id}')">👁️ View Questions</button>
-<div id="mq-${m.id}" style="display:none">${createPreview(q)}</div>
-<button class="danger" onclick="deleteMockup(${m.id})">🗑️ Delete Mockup</button>
+<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+<button class="secondary" style="width:auto;margin:0" onclick="toggleMockupView(${m.id})">👁️ View Questions (${countQuestions(q)})</button>
+<button class="secondary" style="width:auto;margin:0" onclick="toggle('medit-${m.id}')">✏️ Edit Details</button>
+<button class="danger" style="width:auto;margin:0" onclick="deleteMockup(${m.id})">🗑️ Delete Mockup</button>
+</div>
+
+<div id="medit-${m.id}" style="display:none;background:#13161c;border:1px solid #353b46;border-radius:12px;padding:14px;margin-top:10px">
+  <h4 style="margin:0 0 10px;color:#82a7ff">✏️ Edit Mockup Details</h4>
+  <label>Title</label>
+  <input id="mEditTitle_${m.id}" value="${attr(m.title||"")}">
+  <label>Description</label>
+  <textarea id="mEditDesc_${m.id}">${esc(m.description||"")}</textarea>
+  <div class="row">
+    <div>
+      <label>Duration (Minutes)</label>
+      <input id="mEditDuration_${m.id}" type="number" value="${m.duration||60}">
+    </div>
+    <div>
+      <label>Category</label>
+      <select id="mEditCategory_${m.id}">${generateCategoryOptions(m.category_id)}</select>
+    </div>
+  </div>
+  <div style="margin:8px 0 14px">
+    <label><input id="mEditFeatured_${m.id}" type="checkbox" ${m.is_featured ? 'checked' : ''} style="width:auto;margin:0"> ⭐ Mark as Featured</label>
+  </div>
+  <button class="save" style="margin:0" onclick="saveMockupDetails(${m.id})">💾 Save Mockup Details</button>
+</div>
+
+<div id="mq-${m.id}" style="display:${isOpen ? 'block' : 'none'};margin-top:12px">${createPreview(q, m.id)}</div>
 `;
 c.appendChild(d);
 });
+}
+
+function toggleMockupView(id) {
+  if(openMockupIds.has(id)) {
+    openMockupIds.delete(id);
+  } else {
+    openMockupIds.add(id);
+  }
+  toggle('mq-' + id);
+}
+
+async function saveMockupDetails(id) {
+  const title = document.getElementById(`mEditTitle_${id}`).value.trim();
+  const description = document.getElementById(`mEditDesc_${id}`).value.trim();
+  const duration = parseInt(document.getElementById(`mEditDuration_${id}`).value) || 0;
+  const categoryId = document.getElementById(`mEditCategory_${id}`).value;
+  const isFeatured = document.getElementById(`mEditFeatured_${id}`).checked;
+
+  if(!title) { alert("Please enter mockup title."); return; }
+
+  const { error } = await supabaseClient.from("mockup_tests").update({
+    title,
+    description,
+    duration,
+    category_id: categoryId ? parseInt(categoryId) : null,
+    is_featured: isFeatured
+  }).eq("id", id);
+
+  if(error) {
+    alert("❌ Error: " + error.message);
+  } else {
+    alert("✅ Mockup details updated!");
+    loadMockups();
+  }
+}
+
+async function saveEditedMockupQuestion(mockupId, subIdx, qIdx) {
+  const m = loadedMockups[mockupId];
+  if(!m) { alert("Mockup not found."); return; }
+
+  const idPrefix = `mq_${mockupId}_${subIdx}_${qIdx}`;
+  const qText = document.getElementById(`qText_${idPrefix}`).value.trim();
+  const qImg = document.getElementById(`qImg_${idPrefix}`).value.trim();
+  const opt0 = document.getElementById(`qOpt0_${idPrefix}`).value.trim();
+  const opt1 = document.getElementById(`qOpt1_${idPrefix}`).value.trim();
+  const opt2 = document.getElementById(`qOpt2_${idPrefix}`).value.trim();
+  const opt3 = document.getElementById(`qOpt3_${idPrefix}`).value.trim();
+  const correct = parseInt(document.getElementById(`qCorrect_${idPrefix}`).value);
+  const exp = document.getElementById(`qExp_${idPrefix}`).value.trim();
+  const expImg = document.getElementById(`qExpImg_${idPrefix}`) ? document.getElementById(`qExpImg_${idPrefix}`).value.trim() : "";
+
+  if(!qText && !qImg) {
+    alert("Please enter question text or image URL.");
+    return;
+  }
+  if(!opt0 || !opt1 || !opt2 || !opt3) {
+    alert("All 4 options are required.");
+    return;
+  }
+
+  let qObj = null;
+  let qJson = m.questions_json;
+  if(typeof qJson === "string") {
+    try { qJson = JSON.parse(qJson); } catch { qJson = {}; }
+  }
+
+  if(qJson && Array.isArray(qJson.subjects)) {
+    if(qJson.subjects[subIdx] && Array.isArray(qJson.subjects[subIdx].questions_json)) {
+      qObj = qJson.subjects[subIdx].questions_json[qIdx];
+    }
+  } else if(qJson && typeof qJson === "object" && !Array.isArray(qJson)) {
+    const subEntries = Object.entries(qJson).filter(([k]) => k !== 'test_type' && k !== 'is_subject_timer_enabled' && k !== 'subjects');
+    if(subEntries[subIdx] && Array.isArray(subEntries[subIdx][1])) {
+      qObj = subEntries[subIdx][1][qIdx];
+    }
+  } else if(Array.isArray(qJson)) {
+    qObj = qJson[qIdx];
+  }
+
+  if(!qObj) {
+    alert("Target question not found in data structure.");
+    return;
+  }
+
+  qObj.question_text = qText;
+  qObj.options = [opt0, opt1, opt2, opt3];
+  qObj.correct_option_index = correct;
+  if(qImg) qObj.image_url = qImg; else delete qObj.image_url;
+  if(exp) { qObj.e = exp; qObj.explanation = exp; } else { delete qObj.e; delete qObj.explanation; }
+  if(expImg) { qObj.explanation_image_url = expImg; qObj.exp_image_url = expImg; } else { delete qObj.explanation_image_url; delete qObj.exp_image_url; }
+
+  m.questions_json = qJson;
+  if(qJson && Array.isArray(qJson.subjects)) { m.subjects = qJson.subjects; }
+
+  const { error } = await supabaseClient.from("mockup_tests").update({
+    questions_json: m.questions_json,
+    subjects: Array.isArray(m.subjects) ? m.subjects : (qJson.subjects || null)
+  }).eq("id", mockupId);
+
+  if(error) {
+    alert("❌ Update failed: " + error.message);
+  } else {
+    alert("✅ Question updated successfully!");
+    openMockupIds.add(mockupId);
+    loadMockups();
+  }
+}
+
+async function deleteMockupQuestion(mockupId, subIdx, qIdx) {
+  if(!confirm("Are you sure you want to delete this question?")) return;
+
+  const m = loadedMockups[mockupId];
+  if(!m) { alert("Mockup not found."); return; }
+
+  let qJson = m.questions_json;
+  if(typeof qJson === "string") {
+    try { qJson = JSON.parse(qJson); } catch { qJson = {}; }
+  }
+
+  if(qJson && Array.isArray(qJson.subjects)) {
+    if(qJson.subjects[subIdx] && Array.isArray(qJson.subjects[subIdx].questions_json)) {
+      qJson.subjects[subIdx].questions_json.splice(qIdx, 1);
+    }
+  } else if(qJson && typeof qJson === "object" && !Array.isArray(qJson)) {
+    const subEntries = Object.entries(qJson).filter(([k]) => k !== 'test_type' && k !== 'is_subject_timer_enabled' && k !== 'subjects');
+    if(subEntries[subIdx] && Array.isArray(subEntries[subIdx][1])) {
+      subEntries[subIdx][1].splice(qIdx, 1);
+    }
+  } else if(Array.isArray(qJson)) {
+    qJson.splice(qIdx, 1);
+  }
+
+  m.questions_json = qJson;
+  if(qJson && Array.isArray(qJson.subjects)) { m.subjects = qJson.subjects; }
+
+  const { error } = await supabaseClient.from("mockup_tests").update({
+    questions_json: m.questions_json,
+    subjects: Array.isArray(m.subjects) ? m.subjects : (qJson.subjects || null)
+  }).eq("id", mockupId);
+
+  if(error) {
+    alert("❌ Deletion failed: " + error.message);
+  } else {
+    alert("✅ Question deleted!");
+    openMockupIds.add(mockupId);
+    loadMockups();
+  }
+}
+
+async function addMockupQuestion(mockupId, subIdx) {
+  const m = loadedMockups[mockupId];
+  if(!m) { alert("Mockup not found."); return; }
+
+  const idPrefix = `add_mq_${mockupId}_${subIdx}`;
+  const qText = document.getElementById(`qText_${idPrefix}`).value.trim();
+  const qImg = document.getElementById(`qImg_${idPrefix}`).value.trim();
+  const opt0 = document.getElementById(`qOpt0_${idPrefix}`).value.trim();
+  const opt1 = document.getElementById(`qOpt1_${idPrefix}`).value.trim();
+  const opt2 = document.getElementById(`qOpt2_${idPrefix}`).value.trim();
+  const opt3 = document.getElementById(`qOpt3_${idPrefix}`).value.trim();
+  const correct = parseInt(document.getElementById(`qCorrect_${idPrefix}`).value);
+  const exp = document.getElementById(`qExp_${idPrefix}`).value.trim();
+  const expImg = document.getElementById(`qExpImg_${idPrefix}`) ? document.getElementById(`qExpImg_${idPrefix}`).value.trim() : "";
+
+  if(!qText && !qImg) {
+    alert("Please enter question text or image URL.");
+    return;
+  }
+  if(!opt0 || !opt1 || !opt2 || !opt3) {
+    alert("All 4 options are required.");
+    return;
+  }
+
+  let qJson = m.questions_json;
+  if(typeof qJson === "string") {
+    try { qJson = JSON.parse(qJson); } catch { qJson = {}; }
+  }
+
+  const newQ = {
+    id: "q" + Date.now(),
+    question_text: qText,
+    options: [opt0, opt1, opt2, opt3],
+    correct_option_index: correct
+  };
+  if(qImg) newQ.image_url = qImg;
+  if(exp) { newQ.e = exp; newQ.explanation = exp; }
+  if(expImg) { newQ.explanation_image_url = expImg; newQ.exp_image_url = expImg; }
+
+  if(qJson && Array.isArray(qJson.subjects)) {
+    if(qJson.subjects[subIdx]) {
+      if(!Array.isArray(qJson.subjects[subIdx].questions_json)) qJson.subjects[subIdx].questions_json = [];
+      qJson.subjects[subIdx].questions_json.push(newQ);
+    }
+  } else if(qJson && typeof qJson === "object" && !Array.isArray(qJson)) {
+    const subEntries = Object.entries(qJson).filter(([k]) => k !== 'test_type' && k !== 'is_subject_timer_enabled' && k !== 'subjects');
+    if(subEntries[subIdx] && Array.isArray(subEntries[subIdx][1])) {
+      subEntries[subIdx][1].push(newQ);
+    }
+  } else if(Array.isArray(qJson)) {
+    qJson.push(newQ);
+  }
+
+  m.questions_json = qJson;
+
+  const { error } = await supabaseClient.from("mockup_tests").update({
+    questions_json: m.questions_json,
+    subjects: Array.isArray(m.subjects) ? m.subjects : (qJson.subjects || null)
+  }).eq("id", mockupId);
+
+  if(error) {
+    alert("❌ Adding question failed: " + error.message);
+  } else {
+    alert("✅ Question added successfully!");
+    openMockupIds.add(mockupId);
+    loadMockups();
+  }
 }
 
 async function deleteMockup(id){
@@ -891,6 +1361,40 @@ document.getElementById("testJsonPreview").style.display="none";
 loadTests();refreshDashboard();
 }
 
+function extractQuestionsArray(json) {
+  let questions = json;
+  if(typeof questions === "string") {
+    try { questions = JSON.parse(questions); } catch {}
+  }
+  if(typeof questions === "string") {
+    try { questions = JSON.parse(questions); } catch {}
+  }
+
+  if(Array.isArray(questions)) {
+    return questions;
+  }
+
+  if(questions && typeof questions === "object") {
+    if(Array.isArray(questions.questions)) {
+      return questions.questions;
+    }
+    if(Array.isArray(questions.subjects)) {
+      let list = [];
+      questions.subjects.forEach(s => {
+        if(Array.isArray(s.questions_json)) list.push(...s.questions_json);
+      });
+      return list;
+    }
+    let list = [];
+    Object.values(questions).forEach(v => {
+      if(Array.isArray(v)) list.push(...v);
+    });
+    return list;
+  }
+
+  return [];
+}
+
 async function loadTests(){
 const c=document.getElementById("testsContainer"),s=document.getElementById("testStatus");
 s.className="";s.innerText="Loading tests...";
@@ -900,13 +1404,27 @@ const {data,error}=await supabaseClient.from("tests").select("*").order("id",{as
 if(error){s.className="error";s.innerText="❌ "+error.message;c.innerHTML='<div class="empty">Unable to load tests.</div>';return}
 
 s.innerText=`✅ ${data.length} tests loaded`;
+
+const qtSel = document.getElementById("quickTestSelect");
+if(qtSel) {
+  const current = qtSel.value;
+  qtSel.innerHTML = '<option value="">Select Test</option>';
+  (data||[]).forEach(t => {
+    addOption(qtSel, t.id, `${t.title} (${t.duration||0} min)`);
+  });
+  if(current) qtSel.value = current;
+}
+
 if(!data.length){c.innerHTML='<div class="empty">No tests found.</div>';return}
 c.innerHTML="";
 
-data.forEach(t=>{
-let q=t.questions_json;
-try{if(typeof q==="string")q=JSON.parse(q)}catch{q=[]}
+loadedTests = {};
 
+data.forEach(t=>{
+loadedTests[t.id] = t;
+
+const qList = extractQuestionsArray(t.questions_json);
+const isOpen = openTestIds.has(t.id);
 const d=document.createElement("div");
 d.className="item";
 const info=getTestHierarchy(t);
@@ -915,7 +1433,7 @@ d.innerHTML=`
 <div class="item-desc">${esc(t.description||"No description")}</div>
 <div class="meta">
 <span class="badge">⏱️ ${t.duration||0} min</span>
-<span class="badge">❓ ${Array.isArray(q)?q.length:0} Questions</span>
+<span class="badge">❓ ${qList.length} Questions</span>
 </div>
 <div class="hierarchy">
 <div class="hierarchy-row"><span class="hierarchy-label">📂 Category</span><span class="hierarchy-value">${esc(info.category)}</span></div>
@@ -923,32 +1441,287 @@ d.innerHTML=`
 <div class="hierarchy-row"><span class="hierarchy-label">📖 Chapter</span><span class="hierarchy-value">${esc(info.chapter)}</span></div>
 <div class="hierarchy-row"><span class="hierarchy-label">🏷️ Topic</span><span class="hierarchy-value">${esc(info.topic)}</span></div>
 </div>
-<button class="secondary show-btn" onclick="toggle('td-${t.id}')">👁️ Show Existing Data</button>
-<div id="td-${t.id}" class="details">
-<div class="small" style="margin-bottom:8px">Test ID: ${esc(t.id)} • Category ID: ${esc(t.category_id??'—')} • Topic ID: ${esc(t.topic_id??'—')}</div>
-<button class="secondary" onclick="toggle('tq-${t.id}')">📋 Show Questions JSON</button>
-<div id="tq-${t.id}" class="details">${createTestPreview(q)}</div>
+<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+<button class="secondary show-btn" style="width:auto;margin:0" onclick="toggleTestView(${t.id})">👁️ View Questions (${qList.length})</button>
+<button class="secondary" style="width:auto;margin:0" onclick="toggle('tedit-${t.id}')">✏️ Edit Details</button>
+<button class="secondary" style="width:auto;margin:0" onclick="toggle('tjson-${t.id}')">📋 Edit Raw JSON</button>
+<button class="danger" style="width:auto;margin:0" onclick="deleteTest(${t.id})">🗑️ Delete Test</button>
 </div>
-<button class="danger" onclick="deleteTest(${t.id})">🗑️ Delete Test</button>
+
+<div id="tedit-${t.id}" style="display:none;background:#13161c;border:1px solid #353b46;border-radius:12px;padding:14px;margin-top:10px">
+  <h4 style="margin:0 0 10px;color:#82a7ff">✏️ Edit Test Details</h4>
+  <label>Title</label>
+  <input id="tEditTitle_${t.id}" value="${attr(t.title||"")}">
+  <label>Description</label>
+  <textarea id="tEditDesc_${t.id}">${esc(t.description||"")}</textarea>
+  <div class="row">
+    <div>
+      <label>Duration (Minutes)</label>
+      <input id="tEditDuration_${t.id}" type="number" value="${t.duration||30}">
+    </div>
+    <div>
+      <label>Category</label>
+      <select id="tEditCategory_${t.id}">${generateCategoryOptions(t.category_id)}</select>
+    </div>
+  </div>
+  <button class="save" style="margin-top:10px" onclick="saveTestDetails(${t.id})">💾 Save Test Details</button>
+</div>
+
+<div id="tjson-${t.id}" style="display:none;background:#13161c;border:1px solid #353b46;border-radius:12px;padding:14px;margin-top:10px">
+  <h4 style="margin:0 0 10px;color:#82a7ff">📋 Edit Test Questions JSON Array</h4>
+  <textarea id="tJsonRaw_${t.id}" style="min-height:220px;font-family:monospace;font-size:12px" placeholder="[{...}]">${esc(JSON.stringify(qList, null, 2))}</textarea>
+  <button class="save" style="margin-top:10px" onclick="saveRawTestJson(${t.id})">💾 Save Questions JSON</button>
+</div>
+
+<div id="td-${t.id}" class="details" style="display:${isOpen ? 'block' : 'none'};margin-top:10px">
+<div class="small" style="margin-bottom:8px">Test ID: ${esc(t.id)} • Category ID: ${esc(t.category_id??'—')} • Topic ID: ${esc(t.topic_id??'—')}</div>
+<div id="tq-${t.id}">${createTestPreview(t.questions_json, t.id)}</div>
+</div>
 `;
 c.appendChild(d);
 });
 }
 
-function createTestPreview(json){
-if(!Array.isArray(json))return '<div class="empty">No questions found.</div>';
-let h="";
-json.forEach((q,i)=>{
-h+=`<div class="question-preview"><div class="small">ID: ${esc(q.id||("q"+(i+1)))}</div><div class="question-text">${i+1}. ${esc(q.question_text||"")}</div>`;
-if(q.image_url) h+=`<img src="${esc(q.image_url)}" style="max-width:100%;height:auto;border-radius:8px;margin-top:8px" alt="Question Image" />`;
-if(Array.isArray(q.options))q.options.forEach((o,j)=>{
-const ok=j===Number(q.correct_option_index);
-h+=`<div class="option ${ok?"correct":""}">${ok?"✅ ":""}${esc(String(o))}</div>`;
+function toggleTestView(id) {
+  if(openTestIds.has(id)) {
+    openTestIds.delete(id);
+  } else {
+    openTestIds.add(id);
+  }
+  toggle('td-' + id);
+}
+
+async function saveTestDetails(id) {
+  const title = document.getElementById(`tEditTitle_${id}`).value.trim();
+  const description = document.getElementById(`tEditDesc_${id}`).value.trim();
+  const duration = parseInt(document.getElementById(`tEditDuration_${id}`).value) || 0;
+  const categoryId = document.getElementById(`tEditCategory_${id}`).value;
+
+  if(!title) { alert("Please enter test title."); return; }
+
+  const { error } = await supabaseClient.from("tests").update({
+    title,
+    description,
+    duration,
+    category_id: categoryId ? parseInt(categoryId) : null
+  }).eq("id", id);
+
+  if(error) {
+    alert("❌ Error: " + error.message);
+  } else {
+    alert("✅ Test details updated!");
+    loadTests();
+  }
+}
+
+async function saveRawTestJson(testId) {
+  const text = document.getElementById(`tJsonRaw_${testId}`).value.trim();
+  if(!text) { alert("Please enter JSON text."); return; }
+
+  let parsed = null;
+  try {
+    parsed = JSON.parse(text);
+    validateTestQuestions(parsed);
+  } catch(e) {
+    alert("❌ Invalid JSON: " + e.message);
+    return;
+  }
+
+  const { error } = await supabaseClient.from("tests").update({
+    questions_json: JSON.stringify(parsed)
+  }).eq("id", testId);
+
+  if(error) {
+    alert("❌ Error: " + error.message);
+  } else {
+    alert("✅ Test Questions JSON updated successfully!");
+    openTestIds.add(testId);
+    loadTests();
+  }
+}
+
+async function saveEditedTestQuestion(testId, qIdx) {
+  const t = loadedTests[testId];
+  if(!t) { alert("Test not found."); return; }
+
+  const idPrefix = `tq_${testId}_${qIdx}`;
+  const qText = document.getElementById(`qText_${idPrefix}`).value.trim();
+  const qImg = document.getElementById(`qImg_${idPrefix}`).value.trim();
+  const opt0 = document.getElementById(`qOpt0_${idPrefix}`).value.trim();
+  const opt1 = document.getElementById(`qOpt1_${idPrefix}`).value.trim();
+  const opt2 = document.getElementById(`qOpt2_${idPrefix}`).value.trim();
+  const opt3 = document.getElementById(`qOpt3_${idPrefix}`).value.trim();
+  const correct = parseInt(document.getElementById(`qCorrect_${idPrefix}`).value);
+  const exp = document.getElementById(`qExp_${idPrefix}`).value.trim();
+
+  if(!qText && !qImg) {
+    alert("Please enter question text or image URL.");
+    return;
+  }
+  if(!opt0 || !opt1 || !opt2 || !opt3) {
+    alert("All 4 options are required.");
+    return;
+  }
+
+  let questions = extractQuestionsArray(t.questions_json);
+
+  if(!Array.isArray(questions) || !questions[qIdx]) {
+    alert("Question not found.");
+    return;
+  }
+
+  const qObj = questions[qIdx];
+  qObj.question_text = qText;
+  qObj.options = [opt0, opt1, opt2, opt3];
+  qObj.correct_option_index = correct;
+  if(qImg) qObj.image_url = qImg; else delete qObj.image_url;
+  if(exp) { qObj.e = exp; qObj.explanation = exp; } else { delete qObj.e; delete qObj.explanation; }
+  const expImg = document.getElementById(`qExpImg_${idPrefix}`) ? document.getElementById(`qExpImg_${idPrefix}`).value.trim() : "";
+  if(expImg) { qObj.explanation_image_url = expImg; qObj.exp_image_url = expImg; } else { delete qObj.explanation_image_url; delete qObj.exp_image_url; }
+
+  t.questions_json = questions;
+
+  const { error } = await supabaseClient.from("tests").update({
+    questions_json: JSON.stringify(questions)
+  }).eq("id", testId);
+
+  if(error) {
+    alert("❌ Update failed: " + error.message);
+  } else {
+    alert("✅ Question updated successfully!");
+    openTestIds.add(testId);
+    loadTests();
+  }
+}
+
+async function deleteTestQuestion(testId, qIdx) {
+  if(!confirm("Are you sure you want to delete this question?")) return;
+
+  const t = loadedTests[testId];
+  if(!t) { alert("Test not found."); return; }
+
+  let questions = extractQuestionsArray(t.questions_json);
+
+  if(!Array.isArray(questions)) return;
+
+  questions.splice(qIdx, 1);
+  t.questions_json = questions;
+
+  const { error } = await supabaseClient.from("tests").update({
+    questions_json: JSON.stringify(questions)
+  }).eq("id", testId);
+
+  if(error) {
+    alert("❌ Deletion failed: " + error.message);
+  } else {
+    alert("✅ Question deleted!");
+    openTestIds.add(testId);
+    loadTests();
+  }
+}
+
+async function addTestQuestion(testId) {
+  const t = loadedTests[testId];
+  if(!t) { alert("Test not found."); return; }
+
+  const idPrefix = `add_tq_${testId}`;
+  const qText = document.getElementById(`qText_${idPrefix}`).value.trim();
+  const qImg = document.getElementById(`qImg_${idPrefix}`).value.trim();
+  const opt0 = document.getElementById(`qOpt0_${idPrefix}`).value.trim();
+  const opt1 = document.getElementById(`qOpt1_${idPrefix}`).value.trim();
+  const opt2 = document.getElementById(`qOpt2_${idPrefix}`).value.trim();
+  const opt3 = document.getElementById(`qOpt3_${idPrefix}`).value.trim();
+  const correct = parseInt(document.getElementById(`qCorrect_${idPrefix}`).value);
+  const exp = document.getElementById(`qExp_${idPrefix}`).value.trim();
+  const expImg = document.getElementById(`qExpImg_${idPrefix}`) ? document.getElementById(`qExpImg_${idPrefix}`).value.trim() : "";
+
+  if(!qText && !qImg) {
+    alert("Please enter question text or image URL.");
+    return;
+  }
+  if(!opt0 || !opt1 || !opt2 || !opt3) {
+    alert("All 4 options are required.");
+    return;
+  }
+
+  let questions = extractQuestionsArray(t.questions_json);
+
+  const newQ = {
+    id: "q" + (questions.length + 1),
+    question_text: qText,
+    options: [opt0, opt1, opt2, opt3],
+    correct_option_index: correct
+  };
+  if(qImg) newQ.image_url = qImg;
+  if(exp) { newQ.e = exp; newQ.explanation = exp; }
+  if(expImg) { newQ.explanation_image_url = expImg; newQ.exp_image_url = expImg; }
+
+  questions.push(newQ);
+  t.questions_json = questions;
+
+  const { error } = await supabaseClient.from("tests").update({
+    questions_json: JSON.stringify(questions)
+  }).eq("id", testId);
+
+  if(error) {
+    alert("❌ Adding question failed: " + error.message);
+  } else {
+    alert("✅ Question added successfully!");
+    openTestIds.add(testId);
+    loadTests();
+  }
+}
+
+function createTestPreview(json, testId){
+let questions = extractQuestionsArray(json);
+if(!Array.isArray(questions) || questions.length === 0) return '<div class="empty">No questions found.</div>';
+
+let h = "";
+const addFormId = `form_add_tq_${testId}`;
+
+h += `<div style="display:flex;justify-content:flex-end;margin-bottom:12px">
+  <button class="save" style="width:auto;margin:0;padding:6px 12px;font-size:12px" onclick="toggle('${addFormId}')">➕ Add Question to Test</button>
+</div>`;
+
+h += renderQuestionEditForm(`add_tq_${testId}`, null, `addTestQuestion(${testId})`, `toggle('${addFormId}')`);
+
+questions.forEach((q, i) => {
+const qFormId = `form_tq_${testId}_${i}`;
+h += `<div class="question-preview">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+    <div>
+      <div class="small">ID: ${esc(q.id || ("q" + (i + 1)))}</div>
+      <div class="question-text">${i + 1}. ${esc(q.question_text || q.questionText || q.question || "")}</div>
+    </div>
+    <div style="display:flex;gap:6px;flex-shrink:0">
+      <button class="secondary" style="width:auto;margin:0;padding:5px 12px;font-size:12px" onclick="toggle('${qFormId}')">✏️ Edit Question</button>
+      <button class="danger" style="width:auto;margin:0;padding:5px 12px;font-size:12px" onclick="deleteTestQuestion(${testId}, ${i})">🗑️ Delete</button>
+    </div>
+  </div>`;
+
+if(q.image_url || q.imageUrl) h += `<img src="${esc(q.image_url || q.imageUrl)}" style="max-width:100%;height:auto;border-radius:8px;margin-top:8px" alt="Question Image" />`;
+
+if(Array.isArray(q.options)) {
+q.options.forEach((o, j) => {
+const ok = j === Number(q.correct_option_index !== undefined ? q.correct_option_index : q.correctOptionIndex);
+h += `<div class="option ${ok ? "correct" : ""}">${ok ? "✅ " : ""}${esc(String(o))}</div>`;
 });
-const exp = q.e || q.explanation;
-if(exp)h+=`<div class="explanation">💡 ${esc(exp)}</div>`;
-h+="</div>";
+}
+
+const exp = q.e || q.explanation || q.exp;
+const expImg = q.explanation_image_url || q.exp_image_url || q.e_img;
+if(exp || expImg) {
+  h += `<div class="explanation">`;
+  if(exp) h += `<div>💡 ${esc(exp)}</div>`;
+  if(expImg) h += `<img src="${esc(expImg)}" style="max-width:100%;height:auto;border-radius:8px;margin-top:6px" alt="Explanation Image" />`;
+  h += `</div>`;
+}
+
+h += renderQuestionEditForm(`tq_${testId}_${i}`, q, `saveEditedTestQuestion(${testId}, ${i})`, `toggle('${qFormId}')`);
+
+h += `</div>`;
 });
+
 return h;
 }
 
@@ -1274,52 +2047,165 @@ Object.values(j).forEach(a=>{if(Array.isArray(a))n+=a.length});
 return n;
 }
 
-function createPreview(j){
+function createPreview(j, mockupId){
 if(!j||typeof j!=="object")return '<div class="empty">No questions found.</div>';
 let h="",n=0;
 
+// Format A: j.subjects array
 if(Array.isArray(j.subjects)) {
-j.subjects.forEach(sub => {
-h += `<div class="subject-title">📚 ${esc(sub.subject_name || "Subject")} ${sub.duration ? `(${sub.duration} min)` : ''}</div>`;
+j.subjects.forEach((sub, subIdx) => {
+const addFormId = `form_add_mq_${mockupId}_${subIdx}`;
+h += `<div class="subject-title" style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;border-bottom:1px solid #292d35;padding-bottom:8px">
+  <span>📚 ${esc(sub.subject_name || "Subject")} ${sub.duration ? `(${sub.duration} min)` : ''}</span>
+  <button class="save" style="width:auto;margin:0;padding:4px 10px;font-size:12px" onclick="toggle('${addFormId}')">➕ Add Question to Subject</button>
+</div>`;
+
+h += renderQuestionEditForm(`add_mq_${mockupId}_${subIdx}`, null, `addMockupQuestion(${mockupId}, ${subIdx})`, `toggle('${addFormId}')`);
+
 const qs = sub.questions_json;
-if(Array.isArray(qs)) {
-qs.forEach(q => {
+if(Array.isArray(qs) && qs.length > 0) {
+qs.forEach((q, qIdx) => {
 n++;
-h += `<div class="question-preview"><div class="question-text">${n}. ${esc(q.question_text||"")}</div>`;
-if(q.image_url) h += `<img src="${esc(q.image_url)}" style="max-width:100%;height:auto;border-radius:8px;margin-top:8px" alt="Question Image" />`;
+const qFormId = `form_mq_${mockupId}_${subIdx}_${qIdx}`;
+h += `<div class="question-preview" id="qBox_${mockupId}_${subIdx}_${qIdx}">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+    <div class="question-text" style="flex:1">${n}. ${esc(q.question_text || q.questionText || q.question || "")}</div>
+    <div style="display:flex;gap:6px;flex-shrink:0">
+      <button class="secondary" style="width:auto;margin:0;padding:5px 12px;font-size:12px" onclick="toggle('${qFormId}')">✏️ Edit Question</button>
+      <button class="danger" style="width:auto;margin:0;padding:5px 12px;font-size:12px" onclick="deleteMockupQuestion(${mockupId}, ${subIdx}, ${qIdx})">🗑️ Delete</button>
+    </div>
+  </div>`;
+
+if(q.image_url || q.imageUrl) h += `<img src="${esc(q.image_url || q.imageUrl)}" style="max-width:100%;height:auto;border-radius:8px;margin-top:8px" alt="Question Image" />`;
+
 if(Array.isArray(q.options)) {
 q.options.forEach((o,i) => {
-const ok = i === Number(q.correct_option_index);
+const ok = i === Number(q.correct_option_index !== undefined ? q.correct_option_index : q.correctOptionIndex);
 h += `<div class="option ${ok ? "correct" : ""}">${ok ? "✅ " : ""}${esc(String(o))}</div>`;
 });
 }
-const exp = q.e || q.explanation;
-if(exp) h += `<div class="explanation">💡 ${esc(exp)}</div>`;
-h += "</div>";
+
+const exp = q.e || q.explanation || q.exp;
+const expImg = q.explanation_image_url || q.exp_image_url || q.e_img;
+if(exp || expImg) {
+  h += `<div class="explanation">`;
+  if(exp) h += `<div>💡 ${esc(exp)}</div>`;
+  if(expImg) h += `<img src="${esc(expImg)}" style="max-width:100%;height:auto;border-radius:8px;margin-top:6px" alt="Explanation Image" />`;
+  h += `</div>`;
+}
+
+h += renderQuestionEditForm(`mq_${mockupId}_${subIdx}_${qIdx}`, q, `saveEditedMockupQuestion(${mockupId}, ${subIdx}, ${qIdx})`, `toggle('${qFormId}')`);
+
+h += `</div>`;
 });
+} else {
+h += '<div class="empty" style="padding:12px">No questions in this subject yet.</div>';
 }
 });
 return h || '<div class="empty">No questions found.</div>';
 }
 
-Object.entries(j).forEach(([sub,qs])=>{
-if(sub === 'test_type' || sub === 'is_subject_timer_enabled') return;
-h+=`<div class="subject-title">📚 ${esc(sub)}</div>`;
-if(!Array.isArray(qs))return;
-qs.forEach(q=>{
+// Format B: Dictionary object { "SubjectName": [questions] }
+let subEntries = Object.entries(j).filter(([k]) => k !== 'test_type' && k !== 'is_subject_timer_enabled' && k !== 'subjects');
+if(subEntries.length > 0) {
+subEntries.forEach(([subName, qs], subIdx) => {
+const addFormId = `form_add_mq_${mockupId}_${subIdx}`;
+h += `<div class="subject-title" style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;border-bottom:1px solid #292d35;padding-bottom:8px">
+  <span>📚 ${esc(subName)}</span>
+  <button class="save" style="width:auto;margin:0;padding:4px 10px;font-size:12px" onclick="toggle('${addFormId}')">➕ Add Question to Subject</button>
+</div>`;
+
+h += renderQuestionEditForm(`add_mq_${mockupId}_${subIdx}`, null, `addMockupQuestion(${mockupId}, ${subIdx})`, `toggle('${addFormId}')`);
+
+if(Array.isArray(qs) && qs.length > 0) {
+qs.forEach((q, qIdx) => {
 n++;
-h+=`<div class="question-preview"><div class="question-text">${n}. ${esc(q.question_text||"")}</div>`;
-if(q.image_url) h+=`<img src="${esc(q.image_url)}" style="max-width:100%;height:auto;border-radius:8px;margin-top:8px" alt="Question Image" />`;
-if(Array.isArray(q.options))q.options.forEach((o,i)=>{
-const ok=i===Number(q.correct_option_index);
-h+=`<div class="option ${ok?"correct":""}">${ok?"✅ ":""}${esc(String(o))}</div>`;
+const qFormId = `form_mq_${mockupId}_${subIdx}_${qIdx}`;
+h += `<div class="question-preview" id="qBox_${mockupId}_${subIdx}_${qIdx}">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+    <div class="question-text" style="flex:1">${n}. ${esc(q.question_text || q.questionText || q.question || "")}</div>
+    <div style="display:flex;gap:6px;flex-shrink:0">
+      <button class="secondary" style="width:auto;margin:0;padding:5px 12px;font-size:12px" onclick="toggle('${qFormId}')">✏️ Edit Question</button>
+      <button class="danger" style="width:auto;margin:0;padding:5px 12px;font-size:12px" onclick="deleteMockupQuestion(${mockupId}, ${subIdx}, ${qIdx})">🗑️ Delete</button>
+    </div>
+  </div>`;
+
+if(q.image_url || q.imageUrl) h += `<img src="${esc(q.image_url || q.imageUrl)}" style="max-width:100%;height:auto;border-radius:8px;margin-top:8px" alt="Question Image" />`;
+
+if(Array.isArray(q.options)) {
+q.options.forEach((o,i) => {
+const ok = i === Number(q.correct_option_index !== undefined ? q.correct_option_index : q.correctOptionIndex);
+h += `<div class="option ${ok ? "correct" : ""}">${ok ? "✅ " : ""}${esc(String(o))}</div>`;
 });
-const exp = q.e || q.explanation;
-if(exp)h+=`<div class="explanation">💡 ${esc(exp)}</div>`;
-h+="</div>";
+}
+
+const exp = q.e || q.explanation || q.exp;
+const expImg = q.explanation_image_url || q.exp_image_url || q.e_img;
+if(exp || expImg) {
+  h += `<div class="explanation">`;
+  if(exp) h += `<div>💡 ${esc(exp)}</div>`;
+  if(expImg) h += `<img src="${esc(expImg)}" style="max-width:100%;height:auto;border-radius:8px;margin-top:6px" alt="Explanation Image" />`;
+  h += `</div>`;
+}
+
+h += renderQuestionEditForm(`mq_${mockupId}_${subIdx}_${qIdx}`, q, `saveEditedMockupQuestion(${mockupId}, ${subIdx}, ${qIdx})`, `toggle('${qFormId}')`);
+
+h += `</div>`;
 });
+} else {
+h += '<div class="empty" style="padding:12px">No questions in this subject yet.</div>';
+}
 });
 return h || '<div class="empty">No questions found.</div>';
+}
+
+// Format C: Direct array of questions
+if(Array.isArray(j)) {
+const addFormId = `form_add_mq_${mockupId}_0`;
+h += `<div style="display:flex;justify-content:flex-end;margin-bottom:10px">
+  <button class="save" style="width:auto;margin:0;padding:6px 12px;font-size:12px" onclick="toggle('${addFormId}')">➕ Add Question</button>
+</div>`;
+
+h += renderQuestionEditForm(`add_mq_${mockupId}_0`, null, `addMockupQuestion(${mockupId}, 0)`, `toggle('${addFormId}')`);
+
+j.forEach((q, qIdx) => {
+n++;
+const qFormId = `form_mq_${mockupId}_0_${qIdx}`;
+h += `<div class="question-preview">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+    <div class="question-text" style="flex:1">${n}. ${esc(q.question_text || q.questionText || q.question || "")}</div>
+    <div style="display:flex;gap:6px;flex-shrink:0">
+      <button class="secondary" style="width:auto;margin:0;padding:5px 12px;font-size:12px" onclick="toggle('${qFormId}')">✏️ Edit Question</button>
+      <button class="danger" style="width:auto;margin:0;padding:5px 12px;font-size:12px" onclick="deleteMockupQuestion(${mockupId}, 0, ${qIdx})">🗑️ Delete</button>
+    </div>
+  </div>`;
+
+if(q.image_url || q.imageUrl) h += `<img src="${esc(q.image_url || q.imageUrl)}" style="max-width:100%;height:auto;border-radius:8px;margin-top:8px" alt="Question Image" />`;
+
+if(Array.isArray(q.options)) {
+q.options.forEach((o,i) => {
+const ok = i === Number(q.correct_option_index !== undefined ? q.correct_option_index : q.correctOptionIndex);
+h += `<div class="option ${ok ? "correct" : ""}">${ok ? "✅ " : ""}${esc(String(o))}</div>`;
+});
+}
+
+const exp = q.e || q.explanation || q.exp;
+const expImg = q.explanation_image_url || q.exp_image_url || q.e_img;
+if(exp || expImg) {
+  h += `<div class="explanation">`;
+  if(exp) h += `<div>💡 ${esc(exp)}</div>`;
+  if(expImg) h += `<img src="${esc(expImg)}" style="max-width:100%;height:auto;border-radius:8px;margin-top:6px" alt="Explanation Image" />`;
+  h += `</div>`;
+}
+
+h += renderQuestionEditForm(`mq_${mockupId}_0_${qIdx}`, q, `saveEditedMockupQuestion(${mockupId}, 0, ${qIdx})`, `toggle('${qFormId}')`);
+
+h += `</div>`;
+});
+return h || '<div class="empty">No questions found.</div>';
+}
+
+return '<div class="empty">No questions found.</div>';
 }
 
 function toggle(id){
@@ -1435,8 +2321,48 @@ function addVisualQuestionToSubject(id) {
   document.getElementById(`visOpt2_${id}`).value = "";
   document.getElementById(`visOpt3_${id}`).value = "";
   document.getElementById(`visExp_${id}`).value = "";
+  document.getElementById(`visQText_${id}`).focus();
 
-  alert("✅ Question added and combined into Subject JSON successfully!");
+  renderSubjectVisualCards(id, questions);
+}
+
+function renderSubjectVisualCards(subId, questions) {
+  let container = document.getElementById(`visList_${subId}`);
+  if(!container) return;
+
+  if(!questions || questions.length === 0) {
+    container.innerHTML = "";
+    return;
+  }
+
+  let h = `<div style="margin-top:12px"><strong style="color:#82a7ff">📋 Added Questions Preview (${questions.length}):</strong></div>`;
+  questions.forEach((q, idx) => {
+    h += `<div class="question-preview" style="margin-top:8px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div class="question-text">${idx+1}. ${esc(q.question_text || "")}</div>
+        <button type="button" class="danger" style="width:auto;margin:0;padding:4px 8px;font-size:11px" onclick="removeSubjectVisualQ(${subId}, ${idx})">🗑️ Remove</button>
+      </div>`;
+    if(q.image_url) h += `<img src="${esc(q.image_url)}" style="max-width:100%;height:auto;border-radius:6px;margin-top:6px" />`;
+    if(Array.isArray(q.options)) {
+      q.options.forEach((o, optI) => {
+        const isOk = optI === Number(q.correct_option_index);
+        h += `<div class="option ${isOk ? 'correct' : ''}">${isOk ? '✅ ' : ''}${esc(String(o))}</div>`;
+      });
+    }
+    h += `</div>`;
+  });
+  container.innerHTML = h;
+}
+
+function removeSubjectVisualQ(subId, qIdx) {
+  const textarea = document.getElementById(`subJson_${subId}`);
+  let questions = [];
+  try { questions = JSON.parse(textarea.value.trim()); } catch {}
+  if(Array.isArray(questions)) {
+    questions.splice(qIdx, 1);
+    textarea.value = JSON.stringify(questions, null, 2);
+    renderSubjectVisualCards(subId, questions);
+  }
 }
 
 function addVisualQuestionToTest() {
@@ -1489,8 +2415,217 @@ function addVisualQuestionToTest() {
   document.getElementById("testVisOpt2").value = "";
   document.getElementById("testVisOpt3").value = "";
   document.getElementById("testVisExp").value = "";
+  document.getElementById("testVisQText").focus();
 
-  alert("✅ Visual question added to Test JSON successfully!");
+  renderTestVisualCards(questions);
+}
+
+function renderTestVisualCards(questions) {
+  let container = document.getElementById("testVisList");
+  if(!container) return;
+
+  if(!questions || questions.length === 0) {
+    container.innerHTML = "";
+    return;
+  }
+
+  let h = `<div style="margin-top:12px"><strong style="color:#82a7ff">📋 Added Questions Preview (${questions.length}):</strong></div>`;
+  questions.forEach((q, idx) => {
+    h += `<div class="question-preview" style="margin-top:8px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div class="question-text">${idx+1}. ${esc(q.question_text || "")}</div>
+        <button type="button" class="danger" style="width:auto;margin:0;padding:4px 8px;font-size:11px" onclick="removeTestVisualQ(${idx})">🗑️ Remove</button>
+      </div>`;
+    if(q.image_url) h += `<img src="${esc(q.image_url)}" style="max-width:100%;height:auto;border-radius:6px;margin-top:6px" />`;
+    if(Array.isArray(q.options)) {
+      q.options.forEach((o, optI) => {
+        const isOk = optI === Number(q.correct_option_index);
+        h += `<div class="option ${isOk ? 'correct' : ''}">${isOk ? '✅ ' : ''}${esc(String(o))}</div>`;
+      });
+    }
+    h += `</div>`;
+  });
+  container.innerHTML = h;
+}
+
+function removeTestVisualQ(qIdx) {
+  const textarea = document.getElementById("testJsonInput");
+  let questions = [];
+  try { questions = JSON.parse(textarea.value.trim()); } catch {}
+  if(Array.isArray(questions)) {
+    questions.splice(qIdx, 1);
+    textarea.value = JSON.stringify(questions, null, 2);
+    validateTestJSON();
+    renderTestVisualCards(questions);
+  }
+}
+
+/* =====================================================
+   QUICK QUESTION ADDER (ONE BY ONE)
+===================================================== */
+function updateQuickMockupSubjects() {
+  const qmSel = document.getElementById("quickMockupSelect");
+  const subSel = document.getElementById("quickMockupSubSelect");
+  if(!qmSel || !subSel) return;
+
+  const mockupId = qmSel.value;
+  subSel.innerHTML = '<option value="">Select Subject</option>';
+  if(!mockupId) return;
+
+  const m = loadedMockups[mockupId];
+  if(!m) return;
+
+  let qJson = m.questions_json;
+  if(typeof qJson === "string") { try { qJson = JSON.parse(qJson); } catch {} }
+
+  if(qJson && Array.isArray(qJson.subjects)) {
+    qJson.subjects.forEach((s, idx) => {
+      addOption(subSel, idx, s.subject_name || `Subject #${idx+1}`);
+    });
+  } else if(qJson && typeof qJson === "object" && !Array.isArray(qJson)) {
+    const subEntries = Object.entries(qJson).filter(([k]) => k !== 'test_type' && k !== 'is_subject_timer_enabled' && k !== 'subjects');
+    subEntries.forEach(([subName], idx) => {
+      addOption(subSel, idx, subName);
+    });
+  } else {
+    addOption(subSel, 0, "General Subject");
+  }
+}
+
+async function submitQuickMockupQuestion() {
+  const msg = document.getElementById("quickMQMsg");
+  const mockupId = document.getElementById("quickMockupSelect").value;
+  const subIdxVal = document.getElementById("quickMockupSubSelect").value;
+
+  if(!mockupId) { showMsg(msg, "Please select a target mockup test.", "error"); return; }
+  if(subIdxVal === "") { showMsg(msg, "Please select a subject.", "error"); return; }
+
+  const subIdx = parseInt(subIdxVal);
+  const m = loadedMockups[mockupId];
+  if(!m) { showMsg(msg, "Selected mockup not found.", "error"); return; }
+
+  const qText = document.getElementById("quickMQText").value.trim();
+  const qImg = document.getElementById("quickMQImg").value.trim();
+  const opt0 = document.getElementById("quickMQOpt0").value.trim();
+  const opt1 = document.getElementById("quickMQOpt1").value.trim();
+  const opt2 = document.getElementById("quickMQOpt2").value.trim();
+  const opt3 = document.getElementById("quickMQOpt3").value.trim();
+  const correct = parseInt(document.getElementById("quickMQCorrect").value);
+  const exp = document.getElementById("quickMQExp").value.trim();
+
+  if(!qText && !qImg) { showMsg(msg, "Please enter question text or image URL.", "error"); return; }
+  if(!opt0 || !opt1 || !opt2 || !opt3) { showMsg(msg, "All 4 options are required.", "error"); return; }
+
+  let qJson = m.questions_json;
+  if(typeof qJson === "string") { try { qJson = JSON.parse(qJson); } catch { qJson = {}; } }
+
+  const newQ = {
+    id: "q" + Date.now(),
+    question_text: qText,
+    options: [opt0, opt1, opt2, opt3],
+    correct_option_index: correct
+  };
+  if(qImg) newQ.image_url = qImg;
+  if(exp) { newQ.e = exp; newQ.explanation = exp; }
+
+  if(qJson && Array.isArray(qJson.subjects)) {
+    if(qJson.subjects[subIdx]) {
+      if(!Array.isArray(qJson.subjects[subIdx].questions_json)) qJson.subjects[subIdx].questions_json = [];
+      qJson.subjects[subIdx].questions_json.push(newQ);
+    }
+  } else if(qJson && typeof qJson === "object" && !Array.isArray(qJson)) {
+    const subEntries = Object.entries(qJson).filter(([k]) => k !== 'test_type' && k !== 'is_subject_timer_enabled' && k !== 'subjects');
+    if(subEntries[subIdx] && Array.isArray(subEntries[subIdx][1])) {
+      subEntries[subIdx][1].push(newQ);
+    }
+  } else if(Array.isArray(qJson)) {
+    qJson.push(newQ);
+  }
+
+  m.questions_json = qJson;
+
+  showMsg(msg, "Saving question...", "info");
+
+  const { error } = await supabaseClient.from("mockup_tests").update({
+    questions_json: m.questions_json,
+    subjects: Array.isArray(m.subjects) ? m.subjects : (qJson.subjects || null)
+  }).eq("id", mockupId);
+
+  if(error) {
+    showMsg(msg, error.message, "error");
+  } else {
+    document.getElementById("quickMQText").value = "";
+    document.getElementById("quickMQImg").value = "";
+    document.getElementById("quickMQOpt0").value = "";
+    document.getElementById("quickMQOpt1").value = "";
+    document.getElementById("quickMQOpt2").value = "";
+    document.getElementById("quickMQOpt3").value = "";
+    document.getElementById("quickMQExp").value = "";
+    document.getElementById("quickMQText").focus();
+
+    showMsg(msg, "✅ Question saved! Enter next question below.", "success");
+    openMockupIds.add(parseInt(mockupId));
+    loadMockups();
+  }
+}
+
+async function submitQuickTestQuestion() {
+  const msg = document.getElementById("quickTQMsg");
+  const testId = document.getElementById("quickTestSelect").value;
+
+  if(!testId) { showMsg(msg, "Please select a target test.", "error"); return; }
+
+  const t = loadedTests[testId];
+  if(!t) { showMsg(msg, "Selected test not found.", "error"); return; }
+
+  const qText = document.getElementById("quickTQText").value.trim();
+  const qImg = document.getElementById("quickTQImg").value.trim();
+  const opt0 = document.getElementById("quickTQOpt0").value.trim();
+  const opt1 = document.getElementById("quickTQOpt1").value.trim();
+  const opt2 = document.getElementById("quickTQOpt2").value.trim();
+  const opt3 = document.getElementById("quickTQOpt3").value.trim();
+  const correct = parseInt(document.getElementById("quickTQCorrect").value);
+  const exp = document.getElementById("quickTQExp").value.trim();
+
+  if(!qText && !qImg) { showMsg(msg, "Please enter question text or image URL.", "error"); return; }
+  if(!opt0 || !opt1 || !opt2 || !opt3) { showMsg(msg, "All 4 options are required.", "error"); return; }
+
+  let questions = extractQuestionsArray(t.questions_json);
+
+  const newQ = {
+    id: "q" + (questions.length + 1),
+    question_text: qText,
+    options: [opt0, opt1, opt2, opt3],
+    correct_option_index: correct
+  };
+  if(qImg) newQ.image_url = qImg;
+  if(exp) { newQ.e = exp; newQ.explanation = exp; }
+
+  questions.push(newQ);
+  t.questions_json = questions;
+
+  showMsg(msg, "Saving question...", "info");
+
+  const { error } = await supabaseClient.from("tests").update({
+    questions_json: JSON.stringify(questions)
+  }).eq("id", testId);
+
+  if(error) {
+    showMsg(msg, error.message, "error");
+  } else {
+    document.getElementById("quickTQText").value = "";
+    document.getElementById("quickTQImg").value = "";
+    document.getElementById("quickTQOpt0").value = "";
+    document.getElementById("quickTQOpt1").value = "";
+    document.getElementById("quickTQOpt2").value = "";
+    document.getElementById("quickTQOpt3").value = "";
+    document.getElementById("quickTQExp").value = "";
+    document.getElementById("quickTQText").focus();
+
+    showMsg(msg, "✅ Question saved! Enter next question below.", "success");
+    openTestIds.add(parseInt(testId));
+    loadTests();
+  }
 }
 
 function attr(t){

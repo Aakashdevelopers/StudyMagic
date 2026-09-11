@@ -174,7 +174,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Weekly Challenge"
+                            android:text="MultiPlayer"
                             android:textColor="@color/white"
                             android:textSize="@dimen/text_size_title"
                             android:textStyle="bold" />
@@ -184,7 +184,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/spacing_4"
                             android:lineSpacingExtra="2dp"
-                            android:text="Compete with 5000+ students\nand win amazing rewards!"
+                            android:text="Compete,Win,Showoff,Improve\n Next Level Feature"
                             android:textColor="#F5F5F5"
                             android:textSize="@dimen/text_size_caption" />
 
@@ -195,7 +195,7 @@
                             android:backgroundTint="@color/white"
                             android:minHeight="@dimen/min_touch_target_height"
                             android:paddingHorizontal="@dimen/spacing_20"
-                            android:text="Join Now"
+                            android:text="Coming Soon"
                             android:textAllCaps="false"
                             android:textColor="@color/colorSecondary"
                             android:textSize="@dimen/text_size_body_small"

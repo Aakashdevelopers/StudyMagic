@@ -268,6 +268,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:adjustViewBounds="true"
+                        android:minHeight="120dp"
+                        android:maxHeight="320dp"
                         android:scaleType="fitCenter"
                         android:layout_marginTop="12dp"
                         android:contentDescription="Question Image"
@@ -323,7 +325,10 @@
                         <ImageView
                             android:id="@+id/ivOption1"
                             android:layout_width="match_parent"
-                            android:layout_height="140dp"
+                            android:layout_height="wrap_content"
+                            android:adjustViewBounds="true"
+                            android:minHeight="60dp"
+                            android:maxHeight="220dp"
                             android:scaleType="fitCenter"
                             android:contentDescription="Option Image"
                             android:visibility="gone" />
@@ -377,7 +382,10 @@
                         <ImageView
                             android:id="@+id/ivOption2"
                             android:layout_width="match_parent"
-                            android:layout_height="140dp"
+                            android:layout_height="wrap_content"
+                            android:adjustViewBounds="true"
+                            android:minHeight="60dp"
+                            android:maxHeight="220dp"
                             android:scaleType="fitCenter"
                             android:contentDescription="Option Image"
                             android:visibility="gone" />
@@ -431,7 +439,10 @@
                         <ImageView
                             android:id="@+id/ivOption3"
                             android:layout_width="match_parent"
-                            android:layout_height="140dp"
+                            android:layout_height="wrap_content"
+                            android:adjustViewBounds="true"
+                            android:minHeight="60dp"
+                            android:maxHeight="220dp"
                             android:scaleType="fitCenter"
                             android:contentDescription="Option Image"
                             android:visibility="gone" />
@@ -485,7 +496,10 @@
                         <ImageView
                             android:id="@+id/ivOption4"
                             android:layout_width="match_parent"
-                            android:layout_height="140dp"
+                            android:layout_height="wrap_content"
+                            android:adjustViewBounds="true"
+                            android:minHeight="60dp"
+                            android:maxHeight="220dp"
                             android:scaleType="fitCenter"
                             android:contentDescription="Option Image"
                             android:visibility="gone" />

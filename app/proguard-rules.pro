@@ -1,11 +1,11 @@
-# ProGuard / R8 Rules for Study Magic App
+# ProGuard / R8 Rules for Exam Uplift App
 
 # Preserve Attributes required for Gson Generics, Reflection, and Retrofit Annotations
 -keepattributes Signature, *Annotation*, EnclosingMethod, InnerClasses, SourceFile, LineNumberTable
 
 # Preserve all Data Model classes (and inner classes) for Gson and Intent Serialization
--keep class com.amstudio.studymagic.models.** { *; }
--keepclassmembers class com.amstudio.studymagic.models.** { *; }
+-keep class com.amstudio.examuplift.models.** { *; }
+-keepclassmembers class com.amstudio.examuplift.models.** { *; }
 
 # Preserve SerializedName fields for Gson
 -keepclassmembers class * {
@@ -25,13 +25,13 @@
 }
 
 # Preserve Fragments and Adapters
--keep class com.amstudio.studymagic.fragments.** { *; }
--keep class com.amstudio.studymagic.adapters.** { *; }
--keepclassmembers class com.amstudio.studymagic.adapters.** { *; }
+-keep class com.amstudio.examuplift.fragments.** { *; }
+-keep class com.amstudio.examuplift.adapters.** { *; }
+-keepclassmembers class com.amstudio.examuplift.adapters.** { *; }
 
 # Preserve Retrofit API Interfaces and Annotations
--keep interface com.amstudio.studymagic.api.** { *; }
--keep class com.amstudio.studymagic.api.** { *; }
+-keep interface com.amstudio.examuplift.api.** { *; }
+-keep class com.amstudio.examuplift.api.** { *; }
 -keep class retrofit2.** { *; }
 -keepclasseswithmembers class * {
     @retrofit2.http.** <methods>;

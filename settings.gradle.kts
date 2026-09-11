@@ -23,5 +23,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Study Magic"
+rootProject.name = "EXAM UPLIFT"
 include(":app")

@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "com.amstudio.studymagic"
+    namespace = "com.amstudio.examuplift"
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "com.amstudio.studymagic"
+        applicationId = "com.amstudio.examuplift"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -45,6 +45,8 @@ dependencies {
     implementation(libs.material)
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("com.squareup.picasso:picasso:2.8")
+    implementation("com.revenuecat.purchases:purchases:10.15.1")
+    implementation("com.revenuecat.purchases:purchases-ui:10.15.1")
     
     // Networking
     implementation(libs.retrofit)

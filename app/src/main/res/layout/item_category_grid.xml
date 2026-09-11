@@ -2,8 +2,8 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="@dimen/spacing_8"
+    android:layout_height="120dp"
+    android:layout_margin="@dimen/spacing_6"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
@@ -15,14 +15,14 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="@dimen/spacing_16">
+        android:padding="@dimen/spacing_8">
 
         <FrameLayout
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:background="@drawable/bg_category_icon">
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -37,15 +37,15 @@
         <TextView
             android:id="@+id/tvCategoryName"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_12"
+            android:layout_height="36dp"
+            android:layout_marginTop="@dimen/spacing_6"
             android:ellipsize="end"
             android:fontFamily="sans-serif-medium"
             android:gravity="center"
             android:maxLines="2"
             android:text="Category Name"
             android:textColor="@color/textPrimary"
-            android:textSize="@dimen/text_size_body" />
+            android:textSize="@dimen/text_size_body_small" />
 
     </LinearLayout>
 
