@@ -38,56 +38,6 @@
                 android:textColor="@color/headerSubtitleColor"
                 android:textSize="@dimen/text_size_body" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/search_bar_height"
-                android:layout_marginTop="@dimen/spacing_20"
-                android:background="@drawable/bg_search_bar"
-                android:gravity="center_vertical"
-                android:paddingHorizontal="@dimen/spacing_12"
-                android:paddingVertical="@dimen/spacing_4">
-
-                <!-- Left Search Icon Container -->
-                <FrameLayout
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:background="@drawable/bg_search_icon_container">
-
-                    <ImageView
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
-                        android:layout_gravity="center"
-                        android:contentDescription="@null"
-                        android:src="@drawable/ic_search"
-                        app:tint="@color/searchBarIconTint" />
-                </FrameLayout>
-
-                <EditText
-                    android:id="@+id/etSearchExams"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:layout_marginStart="@dimen/spacing_12"
-                    android:layout_marginEnd="@dimen/spacing_8"
-                    android:background="@null"
-                    android:hint="Search exams..."
-                    android:imeOptions="actionSearch"
-                    android:inputType="text"
-                    android:textColor="@color/textPrimary"
-                    android:textColorHint="@color/searchBarText"
-                    android:textSize="@dimen/text_size_body" />
-
-                <!-- Voice Search / Mic Icon -->
-                <ImageView
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:layout_marginEnd="@dimen/spacing_4"
-                    android:contentDescription="@string/desc_voice_search"
-                    android:src="@drawable/ic_mic"
-                    app:tint="@color/searchBarIconTint" />
-
-            </LinearLayout>
-
         </LinearLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
