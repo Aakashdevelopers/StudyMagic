@@ -13,6 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
     private static Retrofit retrofit = null;
     private static Retrofit aiRetrofit = null;
+    private static Retrofit pollinationsRetrofit = null;
 
     public static SupabaseApi getInterface() {
         if (retrofit == null) {
@@ -61,5 +62,26 @@ public class ApiClient {
                     .build();
         }
         return aiRetrofit.create(RapidApi.class);
+    }
+
+    public static PollinationsApi getPollinationsInterface() {
+        if (pollinationsRetrofit == null) {
+            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+            logging.setLevel(Constants.DEBUG ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
+
+            OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .addInterceptor(logging)
+                .build();
+
+            pollinationsRetrofit = new Retrofit.Builder()
+                    .baseUrl("https://text.pollinations.ai/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(client)
+                    .build();
+        }
+        return pollinationsRetrofit.create(PollinationsApi.class);
     }
 }

@@ -256,9 +256,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     app:cardCornerRadius="20dp"
-                    app:cardElevation="0dp"
-                    app:strokeColor="#E0E0E0"
-                    app:strokeWidth="1dp">
+                    app:cardElevation="2dp"
+                    app:strokeColor="@color/colorOutline"
+                    app:strokeWidth="1dp"
+                    app:cardBackgroundColor="@color/surfaceColor">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -266,6 +267,7 @@
                         android:orientation="vertical"
                         android:padding="20dp">
 
+                        <!-- Top Header Row -->
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -273,24 +275,85 @@
                             android:orientation="horizontal">
 
                             <ImageView
-                                android:layout_width="32dp"
-                                android:layout_height="32dp"
-                                android:background="@drawable/bg_circle_light"
-                                android:padding="8dp"
-                                android:src="@drawable/ic_language"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:background="@drawable/bg_ai_icon_glow"
+                                android:padding="9dp"
+                                android:src="@drawable/ic_ai_sparkle"
                                 app:tint="@color/colorPrimary" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="12dp"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="sans-serif-black"
+                                        android:text="AI Insights"
+                                        android:textColor="@color/textPrimary"
+                                        android:textSize="17sp" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="8dp"
+                                        android:background="@drawable/bg_ai_badge"
+                                        android:paddingHorizontal="8dp"
+                                        android:paddingVertical="3dp"
+                                        android:text="✨ SMART ANALYST"
+                                        android:textColor="@color/colorPrimary"
+                                        android:textSize="9sp"
+                                        android:textStyle="bold" />
+                                </LinearLayout>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:text="Personalized Feedback &amp; Recommendations"
+                                    android:textColor="@color/textSecondary"
+                                    android:textSize="11sp" />
+                            </LinearLayout>
+
+                            <ImageButton
+                                android:id="@+id/btnRefreshAI"
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
+                                android:background="?attr/selectableItemBackgroundBorderless"
+                                android:contentDescription="Refresh Analysis"
+                                android:padding="8dp"
+                                android:src="@drawable/ic_refresh"
+                                app:tint="@color/textSecondary" />
+
+                        </LinearLayout>
+
+                        <!-- Controls Row -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="14dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
 
                             <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="10dp"
                                 android:layout_weight="1"
-                                android:fontFamily="sans-serif-medium"
-                                android:text="AI Insights"
-                                android:textColor="@color/textPrimary"
-                                android:textSize="16sp" />
+                                android:text="Language Mode"
+                                android:textColor="@color/textSecondary"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
 
-                            <!-- Language Selector Chips -->
                             <com.google.android.material.chip.ChipGroup
                                 android:id="@+id/chipGroupLanguage"
                                 android:layout_width="wrap_content"
@@ -302,7 +365,7 @@
                                     android:id="@+id/chipEnglish"
                                     style="@style/Widget.Material3.Chip.Filter"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="36dp"
+                                    android:layout_height="34dp"
                                     android:checked="true"
                                     android:text="English"
                                     android:textSize="11sp" />
@@ -311,29 +374,88 @@
                                     android:id="@+id/chipHindi"
                                     style="@style/Widget.Material3.Chip.Filter"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="36dp"
+                                    android:layout_height="34dp"
                                     android:text="हिंदी"
                                     android:textSize="11sp" />
 
                             </com.google.android.material.chip.ChipGroup>
+                        </LinearLayout>
+
+                        <!-- Quick Metric Highlights Bar -->
+                        <LinearLayout
+                            android:id="@+id/llAIMetricPills"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/tvAIPillStatus"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginEnd="4dp"
+                                android:background="@drawable/bg_ai_stat_pill"
+                                android:gravity="center"
+                                android:paddingHorizontal="8dp"
+                                android:paddingVertical="8dp"
+                                android:text="🎯 Analysis Ready"
+                                android:textColor="@color/colorPrimary"
+                                android:textSize="11sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvAIPillAccuracy"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginStart="4dp"
+                                android:background="@drawable/bg_ai_stat_pill"
+                                android:gravity="center"
+                                android:paddingHorizontal="8dp"
+                                android:paddingVertical="8dp"
+                                android:text="📊 0% Accuracy"
+                                android:textColor="@color/textPrimary"
+                                android:textSize="11sp"
+                                android:textStyle="bold" />
 
                         </LinearLayout>
 
-                        <com.google.android.material.progressindicator.LinearProgressIndicator
+                        <!-- Animated Loading Indicator -->
+                        <LinearLayout
                             android:id="@+id/aiAnalysisLoading"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="16dp"
-                            android:indeterminate="true"
-                            android:visibility="gone"
-                            app:indicatorColor="@color/colorPrimary" />
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:visibility="gone">
 
+                            <com.google.android.material.progressindicator.LinearProgressIndicator
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:indeterminate="true"
+                                app:indicatorColor="@color/colorPrimary"
+                                app:trackCornerRadius="4dp" />
+
+                            <TextView
+                                android:id="@+id/tvAILoadingStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:text="Analyzing accuracy and weak topics..."
+                                android:textColor="@color/textSecondary"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+
+                        <!-- Main AI Text Report -->
                         <TextView
                             android:id="@+id/tvAIAnalysisText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="16dp"
                             android:lineSpacingExtra="6dp"
+                            android:textIsSelectable="true"
                             android:text="Generating your performance analysis..."
                             android:textColor="@color/textPrimary"
                             android:textSize="14sp" />

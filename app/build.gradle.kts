@@ -13,8 +13,8 @@ android {
         applicationId = "com.amstudio.examuplift"
         minSdk = 24
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 4
+        versionName = "1.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -29,7 +29,7 @@ android {
             if (keystorePropertiesFile.exists()) {
                 val keystoreProperties = Properties()
                 keystoreProperties.load(FileInputStream(keystorePropertiesFile))
-                storeFile = file(keystoreProperties.getProperty("storeFile"))
+                storeFile = rootProject.file(keystoreProperties.getProperty("storeFile"))
                 storePassword = keystoreProperties.getProperty("storePassword")
                 keyAlias = keystoreProperties.getProperty("keyAlias")
                 keyPassword = keystoreProperties.getProperty("keyPassword")
@@ -95,8 +95,10 @@ dependencies {
     //circle image view
     implementation("de.hdodenhof:circleimageview:3.1.0")
 
-    // PDF Viewer (16 KB page size supported)
-    implementation("com.github.mhiew:AndroidPdfViewer:3.1.0-beta.1")
+    // Force 16 KB page-size aligned androidx graphics-path
+    implementation("androidx.graphics:graphics-path:1.1.0")
+
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.espresso.core)

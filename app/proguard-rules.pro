@@ -48,14 +48,7 @@
 -dontwarn okhttp3.**
 -dontwarn okio.**
 
-# AndroidPdfViewer & Pdfium Native JNI Keep Rules (Critical for Release APK)
--keep class com.github.barteksc.pdfviewer.** { *; }
--keepclassmembers class com.github.barteksc.pdfviewer.** { *; }
--dontwarn com.github.barteksc.pdfviewer.**
 
--keep class com.shockwave.pdfium.** { *; }
--keepclassmembers class com.shockwave.pdfium.** { *; }
--dontwarn com.shockwave.pdfium.**
 
 # Libraries Suppressions & Keep Rules
 -dontwarn io.noties.markwon.**
