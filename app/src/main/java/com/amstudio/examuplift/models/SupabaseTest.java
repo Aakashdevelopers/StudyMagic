@@ -34,6 +34,15 @@ public class SupabaseTest implements Serializable {
     @SerializedName("questions_json")
     public Object questionsJson;
 
+    @SerializedName(value = "negative_marking", alternate = {"negative_marks", "negativeMarking"})
+    public Double negativeMarking;
+
+    @SerializedName(value = "correct_marks", alternate = {"correct_mark", "correctMarks", "positive_marking", "positive_marks"})
+    public Double correctMarks;
+
+    @SerializedName(value = "total_marks", alternate = {"max_marks", "maximum_marks", "totalMarks", "maxMarks"})
+    public Double totalMarks;
+
     public static class SubjectModel implements Serializable {
         @SerializedName("id")
         public String id;
@@ -75,6 +84,21 @@ public class SupabaseTest implements Serializable {
                                     isSubjectTimerEnabled = Boolean.parseBoolean(String.valueOf(map.get("is_subject_timer_enabled")));
                                 } catch (Exception ignored) {}
                             }
+                            if (map.containsKey("negative_marking") && map.get("negative_marking") != null) {
+                                try {
+                                    negativeMarking = Double.parseDouble(String.valueOf(map.get("negative_marking")));
+                                } catch (Exception ignored) {}
+                            }
+                            if (map.containsKey("correct_marks") && map.get("correct_marks") != null) {
+                                try {
+                                    correctMarks = Double.parseDouble(String.valueOf(map.get("correct_marks")));
+                                } catch (Exception ignored) {}
+                            }
+                            if (map.containsKey("total_marks") && map.get("total_marks") != null) {
+                                try {
+                                    totalMarks = Double.parseDouble(String.valueOf(map.get("total_marks")));
+                                } catch (Exception ignored) {}
+                            }
                         } else if (map != null && map.containsKey("questions")) {
                             Type listType = new TypeToken<List<Question>>(){}.getType();
                             List<Question> qs = gson.fromJson(gson.toJson(map.get("questions")), listType);
@@ -85,7 +109,9 @@ public class SupabaseTest implements Serializable {
                         } else if (map != null) {
                             for (Map.Entry<String, Object> entry : map.entrySet()) {
                                 String key = entry.getKey();
-                                if ("test_type".equalsIgnoreCase(key) || "is_subject_timer_enabled".equalsIgnoreCase(key)) continue;
+                                if ("test_type".equalsIgnoreCase(key) || "is_subject_timer_enabled".equalsIgnoreCase(key)
+                                        || "correct_marks".equalsIgnoreCase(key) || "negative_marking".equalsIgnoreCase(key)
+                                        || "total_marks".equalsIgnoreCase(key)) continue;
                                 Type listType = new TypeToken<List<Question>>(){}.getType();
                                 List<Question> qs = gson.fromJson(gson.toJson(entry.getValue()), listType);
                                 if (qs != null && !qs.isEmpty()) {
@@ -131,6 +157,6 @@ public class SupabaseTest implements Serializable {
                 if (qs != null) allQuestions.addAll(qs);
             }
         }
-        return new Test(String.valueOf(id), title, description, duration, allQuestions);
+        return new Test(String.valueOf(id), title, description, duration, allQuestions, negativeMarking, correctMarks, totalMarks);
     }
 }

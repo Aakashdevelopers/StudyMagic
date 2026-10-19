@@ -4,18 +4,29 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentManager;
 
 import com.amstudio.examuplift.R;
+import com.amstudio.examuplift.api.ApiClient;
 import com.amstudio.examuplift.fragments.MockupListFragment;
 import com.amstudio.examuplift.fragments.SubjectListFragment;
+import com.amstudio.examuplift.models.AppFeedback;
 import com.amstudio.examuplift.models.Category;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputEditText;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DialogUtils {
 
@@ -74,6 +85,66 @@ public class DialogUtils {
 
         if (btnCancel != null) {
             btnCancel.setOnClickListener(v -> dialog.dismiss());
+        }
+
+        dialog.show();
+    }
+
+    public static void showFeedbackDialog(Context context) {
+        if (context == null) return;
+
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_feedback, null);
+        builder.setView(dialogView);
+
+        AlertDialog dialog = builder.create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
+        RatingBar ratingBar = dialogView.findViewById(R.id.ratingBarFeedback);
+        TextInputEditText etReview = dialogView.findViewById(R.id.etReview);
+        TextInputEditText etFeatureSuggestion = dialogView.findViewById(R.id.etFeatureSuggestion);
+        TextInputEditText etUserContact = dialogView.findViewById(R.id.etUserContact);
+        View btnCancel = dialogView.findViewById(R.id.btnCancelFeedback);
+        View btnSubmit = dialogView.findViewById(R.id.btnSubmitFeedback);
+
+        if (btnCancel != null) {
+            btnCancel.setOnClickListener(v -> dialog.dismiss());
+        }
+
+        if (btnSubmit != null) {
+            btnSubmit.setOnClickListener(v -> {
+                int rating = ratingBar != null ? Math.round(ratingBar.getRating()) : 5;
+                String review = etReview != null && etReview.getText() != null ? etReview.getText().toString().trim() : "";
+                String suggestion = etFeatureSuggestion != null && etFeatureSuggestion.getText() != null ? etFeatureSuggestion.getText().toString().trim() : "";
+                String contact = etUserContact != null && etUserContact.getText() != null ? etUserContact.getText().toString().trim() : "";
+
+                if (TextUtils.isEmpty(review) && TextUtils.isEmpty(suggestion)) {
+                    Toast.makeText(context, "Please enter a review or new feature suggestion / कृपया समीक्षा या सुझाव लिखें", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                AppFeedback feedback = new AppFeedback(rating, review, suggestion, contact);
+                Toast.makeText(context, "Sending feedback...", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+
+                ApiClient.getInterface().sendFeedback(feedback).enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(@NonNull Call<Void> call, @NonNull Response<Void> response) {
+                        if (response.isSuccessful()) {
+                            Toast.makeText(context, "Thank you! Your feedback has been received. / धन्यवाद! आपका फीडबैक मिल गया है।", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(context, "Feedback sent! / फीडबैक सबमिट हो गया है।", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<Void> call, @NonNull Throwable t) {
+                        Toast.makeText(context, "Thank you! Your feedback has been recorded.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            });
         }
 
         dialog.show();

@@ -5,6 +5,12 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(FileInputStream(localPropertiesFile))
+}
+
 android {
     namespace = "com.amstudio.examuplift"
     compileSdk = 37
@@ -13,10 +19,13 @@ android {
         applicationId = "com.amstudio.examuplift"
         minSdk = 24
         targetSdk = 36
-        versionCode = 4
-        versionName = "1.0.1"
+        versionCode = 5
+        versionName = "1.0.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "OPENROUTER_KEY", "\"${localProperties.getProperty("OPENROUTER_KEY", "")}\"")
+        buildConfigField("String", "RAPIDAPI_KEY", "\"${localProperties.getProperty("RAPIDAPI_KEY", "")}\"")
     }
 
     buildFeatures {
@@ -99,6 +108,9 @@ dependencies {
     implementation("androidx.graphics:graphics-path:1.1.0")
 
 
+
+    // In-App Update
+    implementation("com.google.android.play:app-update:2.1.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.espresso.core)

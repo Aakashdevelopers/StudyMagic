@@ -138,6 +138,7 @@
                 android:background="@color/colorOutline" />
 
             <TextView
+                android:id="@+id/tvTestMarks"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="200 Marks"

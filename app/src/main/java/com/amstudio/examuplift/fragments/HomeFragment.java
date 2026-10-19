@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.amstudio.examuplift.MockupQuizActivity;
 import com.amstudio.examuplift.R;
+import com.amstudio.examuplift.SavedQuestionsActivity;
 import com.amstudio.examuplift.SearchActivity;
 import com.amstudio.examuplift.adapters.CategoryAdapter;
 import com.amstudio.examuplift.adapters.TestAdapter;
@@ -29,6 +30,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeFragment extends Fragment {
+
+    private static boolean isFeedbackDialogShownThisSession = false;
 
     private TestAdapter testAdapter;
     private CategoryAdapter categoryAdapter;
@@ -50,6 +53,19 @@ public class HomeFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), SearchActivity.class);
                 startActivity(intent);
             });
+        }
+
+        View cvSavedQuestions = view.findViewById(R.id.cvSavedQuestionsContainer);
+        if (cvSavedQuestions != null) {
+            cvSavedQuestions.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), SavedQuestionsActivity.class);
+                startActivity(intent);
+            });
+        }
+
+        View cardFeedbackBanner = view.findViewById(R.id.cardFeedbackBanner);
+        if (cardFeedbackBanner != null) {
+            cardFeedbackBanner.setOnClickListener(v -> DialogUtils.showFeedbackDialog(requireContext()));
         }
 
         RecyclerView rvCategories = view.findViewById(R.id.rvCategories);
@@ -95,6 +111,21 @@ public class HomeFragment extends Fragment {
         fetchFeaturedTests(view);
 
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Auto show feedback dialog when user opens app in HomeFragment
+        if (!isFeedbackDialogShownThisSession) {
+            isFeedbackDialogShownThisSession = true;
+            view.postDelayed(() -> {
+                if (isAdded() && getContext() != null) {
+                    DialogUtils.showFeedbackDialog(getContext());
+                }
+            }, 600);
+        }
     }
 
     private void fetchCategories() {

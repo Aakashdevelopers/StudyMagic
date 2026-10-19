@@ -18,8 +18,10 @@ import com.amstudio.examuplift.MockupQuizActivity;
 import com.amstudio.examuplift.R;
 import com.amstudio.examuplift.api.ApiClient;
 import com.amstudio.examuplift.models.SupabaseTest;
+import com.amstudio.examuplift.models.Test;
 import com.amstudio.examuplift.utils.WindowInsetsUtil;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -82,6 +84,11 @@ public class MockupListFragment extends Fragment {
                             mockupList.add(test);
                         }
                     }
+                    Collections.sort(mockupList, (t1, t2) -> {
+                        String name1 = (t1 != null && t1.title != null) ? t1.title : "";
+                        String name2 = (t2 != null && t2.title != null) ? t2.title : "";
+                        return name1.compareToIgnoreCase(name2);
+                    });
                     adapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(getContext(), "Failed to load mockups", Toast.LENGTH_SHORT).show();
@@ -123,6 +130,18 @@ public class MockupListFragment extends Fragment {
             if (holder.tvTitle != null) holder.tvTitle.setText(test.title);
             if (holder.tvDescription != null) holder.tvDescription.setText(test.description);
             if (holder.tvDuration != null) holder.tvDuration.setText(test.duration + " Mins");
+            if (holder.tvMarks != null) {
+                Test t = test.toTest();
+                double maxMarks = t.getTotalMarks();
+                String maxMarksStr = (maxMarks % 1 == 0) ? String.valueOf((long) maxMarks) : String.valueOf(maxMarks);
+                if (test.negativeMarking != null && test.negativeMarking > 0) {
+                    double neg = test.negativeMarking;
+                    String negStr = (neg % 1 == 0) ? String.valueOf((long) neg) : String.valueOf(neg);
+                    holder.tvMarks.setText(maxMarksStr + " Marks • -" + negStr + " Neg");
+                } else {
+                    holder.tvMarks.setText(maxMarksStr + " Marks");
+                }
+            }
             if (holder.btnStart != null) holder.btnStart.setOnClickListener(v -> listener.onItemClick(test));
             holder.itemView.setOnClickListener(v -> listener.onItemClick(test));
         }
@@ -133,7 +152,7 @@ public class MockupListFragment extends Fragment {
         }
 
         static class ViewHolder extends RecyclerView.ViewHolder {
-            TextView tvTitle, tvDescription, tvDuration;
+            TextView tvTitle, tvDescription, tvDuration, tvMarks;
             View btnStart;
 
             public ViewHolder(@NonNull View itemView) {
@@ -141,6 +160,7 @@ public class MockupListFragment extends Fragment {
                 tvTitle = itemView.findViewById(R.id.tvTestTitle);
                 tvDescription = itemView.findViewById(R.id.tvTestDescription);
                 tvDuration = itemView.findViewById(R.id.tvTestDuration);
+                tvMarks = itemView.findViewById(R.id.tvTestMarks);
                 btnStart = itemView.findViewById(R.id.btnStartTest);
             }
         }

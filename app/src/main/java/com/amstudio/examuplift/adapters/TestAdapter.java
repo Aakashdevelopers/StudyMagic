@@ -41,6 +41,18 @@ public class TestAdapter extends RecyclerView.Adapter<TestAdapter.ViewHolder> {
         holder.tvTitle.setText(test.getTitle());
         holder.tvDescription.setText(test.getDescription());
         holder.tvDuration.setText(test.getDurationMinutes() + " Mins");
+        if (holder.tvMarks != null) {
+            int qCount = test.getQuestions() != null ? test.getQuestions().size() : 0;
+            double maxMarks = test.getTotalMarks();
+            String maxMarksStr = (maxMarks % 1 == 0) ? String.valueOf((long) maxMarks) : String.valueOf(maxMarks);
+            if (test.hasNegativeMarking()) {
+                double neg = test.getNegativeMarking();
+                String negStr = (neg % 1 == 0) ? String.valueOf((long) neg) : String.valueOf(neg);
+                holder.tvMarks.setText(qCount > 0 ? (qCount + " Qs • " + maxMarksStr + " Marks (-" + negStr + " Neg)") : (maxMarksStr + " Marks • -" + negStr + " Neg"));
+            } else {
+                holder.tvMarks.setText(qCount > 0 ? (qCount + " Qs • " + maxMarksStr + " Marks") : (maxMarksStr + " Marks"));
+            }
+        }
         holder.btnStart.setOnClickListener(v -> listener.onTestClick(test));
         holder.itemView.setOnClickListener(v -> listener.onTestClick(test));
     }
@@ -51,7 +63,7 @@ public class TestAdapter extends RecyclerView.Adapter<TestAdapter.ViewHolder> {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView tvTitle, tvDescription, tvDuration;
+        public TextView tvTitle, tvDescription, tvDuration, tvMarks;
         public Button btnStart;
 
         public ViewHolder(@NonNull View itemView) {
@@ -59,6 +71,7 @@ public class TestAdapter extends RecyclerView.Adapter<TestAdapter.ViewHolder> {
             tvTitle = itemView.findViewById(R.id.tvTestTitle);
             tvDescription = itemView.findViewById(R.id.tvTestDescription);
             tvDuration = itemView.findViewById(R.id.tvTestDuration);
+            tvMarks = itemView.findViewById(R.id.tvTestMarks);
             btnStart = itemView.findViewById(R.id.btnStartTest);
         }
     }

@@ -30,14 +30,25 @@ import com.amstudio.examuplift.adapters.SubjectTabAdapter;
 import com.amstudio.examuplift.fragments.ResultFragment;
 import com.amstudio.examuplift.models.Question;
 import com.amstudio.examuplift.models.SupabaseTest;
+import com.amstudio.examuplift.utils.SavedQuestionsManager;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.amstudio.examuplift.models.Test;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import android.view.Gravity;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import com.amstudio.examuplift.api.ApiClient;
+import com.amstudio.examuplift.models.ReportQuestion;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -47,6 +58,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
+import retrofit2.Call;
+import retrofit2.Response;
 
 public class MockupQuizActivity extends AppCompatActivity {
 
@@ -68,7 +82,7 @@ public class MockupQuizActivity extends AppCompatActivity {
     private RadioGroup rgOptions;
     private RadioButton rb1, rb2, rb3, rb4;
     private Button btnSaveNext, btnMarkNext, btnClear, btnSubmitTop, btnPrevious;
-    private ImageView btnPause, btnMenu, btnMarkForReviewStar;
+    private ImageView btnPause, btnMenu, btnMarkForReviewStar, btnReport, btnBookmark;
     private RecyclerView rvSubjects;
     private SubjectTabAdapter subjectAdapter;
     private PaletteAdapter paletteAdapter;
@@ -262,7 +276,25 @@ public class MockupQuizActivity extends AppCompatActivity {
         btnPause = findViewById(R.id.btnPause);
         btnMenu = findViewById(R.id.btnMenu);
         btnMarkForReviewStar = findViewById(R.id.btnMarkForReviewStar);
+        btnReport = findViewById(R.id.btnReport);
+        btnBookmark = findViewById(R.id.btnBookmark);
         rvSubjects = findViewById(R.id.rvSubjects);
+
+        if (btnReport != null) {
+            btnReport.setOnClickListener(v -> showReportDialog());
+        }
+
+        if (btnBookmark != null) {
+            btnBookmark.setOnClickListener(v -> {
+                List<Question> currentQs = getCurrentQuestions();
+                if (currentQs != null && currentQuestionIndexInSubject >= 0 && currentQuestionIndexInSubject < currentQs.size()) {
+                    Question q = currentQs.get(currentQuestionIndexInSubject);
+                    boolean saved = SavedQuestionsManager.toggleSaveQuestion(MockupQuizActivity.this, q);
+                    Toast.makeText(MockupQuizActivity.this, saved ? "Question saved!" : "Question removed from saved", Toast.LENGTH_SHORT).show();
+                    updateInfoStripIcons();
+                }
+            });
+        }
 
         tvQuizTitle.setText(supabaseTest.title);
 
@@ -698,6 +730,10 @@ public class MockupQuizActivity extends AppCompatActivity {
         if (currentQs == null || currentQuestionIndexInSubject >= currentQs.size()) return;
         Question q = currentQs.get(currentQuestionIndexInSubject);
         btnMarkForReviewStar.setColorFilter(q.isMarkedForReview() ? 0xFFFF1744 : 0xFF757575);
+        if (btnBookmark != null) {
+            boolean saved = SavedQuestionsManager.isQuestionSaved(this, q);
+            btnBookmark.setColorFilter(saved ? 0xFF22C7B8 : 0xFF757575);
+        }
     }
 
     private void saveSelectedOption() {
@@ -862,7 +898,7 @@ public class MockupQuizActivity extends AppCompatActivity {
         for (List<Question> list : subjectWiseQuestions.values()) {
             allQuestions.addAll(list);
         }
-        Test test = new Test(String.valueOf(supabaseTest.id), supabaseTest.title, supabaseTest.description, supabaseTest.duration, allQuestions);
+        Test test = new Test(String.valueOf(supabaseTest.id), supabaseTest.title, supabaseTest.description, supabaseTest.duration, allQuestions, supabaseTest != null ? supabaseTest.negativeMarking : null, supabaseTest != null ? supabaseTest.correctMarks : null, supabaseTest != null ? supabaseTest.totalMarks : null);
 
         Bundle bundle = new Bundle();
         bundle.putInt("correct", correct);
@@ -876,6 +912,97 @@ public class MockupQuizActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(android.R.id.content, fragment)
                 .commit();
+    }
+
+    private void showReportDialog() {
+        List<Question> currentQs = getCurrentQuestions();
+        Question q = (currentQs != null && currentQuestionIndexInSubject >= 0 && currentQuestionIndexInSubject < currentQs.size()) ? currentQs.get(currentQuestionIndexInSubject) : null;
+        if (q == null) {
+            Toast.makeText(this, "No question selected", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_report_question, null);
+        builder.setView(dialogView);
+
+        AlertDialog dialog = builder.create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
+        TextInputEditText etReason = dialogView.findViewById(R.id.etReason);
+        ChipGroup chipGroup = dialogView.findViewById(R.id.chipGroupReasons);
+        Button btnCancel = dialogView.findViewById(R.id.btnCancelReport);
+        Button btnSubmit = dialogView.findViewById(R.id.btnSubmitReport);
+
+        if (chipGroup != null && etReason != null) {
+            chipGroup.setOnCheckedStateChangeListener((group, checkedIds) -> {
+                if (!checkedIds.isEmpty()) {
+                    int id = checkedIds.get(0);
+                    Chip chip = dialogView.findViewById(id);
+                    if (chip != null && etReason.getText() != null) {
+                        etReason.setText(chip.getText().toString());
+                        etReason.setSelection(etReason.getText().length());
+                    }
+                }
+            });
+        }
+
+        if (btnCancel != null) {
+            btnCancel.setOnClickListener(v -> dialog.dismiss());
+        }
+
+        if (btnSubmit != null) {
+            btnSubmit.setOnClickListener(v -> {
+                String reason = etReason != null && etReason.getText() != null ? etReason.getText().toString().trim() : "";
+                if (reason.isEmpty()) {
+                    Toast.makeText(MockupQuizActivity.this, "Please enter or select a reason for reporting", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                dialog.dismiss();
+                submitQuestionReport(q, reason);
+            });
+        }
+
+        dialog.show();
+    }
+
+    private void submitQuestionReport(Question q, String reason) {
+        String testTitle = (supabaseTest != null && supabaseTest.title != null) ? supabaseTest.title : "Mockup Test";
+        String questionText = q.getQuestionText() != null ? q.getQuestionText() : "";
+        List<String> options = q.getOptions();
+        String correctOptStr = "Option " + (q.getCorrectOptionIndex() + 1);
+        if (options != null && q.getCorrectOptionIndex() >= 0 && q.getCorrectOptionIndex() < options.size()) {
+            correctOptStr = options.get(q.getCorrectOptionIndex());
+        }
+
+        ReportQuestion report = new ReportQuestion(
+                q.getId(),
+                questionText,
+                options,
+                correctOptStr,
+                reason,
+                testTitle
+        );
+
+        Toast.makeText(this, "Submitting report...", Toast.LENGTH_SHORT).show();
+
+        ApiClient.getInterface().reportQuestion(report).enqueue(new retrofit2.Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(MockupQuizActivity.this, "Report submitted successfully!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MockupQuizActivity.this, "Failed to submit report. Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(MockupQuizActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

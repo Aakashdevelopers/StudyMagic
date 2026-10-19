@@ -1,9 +1,15 @@
 package com.amstudio.examuplift;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -12,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -22,18 +29,27 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.amstudio.examuplift.adapters.PaletteAdapter;
+import com.amstudio.examuplift.api.ApiClient;
 import com.amstudio.examuplift.fragments.ResultFragment;
 import com.amstudio.examuplift.models.Question;
+import com.amstudio.examuplift.models.ReportQuestion;
 import com.amstudio.examuplift.models.SupabaseTest;
 import com.amstudio.examuplift.models.Test;
+import com.amstudio.examuplift.utils.SavedQuestionsManager;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
+import com.google.android.material.textfield.TextInputEditText;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-import com.amstudio.examuplift.utils.WindowInsetsUtil;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.List;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Response;
 
 public class QuizActivity extends AppCompatActivity {
 
@@ -49,7 +65,7 @@ public class QuizActivity extends AppCompatActivity {
     private RadioGroup rgOptions;
     private RadioButton rb1, rb2, rb3, rb4;
     private Button btnSaveNext, btnMarkNext, btnClear, btnSubmitTop, btnPrevious;
-    private ImageView btnPause, btnMenu, btnMarkForReviewStar;
+    private ImageView btnPause, btnMenu, btnMarkForReviewStar, btnReport, btnBookmark;
     private PaletteAdapter paletteAdapter;
     
     private CountDownTimer timer;
@@ -138,6 +154,23 @@ public class QuizActivity extends AppCompatActivity {
         btnPause = findViewById(R.id.btnPause);
         btnMenu = findViewById(R.id.btnMenu);
         btnMarkForReviewStar = findViewById(R.id.btnMarkForReviewStar);
+        btnReport = findViewById(R.id.btnReport);
+        btnBookmark = findViewById(R.id.btnBookmark);
+
+        if (btnReport != null) {
+            btnReport.setOnClickListener(v -> showReportDialog());
+        }
+
+        if (btnBookmark != null) {
+            btnBookmark.setOnClickListener(v -> {
+                if (questions != null && currentQuestionIndex >= 0 && currentQuestionIndex < questions.size()) {
+                    Question q = questions.get(currentQuestionIndex);
+                    boolean saved = SavedQuestionsManager.toggleSaveQuestion(QuizActivity.this, q);
+                    Toast.makeText(QuizActivity.this, saved ? "Question saved!" : "Question removed from saved", Toast.LENGTH_SHORT).show();
+                    updateInfoStripIcons();
+                }
+            });
+        }
         
         tvQuizTitle.setText(test.getTitle());
 
@@ -327,6 +360,10 @@ public class QuizActivity extends AppCompatActivity {
         if (questions == null || currentQuestionIndex >= questions.size()) return;
         Question q = questions.get(currentQuestionIndex);
         btnMarkForReviewStar.setColorFilter(q.isMarkedForReview() ? 0xFFFF1744 : 0xFF757575);
+        if (btnBookmark != null) {
+            boolean saved = SavedQuestionsManager.isQuestionSaved(this, q);
+            btnBookmark.setColorFilter(saved ? 0xFF22C7B8 : 0xFF757575);
+        }
     }
 
     private void saveSelectedOption() {
@@ -492,6 +529,96 @@ public class QuizActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(android.R.id.content, fragment)
                 .commit();
+    }
+
+    private void showReportDialog() {
+        if (questions == null || currentQuestionIndex < 0 || currentQuestionIndex >= questions.size()) {
+            Toast.makeText(this, "No question selected", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Question q = questions.get(currentQuestionIndex);
+
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_report_question, null);
+        builder.setView(dialogView);
+
+        AlertDialog dialog = builder.create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
+        TextInputEditText etReason = dialogView.findViewById(R.id.etReason);
+        ChipGroup chipGroup = dialogView.findViewById(R.id.chipGroupReasons);
+        Button btnCancel = dialogView.findViewById(R.id.btnCancelReport);
+        Button btnSubmit = dialogView.findViewById(R.id.btnSubmitReport);
+
+        if (chipGroup != null && etReason != null) {
+            chipGroup.setOnCheckedStateChangeListener((group, checkedIds) -> {
+                if (!checkedIds.isEmpty()) {
+                    int id = checkedIds.get(0);
+                    Chip chip = dialogView.findViewById(id);
+                    if (chip != null && etReason.getText() != null) {
+                        etReason.setText(chip.getText().toString());
+                        etReason.setSelection(etReason.getText().length());
+                    }
+                }
+            });
+        }
+
+        if (btnCancel != null) {
+            btnCancel.setOnClickListener(v -> dialog.dismiss());
+        }
+
+        if (btnSubmit != null) {
+            btnSubmit.setOnClickListener(v -> {
+                String reason = etReason != null && etReason.getText() != null ? etReason.getText().toString().trim() : "";
+                if (reason.isEmpty()) {
+                    Toast.makeText(QuizActivity.this, "Please enter or select a reason for reporting", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                dialog.dismiss();
+                submitQuestionReport(q, reason);
+            });
+        }
+
+        dialog.show();
+    }
+
+    private void submitQuestionReport(Question q, String reason) {
+        String testTitle = (test != null && test.getTitle() != null) ? test.getTitle() : "Quiz Test";
+        String questionText = q.getQuestionText() != null ? q.getQuestionText() : "";
+        List<String> options = q.getOptions();
+        String correctOptStr = "Option " + (q.getCorrectOptionIndex() + 1);
+        if (options != null && q.getCorrectOptionIndex() >= 0 && q.getCorrectOptionIndex() < options.size()) {
+            correctOptStr = options.get(q.getCorrectOptionIndex());
+        }
+
+        ReportQuestion report = new ReportQuestion(
+                q.getId(),
+                questionText,
+                options,
+                correctOptStr,
+                reason,
+                testTitle
+        );
+
+        Toast.makeText(this, "Submitting report...", Toast.LENGTH_SHORT).show();
+
+        ApiClient.getInterface().reportQuestion(report).enqueue(new retrofit2.Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(QuizActivity.this, "Report submitted successfully!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(QuizActivity.this, "Failed to submit report. Error: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(QuizActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

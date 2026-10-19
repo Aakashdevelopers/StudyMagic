@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="start"
+    android:orientation="horizontal"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="8dp">
+
+    <!-- ChatGPT Avatar Icon -->
+    <ImageView
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/bg_ai_icon_glow"
+        android:contentDescription="ChatGPT Icon"
+        android:padding="6dp"
+        android:src="@drawable/ic_ai_sparkle"
+        app:tint="#10A37F" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        app:cardBackgroundColor="#212121"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp"
+        app:strokeColor="#3E3E3E"
+        app:strokeWidth="1dp">
+
+        <TextView
+            android:id="@+id/tvAiMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:lineSpacingExtra="4dp"
+            android:maxWidth="300dp"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp"
+            android:text="ChatGPT response goes here..."
+            android:textColor="#ECECF1"
+            android:textSize="15sp"
+            android:textIsSelectable="true" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

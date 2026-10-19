@@ -21,6 +21,7 @@ import com.amstudio.examuplift.models.Test;
 import com.amstudio.examuplift.utils.WindowInsetsUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -73,6 +74,11 @@ public class TestListFragment extends Fragment {
                     for (SupabaseTest sTest : response.body()) {
                         testList.add(sTest.toTest());
                     }
+                    Collections.sort(testList, (t1, t2) -> {
+                        String name1 = (t1 != null && t1.getTitle() != null) ? t1.getTitle() : "";
+                        String name2 = (t2 != null && t2.getTitle() != null) ? t2.getTitle() : "";
+                        return name1.compareToIgnoreCase(name2);
+                    });
                     adapter.notifyDataSetChanged();
                 }
             }
@@ -93,6 +99,11 @@ public class TestListFragment extends Fragment {
                     for (SupabaseTest sTest : response.body()) {
                         testList.add(sTest.toTest());
                     }
+                    Collections.sort(testList, (t1, t2) -> {
+                        String name1 = (t1 != null && t1.getTitle() != null) ? t1.getTitle() : "";
+                        String name2 = (t2 != null && t2.getTitle() != null) ? t2.getTitle() : "";
+                        return name1.compareToIgnoreCase(name2);
+                    });
                     adapter.notifyDataSetChanged();
                 }
             }

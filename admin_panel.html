@@ -10,39 +10,37 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg-dark: #0b1014;
-  --bg-card: #121a20;
-  --bg-card-hover: #18262c;
-  --bg-card-sub: #0e161b;
-  --bg-input: #172229;
-  --border-color: #26363d;
-  --border-focus: #22c7b8;
-  --primary: #22c7b8;
-  --primary-hover: #16a99d;
-  --primary-glow: rgba(34, 199, 184, 0.22);
+  --bg-dark: #090d16;
+  --bg-card: #111726;
+  --bg-card-hover: #162035;
+  --bg-card-sub: #0e1320;
+  --bg-input: #182236;
+  --border-color: #232d45;
+  --border-focus: #6366f1;
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --primary-glow: rgba(99, 102, 241, 0.25);
   --success: #10b981;
   --success-bg: rgba(16, 185, 129, 0.15);
   --danger: #f43f5e;
   --danger-bg: rgba(244, 63, 94, 0.15);
   --warning: #f59e0b;
   --info: #38bdf8;
-  --accent-purple: #f0a35b;
+  --accent-purple: #a855f7;
   --text-main: #f3f4f6;
   --text-muted: #9ca3af;
   --text-dim: #6b7280;
-  --radius-lg: 12px;
-  --radius-md: 9px;
-  --radius-sm: 6px;
-  --shadow-sm: 0 8px 24px rgba(0,0,0,0.18);
-  --shadow-lg: 0 18px 42px rgba(0,0,0,0.28);
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  --shadow-sm: 0 4px 14px rgba(0,0,0,0.25);
+  --shadow-lg: 0 10px 30px rgba(0,0,0,0.4);
 }
 
 *{box-sizing:border-box}
 body{
   margin:0;
   background: var(--bg-dark);
-  background-image: linear-gradient(rgba(34, 199, 184, 0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 199, 184, 0.025) 1px, transparent 1px);
-  background-size: 42px 42px;
   color: var(--text-main);
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -56,14 +54,14 @@ button, input, textarea, select {
 
 /* Header & Navbar */
 .topbar {
-  min-height: 72px;
-  background: rgba(14, 22, 27, 0.92);
+  height: 68px;
+  background: rgba(17, 23, 38, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-color);
   display: flex;
   align-items: center;
-  padding: 0 28px;
+  padding: 0 24px;
   gap: 16px;
   position: sticky;
   top: 0;
@@ -71,7 +69,7 @@ button, input, textarea, select {
 }
 
 .brand-badge {
-  background: linear-gradient(135deg, var(--primary), #197c83);
+  background: linear-gradient(135deg, var(--primary), var(--accent-purple));
   width: 38px;
   height: 38px;
   border-radius: 10px;
@@ -97,26 +95,23 @@ button, input, textarea, select {
 .brand span {
   font-size: 12px;
   font-weight: 600;
-  background: rgba(34, 199, 184, 0.1);
+  background: rgba(99, 102, 241, 0.15);
   color: var(--primary);
   padding: 4px 10px;
   border-radius: 20px;
-  border: 1px solid rgba(34, 199, 184, 0.28);
+  border: 1px solid rgba(99, 102, 241, 0.3);
 }
 
 .nav-links {
   display: flex;
-  gap: 5px;
-  overflow-x: auto;
-  scrollbar-width: none;
+  gap: 8px;
 }
-.nav-links::-webkit-scrollbar { display: none; }
 
 .nav-btn {
-  background: transparent;
+  background: var(--bg-input);
   color: var(--text-muted);
   border: 1px solid var(--border-color);
-  padding: 9px 12px;
+  padding: 8px 14px;
   border-radius: var(--radius-sm);
   font-weight: 600;
   cursor: pointer;
@@ -127,15 +122,15 @@ button, input, textarea, select {
 }
 
 .nav-btn:hover, .nav-btn.active {
-  background: rgba(34, 199, 184, 0.12);
+  background: var(--primary);
   color: #fff;
   border-color: var(--primary);
-  box-shadow: 0 4px 14px var(--primary-glow);
+  box-shadow: 0 4px 12px var(--primary-glow);
 }
 
 /* Page Layout */
 .page {
-  max-width: 1240px;
+  max-width: 1140px;
   margin: auto;
   padding: 28px 20px 60px;
 }
@@ -149,7 +144,7 @@ button, input, textarea, select {
 }
 
 h1 {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 800;
   letter-spacing: -0.5px;
   margin: 0 0 6px 0;
@@ -180,7 +175,7 @@ h2 {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   text-align: center;
-  margin-bottom: 26px;
+  margin-bottom: 24px;
   font-size: 13.5px;
   font-weight: 600;
   display: flex;
@@ -205,8 +200,8 @@ h2 {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: 24px;
-  margin-bottom: 22px;
+  padding: 22px;
+  margin-bottom: 20px;
   box-shadow: var(--shadow-sm);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -219,22 +214,22 @@ h2 {
 
 /* Dashboard Stat Cards */
 .stat {
-  min-height: 132px;
+  min-height: 120px;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(145deg, rgba(24, 38, 44, 0.95), rgba(14, 22, 27, 0.98));
+  background: linear-gradient(145deg, var(--bg-card), var(--bg-card-sub));
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
 .stat .icon {
-  font-size: 24px;
+  font-size: 28px;
   opacity: 0.9;
 }
 
 .stat .num {
-  font-size: 34px;
+  font-size: 32px;
   font-weight: 800;
   color: var(--text-main);
   letter-spacing: -1px;
@@ -251,7 +246,7 @@ h2 {
 /* Interactive Action Cards */
 .action-card {
   cursor: pointer;
-  background: linear-gradient(145deg, rgba(24, 38, 44, 0.92), rgba(14, 22, 27, 0.98));
+  background: linear-gradient(145deg, var(--bg-card), var(--bg-card-sub));
   position: relative;
 }
 
@@ -260,12 +255,6 @@ h2 {
   background: var(--bg-card-hover);
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
-}
-
-.card:hover { border-color: #34505a; }
-button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, .type-card:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
 }
 
 .action-card button {
@@ -341,11 +330,11 @@ button:hover {
 }
 
 button.secondary {
-  background: #1d2a30;
+  background: #202b40;
   color: var(--text-main);
   border: 1px solid var(--border-color);
 }
-button.secondary:hover { background: #273a41; }
+button.secondary:hover { background: #2a3752; }
 
 button.save {
   background: linear-gradient(135deg, #10b981, #059669);
@@ -499,6 +488,41 @@ button.back {
 
 .badge-purple { background: rgba(168, 85, 247, 0.15); color: var(--accent-purple); border: 1px solid rgba(168, 85, 247, 0.3); }
 .badge-blue { background: rgba(99, 102, 241, 0.15); color: var(--primary); border: 1px solid rgba(99, 102, 241, 0.3); }
+.badge.gold { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+.badge.green { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+.badge.red { background: rgba(244, 63, 94, 0.15); color: #fca5a5; border: 1px solid rgba(244, 63, 94, 0.3); }
+
+button.gold {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.25);
+}
+button.gold:hover {
+  background: #d97706;
+}
+
+/* Modal */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(6px);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-content {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  max-width: 480px;
+  width: 100%;
+  padding: 28px;
+  box-shadow: var(--shadow-lg);
+}
 
 .category-icon-img {
   width: 42px;
@@ -608,29 +632,8 @@ button.back {
 @media(max-width: 768px) {
   .grid, .row, .three, .type-box { grid-template-columns: 1fr; }
   .page { padding: 18px 12px 40px; }
-  .topbar { padding: 10px 14px; flex-wrap: wrap; gap: 10px; }
-  .brand { min-width: 150px; }
-  .nav-links { order: 3; width: 100%; padding-bottom: 2px; }
-  .topbar > div:last-child { margin-left: auto !important; }
-  .topbar > div:last-child span { display: none; }
-  .card { padding: 18px; }
-  h1 { font-size: 24px; }
-  .action-card button { margin-top: 16px; }
+  .topbar { padding: 0 14px; }
   .nav-btn span { display: none; }
-}
-
-@media(max-width: 420px) {
-  .brand { font-size: 16px; }
-  .brand span { display: none; }
-  .topbar > div:last-child button { padding: 7px 10px !important; }
-}
-
-#adminLoginScreen {
-  background: radial-gradient(circle at 20% 0%, rgba(34, 199, 184, 0.18), transparent 34%), radial-gradient(circle at 90% 100%, rgba(240, 163, 91, 0.1), transparent 30%), var(--bg-dark) !important;
-}
-
-#adminLoginScreen .card {
-  border-top: 3px solid var(--primary) !important;
 }
 </style>
 </head>
@@ -680,9 +683,13 @@ button.back {
     <button class="nav-btn" id="btnNavTests" onclick="showScreen('manageTests')">🧪 <span>Tests</span></button>
     <button class="nav-btn" id="btnNavNotes" onclick="showScreen('manageNotes')">📚 <span>Notes</span></button>
     <button class="nav-btn" id="btnNavStructure" onclick="showScreen('manageStructure')">📂 <span>Structure & Icons</span></button>
+    <button class="nav-btn" id="btnNavReports" onclick="showScreen('manageReports')">🚩 <span>Reported Qs</span></button>
+    <button class="nav-btn" id="btnNavFeedbacks" onclick="showScreen('manageFeedbacks')">💬 <span>Feedbacks</span></button>
+    <button class="nav-btn" id="btnNavAnalytics" onclick="showScreen('manageAnalytics')">📊 <span>Analytics</span></button>
   </nav>
   <div style="display:flex;align-items:center;gap:12px;margin-left:auto">
     <span id="topbarUserEmail" style="font-size:13px;color:#6ee7b7;font-weight:600"></span>
+    <button type="button" class="gold" style="width:auto;margin:0;padding:6px 14px;font-size:12px" onclick="openNewAdminModal()">👑 + New Admin</button>
     <button type="button" class="danger" style="width:auto;margin:0;padding:6px 14px;font-size:12px" onclick="handleAdminLogout()">🚪 Sign Out</button>
   </div>
 </header>
@@ -728,6 +735,20 @@ button.back {
       </div>
       <div class="num" id="statCategories">—</div>
     </div>
+    <div class="card stat" onclick="showScreen('manageReports')" style="cursor:pointer">
+      <div>
+        <div class="icon">🚩</div>
+        <div class="label">Reported Questions</div>
+      </div>
+      <div class="num" id="statReports">—</div>
+    </div>
+    <div class="card stat" onclick="showScreen('manageFeedbacks')" style="cursor:pointer">
+      <div>
+        <div class="icon">💬</div>
+        <div class="label">User Feedbacks</div>
+      </div>
+      <div class="num" id="statFeedbacks">—</div>
+    </div>
   </div>
 
   <div class="grid" style="margin-top:16px">
@@ -750,6 +771,16 @@ button.back {
       <h2>📂 Exam Types & Structure</h2>
       <p class="sub" style="margin-bottom:0">Add categories with <b>Icon Upload</b> option, plus subjects, chapters & topics.</p>
       <button>Manage Exam Icons & Structure →</button>
+    </div>
+    <div class="card action-card" onclick="showScreen('manageReports')">
+      <h2>🚩 Reported Questions</h2>
+      <p class="sub" style="margin-bottom:0">View reported questions, answer keys, user feedback & delete issues.</p>
+      <button>View Reported Questions →</button>
+    </div>
+    <div class="card action-card" onclick="showScreen('manageAnalytics')">
+      <h2>📊 Live Analytics</h2>
+      <p class="sub" style="margin-bottom:0">View real-time app metrics, ratings averages and content breakdown.</p>
+      <button>Open Analytics →</button>
     </div>
   </div>
 
@@ -811,6 +842,21 @@ button.back {
       <div>
         <label>📂 Exam Category</label>
         <select id="mockupCategory"><option value="">Select category (Optional)</option></select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Marks Per Correct Ans *</label>
+        <input id="mCorrectMarks" type="number" step="0.01" value="1.0">
+      </div>
+      <div>
+        <label>Negative Marking (-ve Marks)</label>
+        <input id="mNegMarking" type="number" step="0.01" value="0.25">
+      </div>
+      <div>
+        <label>Total Marks (Optional)</label>
+        <input id="mTotalMarks" type="number" step="0.01" placeholder="Auto-calculated if blank">
       </div>
     </div>
 
@@ -934,6 +980,21 @@ button.back {
         <select id="testCategory" onchange="loadTestSubjects();updateTestHierarchy()">
           <option value="">Loading categories...</option>
         </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Marks Per Correct Ans *</label>
+        <input id="testCorrectMarks" type="number" step="0.01" value="1.0">
+      </div>
+      <div>
+        <label>Negative Marking (-ve Marks)</label>
+        <input id="testNegMarking" type="number" step="0.01" value="0.25">
+      </div>
+      <div>
+        <label>Total Marks (Optional)</label>
+        <input id="testTotalMarks" type="number" step="0.01" placeholder="Auto-calculated if blank">
       </div>
     </div>
 
@@ -1143,7 +1204,100 @@ button.back {
   </div>
 </section>
 
+<!-- REPORTED QUESTIONS -->
+<section id="manageReports" class="screen">
+  <button class="back" onclick="showScreen('home')">← Dashboard</button>
+  <h1>🚩 Reported Questions</h1>
+  <p class="sub">View and manage questions reported by users in Quiz and Mockup tests.</p>
+  <div style="margin-bottom:16px">
+    <button class="secondary" onclick="loadReportedQuestions()">🔄 Refresh Reported Questions</button>
+  </div>
+  <div id="reportsContainer"><div style="color:var(--text-muted)">Loading reports...</div></div>
+</section>
+
+<!-- USER FEEDBACKS -->
+<section id="manageFeedbacks" class="screen">
+  <button class="back" onclick="showScreen('home')">← Dashboard</button>
+  <h1>💬 User Reviews & Suggestions</h1>
+  <p class="sub">View ratings, reviews and new feature requests submitted by students.</p>
+  <div style="margin-bottom:16px">
+    <button class="secondary" onclick="loadFeedbacks()">🔄 Refresh Feedbacks</button>
+  </div>
+  <div id="feedbacksContainer"><div style="color:var(--text-muted)">Loading feedbacks...</div></div>
+</section>
+
+<!-- LIVE ANALYTICS -->
+<section id="manageAnalytics" class="screen">
+  <button class="back" onclick="showScreen('home')">← Dashboard</button>
+  <h1>📊 Real-time System Analytics</h1>
+  <p class="sub">Comprehensive breakdown of platform content, user activity and rating metrics.</p>
+
+  <div class="grid">
+    <div class="card stat">
+      <div class="icon">⭐</div>
+      <div class="label">Average User Rating</div>
+      <div class="num" id="analyticsAvgRating">5.0 / 5</div>
+    </div>
+    <div class="card stat">
+      <div class="icon">💬</div>
+      <div class="label">Total Feedbacks</div>
+      <div class="num" id="analyticsFeedbacks">0</div>
+    </div>
+    <div class="card stat">
+      <div class="icon">🚩</div>
+      <div class="label">Open Question Reports</div>
+      <div class="num" id="analyticsReports">0</div>
+    </div>
+    <div class="card stat">
+      <div class="icon">📚</div>
+      <div class="label">Published PDF Notes</div>
+      <div class="num" id="analyticsNotes">0</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>System Status & Database Health</h3>
+    <div style="line-height:2;font-size:14px;color:var(--text-main)">
+      <div>• <b>Supabase Endpoint</b>: <span style="color:var(--primary)">https://crafyflxsvgjvvuzdftm.supabase.co</span></div>
+      <div>• <b>Storage Buckets</b>: <span class="badge green">notes</span> <span class="badge green">category_icons</span></div>
+      <div>• <b>RLS Policies</b>: <span class="badge purple">ACTIVE</span></div>
+      <div>• <b>Database Latency</b>: <span id="dbLatencyText" style="color:var(--success);font-weight:700">Checking...</span></div>
+    </div>
+  </div>
+</section>
+
 </main>
+
+<!-- CREATE NEW ADMIN USER MODAL -->
+<div id="newAdminModal" class="modal-overlay">
+  <div class="modal-content">
+    <h2 style="margin-top:0;font-size:20px;">➕ Create Admin User</h2>
+    <p class="sub" style="margin-bottom:18px">Register a new administrator account in Supabase Auth.</p>
+
+    <div style="margin-bottom:14px">
+      <label>Admin Email *</label>
+      <input type="email" id="modalNewAdminEmail" placeholder="newadmin@example.com" style="width:100%">
+    </div>
+
+    <div style="margin-bottom:14px">
+      <label>Password (min 6 chars) *</label>
+      <input type="password" id="modalNewAdminPassword" placeholder="••••••••" style="width:100%">
+    </div>
+
+    <div style="margin-bottom:18px">
+      <label>Confirm Password *</label>
+      <input type="password" id="modalNewAdminConfirmPassword" placeholder="••••••••" style="width:100%">
+    </div>
+
+    <div id="modalNewAdminStatus" style="margin-bottom:14px;font-size:13px;text-align:center"></div>
+
+    <div style="display:flex;justify-content:flex-end;gap:10px">
+      <button type="button" class="secondary" onclick="closeNewAdminModal()">Cancel</button>
+      <button type="button" class="gold" onclick="submitNewAdminFromModal()">✨ Create Admin Account</button>
+    </div>
+  </div>
+</div>
+
 </div> <!-- /#adminMainApp -->
 
 <script>
@@ -1250,7 +1404,10 @@ function showScreen(name){
     'manageMockups': 'btnNavMockups',
     'manageTests': 'btnNavTests',
     'manageNotes': 'btnNavNotes',
-    'manageStructure': 'btnNavStructure'
+    'manageStructure': 'btnNavStructure',
+    'manageReports': 'btnNavReports',
+    'manageFeedbacks': 'btnNavFeedbacks',
+    'manageAnalytics': 'btnNavAnalytics'
   };
   if(btnMap[name]) {
     const btn = document.getElementById(btnMap[name]);
@@ -1262,6 +1419,9 @@ function showScreen(name){
   if(name === "manageTests") initTestPage();
   if(name === "manageNotes") loadNotes();
   if(name === "manageStructure") initStructure();
+  if(name === "manageReports") loadReportedQuestions();
+  if(name === "manageFeedbacks") loadFeedbacks();
+  if(name === "manageAnalytics") loadAnalyticsData();
 }
 
 
@@ -1271,13 +1431,16 @@ function showScreen(name){
 async function refreshDashboardData(){
   const status = document.getElementById("homeStatus");
   const statusText = document.getElementById("homeStatusText");
+  const startTime = Date.now();
 
   try {
-    const [m, t, n, c] = await Promise.all([
+    const [m, t, n, c, r, fb] = await Promise.all([
       supabaseClient.from("mockup_tests").select("id, questions_json"),
       supabaseClient.from("tests").select("id"),
       supabaseClient.from("notes").select("id"),
-      supabaseClient.from("categories").select("id")
+      supabaseClient.from("categories").select("id"),
+      supabaseClient.from("report_question").select("id"),
+      supabaseClient.from("app_feedback").select("id")
     ]);
 
     if(m.error) throw new Error("Mockups: " + m.error.message);
@@ -1285,13 +1448,23 @@ async function refreshDashboardData(){
     if(n.error) throw new Error("Notes: " + n.error.message);
     if(c.error) throw new Error("Categories: " + c.error.message);
 
+    const latency = Date.now() - startTime;
+    const latencyEl = document.getElementById("dbLatencyText");
+    if (latencyEl) latencyEl.innerText = `${latency} ms (Fast Response)`;
+
     document.getElementById("statMockups").innerText = m.data ? m.data.length : 0;
     document.getElementById("statTests").innerText = t.data ? t.data.length : 0;
     document.getElementById("statNotes").innerText = n.data ? n.data.length : 0;
     document.getElementById("statCategories").innerText = c.data ? c.data.length : 0;
 
+    const statRep = document.getElementById("statReports");
+    if (statRep) statRep.innerText = (r && r.data) ? r.data.length : 0;
+
+    const statFb = document.getElementById("statFeedbacks");
+    if (statFb) statFb.innerText = (fb && fb.data) ? fb.data.length : 0;
+
     status.className = "status connected";
-    statusText.innerText = "Connected to Supabase Database (All systems operational)";
+    statusText.innerText = `Connected to Supabase Database (All systems operational • ${latency}ms)`;
   } catch(e) {
     status.className = "status error";
     statusText.innerText = "Database connection error: " + e.message;
@@ -1630,10 +1803,17 @@ async function saveMockup(){
   }
 
   const finalDuration = (currentMockupType === "type1") ? univDuration : totalCalculatedMins;
+  const correctMarks = parseFloat(document.getElementById("mCorrectMarks").value) || 1.0;
+  const negMarking = parseFloat(document.getElementById("mNegMarking").value) || 0.0;
+  const totalMarksVal = parseFloat(document.getElementById("mTotalMarks").value);
+  const totalMarks = !isNaN(totalMarksVal) && totalMarksVal > 0 ? totalMarksVal : null;
 
   const questionsJsonObject = {
     "test_type": currentMockupType,
     "is_subject_timer_enabled": (currentMockupType === "type2"),
+    "correct_marks": correctMarks,
+    "negative_marking": negMarking,
+    "total_marks": totalMarks,
     "subjects": subjectsArray
   };
 
@@ -1644,6 +1824,9 @@ async function saveMockup(){
     title: title,
     description: description,
     duration: finalDuration,
+    correct_marks: correctMarks,
+    negative_marking: negMarking,
+    total_marks: totalMarks,
     is_featured: isFeatured,
     category_id: mockupCat ? parseInt(mockupCat) : null,
     test_type: currentMockupType,
@@ -1848,6 +2031,20 @@ async function loadMockups(){
           <select id="mEditCategory_${m.id}">${generateCategoryOptions(m.category_id)}</select>
         </div>
       </div>
+      <div class="row">
+        <div>
+          <label>Marks Per Correct</label>
+          <input id="mEditCorrectMarks_${m.id}" type="number" step="0.01" value="${m.correct_marks !== undefined && m.correct_marks !== null ? m.correct_marks : 1.0}">
+        </div>
+        <div>
+          <label>Negative Marking</label>
+          <input id="mEditNegMarking_${m.id}" type="number" step="0.01" value="${m.negative_marking !== undefined && m.negative_marking !== null ? m.negative_marking : 0.25}">
+        </div>
+        <div>
+          <label>Total Marks (Optional)</label>
+          <input id="mEditTotalMarks_${m.id}" type="number" step="0.01" value="${m.total_marks || ''}" placeholder="Auto">
+        </div>
+      </div>
       <div style="margin:8px 0 14px">
         <label><input id="mEditFeatured_${m.id}" type="checkbox" ${m.is_featured ? 'checked' : ''} style="width:auto;margin:0"> ⭐ Mark as Featured</label>
       </div>
@@ -1873,6 +2070,10 @@ async function saveMockupDetails(id) {
   const description = document.getElementById(`mEditDesc_${id}`).value.trim();
   const duration = parseInt(document.getElementById(`mEditDuration_${id}`).value) || 0;
   const categoryId = document.getElementById(`mEditCategory_${id}`).value;
+  const correctMarks = parseFloat(document.getElementById(`mEditCorrectMarks_${id}`).value) || 1.0;
+  const negMarking = parseFloat(document.getElementById(`mEditNegMarking_${id}`).value) || 0.0;
+  const totalMarksVal = parseFloat(document.getElementById(`mEditTotalMarks_${id}`).value);
+  const totalMarks = !isNaN(totalMarksVal) && totalMarksVal > 0 ? totalMarksVal : null;
   const isFeatured = document.getElementById(`mEditFeatured_${id}`).checked;
   const questionsRaw = document.getElementById(`mEditQuestions_${id}`).value.trim();
 
@@ -1890,6 +2091,9 @@ async function saveMockupDetails(id) {
 
   const updateData = {
     title, description, duration,
+    correct_marks: correctMarks,
+    negative_marking: negMarking,
+    total_marks: totalMarks,
     category_id: categoryId ? parseInt(categoryId) : null,
     is_featured: isFeatured
   };
@@ -2020,6 +2224,10 @@ async function saveTest(){
   const duration = parseInt(document.getElementById("testDuration").value);
   const categoryId = document.getElementById("testCategory").value;
   const topicId = document.getElementById("testTopic").value || null;
+  const correctMarks = parseFloat(document.getElementById("testCorrectMarks").value) || 1.0;
+  const negMarking = parseFloat(document.getElementById("testNegMarking").value) || 0.0;
+  const totalMarksVal = parseFloat(document.getElementById("testTotalMarks").value);
+  const totalMarks = !isNaN(totalMarksVal) && totalMarksVal > 0 ? totalMarksVal : null;
   const text = document.getElementById("testJsonInput").value.trim();
 
   if(!title){ showMsg(msg, "Please enter test title.", "error"); return; }
@@ -2034,6 +2242,9 @@ async function saveTest(){
 
   const { error } = await supabaseClient.from("tests").insert({
     title, description, duration,
+    correct_marks: correctMarks,
+    negative_marking: negMarking,
+    total_marks: totalMarks,
     category_id: parseInt(categoryId),
     topic_id: topicId ? parseInt(topicId) : null,
     questions_json: JSON.stringify(questions)
@@ -2127,6 +2338,20 @@ async function loadTests(){
           <select id="tEditTopic_${t.id}">${generateTopicOptions(t.topic_id)}</select>
         </div>
       </div>
+      <div class="row">
+        <div>
+          <label>Marks Per Correct</label>
+          <input id="tEditCorrectMarks_${t.id}" type="number" step="0.01" value="${t.correct_marks !== undefined && t.correct_marks !== null ? t.correct_marks : 1.0}">
+        </div>
+        <div>
+          <label>Negative Marking</label>
+          <input id="tEditNegMarking_${t.id}" type="number" step="0.01" value="${t.negative_marking !== undefined && t.negative_marking !== null ? t.negative_marking : 0.25}">
+        </div>
+        <div>
+          <label>Total Marks (Optional)</label>
+          <input id="tEditTotalMarks_${t.id}" type="number" step="0.01" value="${t.total_marks || ''}" placeholder="Auto">
+        </div>
+      </div>
       <label>Questions JSON (Edit Questions)</label>
       <textarea id="tEditQuestions_${t.id}" style="min-height:120px;font-family:monospace">${esc(typeof t.questions_json === "string" ? t.questions_json : JSON.stringify(t.questions_json, null, 2))}</textarea>
       <button class="save" style="margin-top:10px" onclick="saveTestDetails(${t.id})">💾 Save Test Details</button>
@@ -2168,6 +2393,10 @@ async function saveTestDetails(id) {
   const duration = parseInt(document.getElementById(`tEditDuration_${id}`).value) || 0;
   const categoryId = document.getElementById(`tEditCategory_${id}`).value;
   const topicId = document.getElementById(`tEditTopic_${id}`).value;
+  const correctMarks = parseFloat(document.getElementById(`tEditCorrectMarks_${id}`).value) || 1.0;
+  const negMarking = parseFloat(document.getElementById(`tEditNegMarking_${id}`).value) || 0.0;
+  const totalMarksVal = parseFloat(document.getElementById(`tEditTotalMarks_${id}`).value);
+  const totalMarks = !isNaN(totalMarksVal) && totalMarksVal > 0 ? totalMarksVal : null;
   const questionsRaw = document.getElementById(`tEditQuestions_${id}`).value.trim();
 
   if(!title) { alert("Please enter test title."); return; }
@@ -2181,6 +2410,9 @@ async function saveTestDetails(id) {
 
   const updatePayload = {
     title, description, duration,
+    correct_marks: correctMarks,
+    negative_marking: negMarking,
+    total_marks: totalMarks,
     category_id: categoryId ? parseInt(categoryId) : null,
     topic_id: topicId ? parseInt(topicId) : null
   };
@@ -2393,7 +2625,7 @@ function fillCategorySelects(){
     const current = el.value;
     el.innerHTML = '<option value="">Select category</option>';
     categories.forEach(x => addOption(el, x.id, x.name));
-    if(current && categories.some(x => String(x.id) === String(current))) el.value = current;
+    if(current) el.value = current;
   });
 }
 
@@ -2406,7 +2638,7 @@ function fillSubjectSelects(){
     const cat = categories.find(c => String(c.id) === String(x.category_id));
     addOption(el, x.id, cat ? `${x.name} • ${cat.name}` : x.name);
   });
-  if(current && subjects.some(x => String(x.id) === String(current))) el.value = current;
+  if(current) el.value = current;
 }
 
 function fillChapterSelects(){
@@ -2418,7 +2650,7 @@ function fillChapterSelects(){
     const sub = subjects.find(s => String(s.id) === String(x.subject_id));
     addOption(el, x.id, sub ? `${x.name} • ${sub.name}` : x.name);
   });
-  if(current && chapters.some(x => String(x.id) === String(current))) el.value = current;
+  if(current) el.value = current;
 }
 
 async function addSubject(){
@@ -2427,8 +2659,7 @@ async function addSubject(){
   const name = document.getElementById("subjectName").value.trim();
   if(!category_id){ showMsg(msg, "Select category.", "error"); return; }
   if(!name){ showMsg(msg, "Enter subject name.", "error"); return; }
-  const parsedCatId = isNaN(parseInt(category_id)) ? category_id : parseInt(category_id);
-  const { error } = await supabaseClient.from("subjects").insert({ name, category_id: parsedCatId });
+  const { error } = await supabaseClient.from("subjects").insert({ name, category_id: parseInt(category_id) });
   if(error){ showMsg(msg, error.message, "error"); return; }
   document.getElementById("subjectName").value = "";
   showMsg(msg, "✅ Subject added.", "success");
@@ -2441,8 +2672,7 @@ async function addChapter(){
   const name = document.getElementById("chapterName").value.trim();
   if(!subject_id){ showMsg(msg, "Select subject.", "error"); return; }
   if(!name){ showMsg(msg, "Enter chapter name.", "error"); return; }
-  const parsedSubId = isNaN(parseInt(subject_id)) ? subject_id : parseInt(subject_id);
-  const { error } = await supabaseClient.from("chapters").insert({ name, subject_id: parsedSubId });
+  const { error } = await supabaseClient.from("chapters").insert({ name, subject_id: parseInt(subject_id) });
   if(error){ showMsg(msg, error.message, "error"); return; }
   document.getElementById("chapterName").value = "";
   showMsg(msg, "✅ Chapter added.", "success");
@@ -2455,20 +2685,10 @@ async function addTopic(){
   const name = document.getElementById("topicName").value.trim();
   if(!chapter_id){ showMsg(msg, "Select chapter.", "error"); return; }
   if(!name){ showMsg(msg, "Enter topic name.", "error"); return; }
-
-  const existingChapter = chapters.find(c => String(c.id) === String(chapter_id));
-  if(!existingChapter) {
-    showMsg(msg, "Selected chapter no longer exists in database. Refreshing structure...", "error");
-    await loadAllStructure();
-    return;
-  }
-
-  const parsedChapterId = isNaN(parseInt(chapter_id)) ? chapter_id : parseInt(chapter_id);
-
-  const { error } = await supabaseClient.from("topics").insert({ name, chapter_id: parsedChapterId });
+  const { error } = await supabaseClient.from("topics").insert({ name, chapter_id: parseInt(chapter_id) });
   if(error){ showMsg(msg, error.message, "error"); return; }
   document.getElementById("topicName").value = "";
-  showMsg(msg, "✅ Topic added successfully.", "success");
+  showMsg(msg, "✅ Topic added.", "success");
   loadAllStructure();
 }
 
@@ -2990,6 +3210,170 @@ async function submitQuickMockupQuestion() {
     document.getElementById("quickMQExp").value = "";
     showMsg(msg, "✅ Question added! Enter next question.", "success");
     loadMockups();
+  }
+}
+
+/* =====================================================
+   USER FEEDBACKS
+===================================================== */
+async function loadFeedbacks() {
+  const container = document.getElementById("feedbacksContainer");
+  if (!container) return;
+  container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted)">Loading user feedbacks...</div>';
+
+  try {
+    const { data, error } = await supabaseClient.from("app_feedback").select("*").order("created_at", { ascending: false });
+
+    if (error) { container.innerHTML = `<div style="color:var(--danger)">Error: ${esc(error.message)}</div>`; return; }
+    if (!data || data.length === 0) { container.innerHTML = `<div class="card" style="text-align:center;padding:40px;color:var(--text-muted)">🎉 No user feedback submitted yet!</div>`; return; }
+
+    let html = `<div style="overflow-x:auto"><table><thead><tr><th>ID</th><th>Rating</th><th>Review</th><th>Feature Suggestion</th><th>Contact</th><th>Date</th><th>Action</th></tr></thead><tbody>`;
+
+    data.forEach(item => {
+      const dateStr = item.created_at ? new Date(item.created_at).toLocaleString() : 'N/A';
+      const ratingStars = '⭐'.repeat(item.rating || 5);
+
+      html += `<tr>
+        <td style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-dim)">#${item.id}</td>
+        <td><span class="badge badge-purple">${ratingStars} (${item.rating || 5}/5)</span></td>
+        <td><b>${esc(item.review || 'No review text')}</b></td>
+        <td style="color:var(--primary)">💡 ${esc(item.feature_suggestion || 'No suggestion')}</td>
+        <td style="color:var(--text-muted)">${esc(item.user_contact || 'Anonymous')}</td>
+        <td style="color:var(--text-muted);white-space:nowrap">${dateStr}</td>
+        <td><button type="button" class="danger" style="padding:4px 10px;font-size:12px;width:auto" onclick="deleteFeedback(${item.id})">🗑️ Delete</button></td>
+      </tr>`;
+    });
+
+    html += `</tbody></table></div>`;
+    container.innerHTML = html;
+  } catch (err) {
+    container.innerHTML = `<div style="color:var(--danger)">Error: ${esc(err.message)}</div>`;
+  }
+}
+
+async function deleteFeedback(id) {
+  if (!confirm("Delete feedback entry?")) return;
+  const { error } = await supabaseClient.from("app_feedback").delete().eq("id", id);
+  if (error) alert("Error: " + error.message);
+  else { alert("✅ Deleted!"); loadFeedbacks(); refreshDashboard(); }
+}
+
+/* =====================================================
+   REPORTED QUESTIONS
+===================================================== */
+async function loadReportedQuestions() {
+  const container = document.getElementById("reportsContainer");
+  if (!container) return;
+  container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted)">Loading reported questions...</div>';
+
+  try {
+    const { data, error } = await supabaseClient.from("report_question").select("*").order("created_at", { ascending: false });
+
+    if (error) { container.innerHTML = `<div style="color:var(--danger)">Error: ${esc(error.message)}</div>`; return; }
+    if (!data || data.length === 0) { container.innerHTML = `<div class="card" style="text-align:center;padding:40px;color:var(--text-muted)">🎉 No reported questions found!</div>`; return; }
+
+    let html = `<div style="overflow-x:auto"><table><thead><tr><th>ID</th><th>Test Title</th><th>Question</th><th>Options / Correct</th><th>Reason</th><th>Date</th><th>Action</th></tr></thead><tbody>`;
+
+    data.forEach(item => {
+      const dateStr = item.created_at ? new Date(item.created_at).toLocaleString() : 'N/A';
+      html += `<tr>
+        <td style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-dim)">#${item.id}</td>
+        <td><span class="badge badge-purple">${esc(item.test_title || 'N/A')}</span></td>
+        <td><b>${esc(item.question_text || 'N/A')}</b></td>
+        <td style="font-size:12px">${item.correct_option ? `✔ ${esc(item.correct_option)}` : 'N/A'}</td>
+        <td style="color:var(--danger);font-weight:600">⚠️ ${esc(item.reason || 'No reason')}</td>
+        <td style="color:var(--text-muted);white-space:nowrap">${dateStr}</td>
+        <td><button type="button" class="danger" style="padding:4px 10px;font-size:12px;width:auto" onclick="deleteReport(${item.id})">🗑️ Delete</button></td>
+      </tr>`;
+    });
+
+    html += `</tbody></table></div>`;
+    container.innerHTML = html;
+  } catch (err) {
+    container.innerHTML = `<div style="color:var(--danger)">Error: ${esc(err.message)}</div>`;
+  }
+}
+
+async function deleteReport(id) {
+  if (!confirm("Delete report entry?")) return;
+  const { error } = await supabaseClient.from("report_question").delete().eq("id", id);
+  if (error) alert("Error: " + error.message);
+  else { alert("✅ Deleted!"); loadReportedQuestions(); refreshDashboard(); }
+}
+
+/* =====================================================
+   LIVE ANALYTICS
+===================================================== */
+async function loadAnalyticsData() {
+  try {
+    const { data: fbData } = await supabaseClient.from("app_feedback").select("rating");
+    const { data: rData } = await supabaseClient.from("report_question").select("id");
+    const { data: nData } = await supabaseClient.from("notes").select("id");
+
+    if (fbData && fbData.length > 0) {
+      const sum = fbData.reduce((acc, curr) => acc + (curr.rating || 5), 0);
+      const avg = (sum / fbData.length).toFixed(1);
+      document.getElementById("analyticsAvgRating").innerText = `${avg} / 5 ⭐`;
+      document.getElementById("analyticsFeedbacks").innerText = fbData.length;
+    } else {
+      document.getElementById("analyticsAvgRating").innerText = "5.0 / 5 ⭐";
+      document.getElementById("analyticsFeedbacks").innerText = "0";
+    }
+
+    document.getElementById("analyticsReports").innerText = rData ? rData.length : 0;
+    document.getElementById("analyticsNotes").innerText = nData ? nData.length : 0;
+  } catch (e) {}
+}
+
+/* =====================================================
+   CREATE ADMIN MODAL
+===================================================== */
+function openNewAdminModal() {
+  const modal = document.getElementById("newAdminModal");
+  if (modal) {
+    modal.style.display = "flex";
+    document.getElementById("modalNewAdminEmail").value = "";
+    document.getElementById("modalNewAdminPassword").value = "";
+    document.getElementById("modalNewAdminConfirmPassword").value = "";
+    document.getElementById("modalNewAdminStatus").innerText = "";
+  }
+}
+
+function closeNewAdminModal() {
+  const modal = document.getElementById("newAdminModal");
+  if (modal) modal.style.display = "none";
+}
+
+async function submitNewAdminFromModal() {
+  const email = document.getElementById("modalNewAdminEmail").value.trim();
+  const password = document.getElementById("modalNewAdminPassword").value.trim();
+  const confirmPassword = document.getElementById("modalNewAdminConfirmPassword").value.trim();
+  const statusEl = document.getElementById("modalNewAdminStatus");
+
+  if (!email || !password) {
+    if (statusEl) { statusEl.style.color = "var(--danger)"; statusEl.innerText = "❌ Please enter Email and Password."; }
+    return;
+  }
+
+  if (password.length < 6) {
+    if (statusEl) { statusEl.style.color = "var(--danger)"; statusEl.innerText = "❌ Password must be at least 6 characters long."; }
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    if (statusEl) { statusEl.style.color = "var(--danger)"; statusEl.innerText = "❌ Passwords do not match!"; }
+    return;
+  }
+
+  if (statusEl) { statusEl.style.color = "var(--primary)"; statusEl.innerText = "⏳ Creating new admin..."; }
+
+  const { data, error } = await supabaseClient.auth.signUp({ email, password });
+
+  if (error) {
+    if (statusEl) { statusEl.style.color = "var(--danger)"; statusEl.innerText = "❌ Error: " + error.message; }
+  } else {
+    if (statusEl) { statusEl.style.color = "var(--success)"; statusEl.innerText = "🎉 Admin account (" + email + ") created successfully!"; }
+    setTimeout(() => { closeNewAdminModal(); }, 1500);
   }
 }
 

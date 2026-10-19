@@ -1,11 +1,13 @@
 package com.amstudio.examuplift.api;
 
+import com.amstudio.examuplift.models.AppFeedback;
 import com.amstudio.examuplift.models.Category;
 import com.amstudio.examuplift.models.Chapter;
 import com.amstudio.examuplift.models.Note;
 import com.amstudio.examuplift.models.Subject;
 import com.amstudio.examuplift.models.SupabaseTest;
 import com.amstudio.examuplift.models.Topic;
+import com.amstudio.examuplift.models.ReportQuestion;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -43,4 +45,16 @@ public interface SupabaseApi {
 
     @GET("categories")
     Call<List<Category>> getCategories();
+
+    @POST("report_question")
+    Call<Void> reportQuestion(@Body ReportQuestion reportQuestion);
+
+    @GET("report_question?select=*&order=created_at.desc")
+    Call<List<ReportQuestion>> getReportedQuestions();
+
+    @POST("app_feedback")
+    Call<Void> sendFeedback(@Body AppFeedback feedback);
+
+    @GET("app_feedback?select=*&order=created_at.desc")
+    Call<List<AppFeedback>> getFeedbacks();
 }

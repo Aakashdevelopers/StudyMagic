@@ -12,6 +12,8 @@ public interface OpenRouterApi {
     @POST("chat/completions")
     Call<ChatResponse> getCompletion(
             @Header("Authorization") String auth,
+            @Header("HTTP-Referer") String referer,
+            @Header("X-Title") String title,
             @Body ChatRequest request
     );
 }

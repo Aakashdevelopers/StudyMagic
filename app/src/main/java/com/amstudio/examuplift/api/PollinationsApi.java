@@ -1,5 +1,8 @@
 package com.amstudio.examuplift.api;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -8,15 +11,21 @@ import retrofit2.http.POST;
 
 public interface PollinationsApi {
     @Headers("Content-Type: application/json")
-    @POST(".")
+    @POST("/")
     Call<ResponseBody> getCompletion(@Body PollinationsRequest request);
 
     class PollinationsRequest {
-        public Message[] messages;
+        public List<Message> messages;
         public String model;
 
+        public PollinationsRequest(List<Message> messages) {
+            this.messages = messages;
+            this.model = "openai";
+        }
+
         public PollinationsRequest(String prompt) {
-            this.messages = new Message[]{ new Message("user", prompt) };
+            this.messages = new ArrayList<>();
+            this.messages.add(new Message("user", prompt));
             this.model = "openai";
         }
 

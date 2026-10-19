@@ -51,6 +51,15 @@
             android:name=".SearchActivity"
             android:exported="false"
             android:windowSoftInputMode="stateVisible|adjustResize" />
+
+        <activity
+            android:name=".SavedQuestionsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".AiChatActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>
