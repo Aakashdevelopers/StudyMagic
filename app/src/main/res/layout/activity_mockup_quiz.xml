@@ -20,6 +20,17 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_marginEnd="4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Back"
+            android:padding="8dp"
+            android:src="@drawable/baseline_arrow_back_ios_24"
+            app:tint="@color/white" />
+
+        <ImageView
             android:id="@+id/btnPause"
             android:layout_width="38dp"
             android:layout_height="38dp"
@@ -127,112 +138,147 @@
             android:background="@color/colorOutline" />
 
         <!-- Info Strip -->
-        <LinearLayout
-            android:id="@+id/llInfoStrip"
+        <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/surfaceColor"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="10dp">
-
-            <TextView
-                android:id="@+id/tvQuestionNoPill"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_q_number_pill"
-                android:paddingHorizontal="12dp"
-                android:paddingVertical="4dp"
-                android:text="Q. 1"
-                android:textColor="@color/colorPrimary"
-                android:textSize="13sp"
-                android:textStyle="bold" />
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="20dp"
-                android:layout_marginHorizontal="12dp"
-                android:background="@color/colorOutline" />
-
-            <TextView
-                android:id="@+id/tvSubjectLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Subject: Math"
-                android:textColor="@color/textSecondary"
-                android:textSize="13sp"
-                android:textStyle="bold" />
+            android:scrollbars="none"
+            android:fillViewport="true"
+            android:overScrollMode="never">
 
             <LinearLayout
-                android:id="@+id/llSubjectTimerContainer"
+                android:id="@+id/llInfoStrip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/bg_timer_pill"
+                android:background="@color/surfaceColor"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="2dp"
-                android:visibility="gone"
-                tools:visibility="visible">
-
-                <ImageView
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:contentDescription="Subject Timer"
-                    android:src="@drawable/ic_timer"
-                    app:tint="@color/colorError" />
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="8dp">
 
                 <TextView
-                    android:id="@+id/tvSubjectTimer"
+                    android:id="@+id/tvQuestionNoPill"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:text="(00:00)"
-                    android:textColor="@color/colorError"
-                    android:textSize="11sp"
+                    android:background="@drawable/bg_q_number_pill"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="3dp"
+                    android:text="Q. 1"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="18dp"
+                    android:layout_marginHorizontal="8dp"
+                    android:background="@color/colorOutline" />
+
+                <TextView
+                    android:id="@+id/tvSubjectLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:text="Subject: Math"
+                    android:textColor="@color/textSecondary"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/llSubjectTimerContainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/bg_timer_pill"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="6dp"
+                    android:paddingVertical="2dp"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <ImageView
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:contentDescription="Subject Timer"
+                        android:src="@drawable/ic_timer"
+                        app:tint="@color/colorError" />
+
+                    <TextView
+                        android:id="@+id/tvSubjectTimer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="3dp"
+                        android:text="(00:00)"
+                        android:textColor="@color/colorError"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:minWidth="8dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnLanguageToggle"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="6dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="0dp"
+                    android:text="English"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    app:cornerRadius="16dp"
+                    app:icon="@drawable/ic_language"
+                    app:iconGravity="textStart"
+                    app:iconPadding="4dp"
+                    app:iconSize="14dp"
+                    app:iconTint="@color/colorPrimary"
+                    app:strokeColor="@color/colorPrimary"
+                    app:strokeWidth="1dp" />
+
+                <ImageView
+                    android:id="@+id/btnReport"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="6dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Report Question"
+                    android:padding="4dp"
+                    android:src="@drawable/ic_report_quiz"
+                    app:tint="@color/textSecondary" />
+
+                <ImageView
+                    android:id="@+id/btnBookmark"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="6dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Save Question"
+                    android:padding="4dp"
+                    android:src="@drawable/ic_bookmark_quiz"
+                    app:tint="@color/textSecondary" />
+
+                <ImageView
+                    android:id="@+id/btnMarkForReviewStar"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Mark for Review"
+                    android:padding="4dp"
+                    android:src="@drawable/ic_star_quiz"
+                    app:tint="@color/textSecondary" />
+
             </LinearLayout>
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <ImageView
-                android:id="@+id/btnReport"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginEnd="8dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Report Question"
-                android:padding="4dp"
-                android:src="@drawable/ic_report_quiz"
-                app:tint="@color/textSecondary" />
-
-            <ImageView
-                android:id="@+id/btnBookmark"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginEnd="8dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Save Question"
-                android:padding="4dp"
-                android:src="@drawable/ic_bookmark_quiz"
-                app:tint="@color/textSecondary" />
-
-            <ImageView
-                android:id="@+id/btnMarkForReviewStar"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Mark for Review"
-                android:padding="4dp"
-                android:src="@drawable/ic_star_quiz"
-                app:tint="@color/textSecondary" />
-
-        </LinearLayout>
+        </HorizontalScrollView>
 
         <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/quizProgress"

@@ -175,18 +175,18 @@ public class AiChatActivity extends AppCompatActivity {
         }
 
         String systemPrompt = "You are ChatGPT, an expert, friendly, and highly encouraging AI Exam Mentor for students preparing for competitive exams on Exam Uplift.\n" +
-                "The student has just completed the test below and is chatting with you to clear doubts, understand questions, learn concepts, get motivation, and improve their score.\n\n" +
+                "The student has just completed the test below and is chatting with you to clear doubts, understand questions one-by-one, learn core concepts, get smart tricks/shortcuts, get motivation, and improve their score.\n\n" +
                 "--- TEST DATA --- \n" + testDetails.toString() + "\n--- END TEST DATA ---\n\n" +
                 "Your Guidelines:\n" +
                 "1. Answer every query accurately based on the test data above.\n" +
-                "2. Respond in Hindi/Hinglish/English naturally based on what the student uses.\n" +
-                "3. Explain solutions step-by-step with simple examples when asked about any question.\n" +
+                "2. When explaining any question (wrong or correct), explain step-by-step AND give a practical SMART TRICK / SHORTCUT / MEMORY MNEMONIC (स्मार्ट ट्रिक / याद रखने की ट्रिक) to remember or solve it fast!\n" +
+                "3. Respond in Hindi/Hinglish/English naturally based on what the student uses.\n" +
                 "4. Be extremely supportive, motivating, and action-oriented.";
 
         apiHistoryMessages.add(new ChatRequest.Message("system", systemPrompt));
 
         // Add initial welcoming message
-        String welcomeMsg = "👋 Hello! I am ChatGPT, your AI Exam Mentor.\n\nI have reviewed your test performance (**" + correctCount + "/" + totalCount + "** in " + testTitle + ").\n\nHow can I help you? Ask me any doubt about any question, concepts, or ask for motivation!";
+        String welcomeMsg = "👋 Hello! I am ChatGPT, your AI Exam Mentor.\n\nI have reviewed your test performance (**" + correctCount + "/" + totalCount + "** in " + testTitle + ").\n\nAsk me about any question (wrong or correct), and I will explain it step-by-step with a smart trick to remember or solve it fast!";
         chatMessages.add(new ChatMessage(welcomeMsg, false));
         chatAdapter.notifyItemInserted(chatMessages.size() - 1);
     }

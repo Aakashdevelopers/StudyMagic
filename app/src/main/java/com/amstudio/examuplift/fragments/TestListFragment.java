@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.amstudio.examuplift.R;
 import android.content.Intent;
+import com.amstudio.examuplift.MockupQuizActivity;
 import com.amstudio.examuplift.QuizActivity;
 import com.amstudio.examuplift.adapters.TestAdapter;
 import com.amstudio.examuplift.api.ApiClient;
@@ -21,7 +22,6 @@ import com.amstudio.examuplift.models.Test;
 import com.amstudio.examuplift.utils.WindowInsetsUtil;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,7 +30,8 @@ import retrofit2.Response;
 public class TestListFragment extends Fragment {
 
     private TestAdapter adapter;
-    private List<Test> testList = new ArrayList<>();
+    private final List<Test> testList = new ArrayList<>();
+    private final List<SupabaseTest> supabaseTestList = new ArrayList<>();
 
     @Nullable
     @Override
@@ -50,9 +51,22 @@ public class TestListFragment extends Fragment {
 
         RecyclerView rvTests = view.findViewById(R.id.rvTests);
         adapter = new TestAdapter(testList, test -> {
-            Intent intent = new Intent(getActivity(), QuizActivity.class);
-            intent.putExtra("test", test);
-            startActivity(intent);
+            SupabaseTest matchingSTest = null;
+            for (SupabaseTest st : supabaseTestList) {
+                if (st != null && String.valueOf(st.id).equals(test.getId())) {
+                    matchingSTest = st;
+                    break;
+                }
+            }
+            if (matchingSTest != null) {
+                Intent intent = new Intent(getActivity(), MockupQuizActivity.class);
+                intent.putExtra("supabaseTest", matchingSTest);
+                startActivity(intent);
+            } else {
+                Intent intent = new Intent(getActivity(), QuizActivity.class);
+                intent.putExtra("test", test);
+                startActivity(intent);
+            }
         });
         rvTests.setAdapter(adapter);
 
@@ -70,11 +84,13 @@ public class TestListFragment extends Fragment {
             @Override
             public void onResponse(Call<List<SupabaseTest>> call, Response<List<SupabaseTest>> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    supabaseTestList.clear();
+                    supabaseTestList.addAll(response.body());
                     testList.clear();
                     for (SupabaseTest sTest : response.body()) {
                         testList.add(sTest.toTest());
                     }
-                    Collections.sort(testList, (t1, t2) -> {
+                    testList.sort((t1, t2) -> {
                         String name1 = (t1 != null && t1.getTitle() != null) ? t1.getTitle() : "";
                         String name2 = (t2 != null && t2.getTitle() != null) ? t2.getTitle() : "";
                         return name1.compareToIgnoreCase(name2);
@@ -94,12 +110,47 @@ public class TestListFragment extends Fragment {
         ApiClient.getInterface().getTestsByCategory("eq." + categoryId).enqueue(new Callback<List<SupabaseTest>>() {
             @Override
             public void onResponse(Call<List<SupabaseTest>> call, Response<List<SupabaseTest>> response) {
-                if (response.isSuccessful() && response.body() != null) {
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                    supabaseTestList.clear();
+                    supabaseTestList.addAll(response.body());
                     testList.clear();
                     for (SupabaseTest sTest : response.body()) {
                         testList.add(sTest.toTest());
                     }
-                    Collections.sort(testList, (t1, t2) -> {
+                    testList.sort((t1, t2) -> {
+                        String name1 = (t1 != null && t1.getTitle() != null) ? t1.getTitle() : "";
+                        String name2 = (t2 != null && t2.getTitle() != null) ? t2.getTitle() : "";
+                        return name1.compareToIgnoreCase(name2);
+                    });
+                    adapter.notifyDataSetChanged();
+                } else {
+                    fetchFallbackAllMockupTests(categoryId);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<SupabaseTest>> call, Throwable t) {
+                fetchFallbackAllMockupTests(categoryId);
+            }
+        });
+    }
+
+    private void fetchFallbackAllMockupTests(String categoryId) {
+        ApiClient.getInterface().getAllMockupTests().enqueue(new Callback<List<SupabaseTest>>() {
+            @Override
+            public void onResponse(Call<List<SupabaseTest>> call, Response<List<SupabaseTest>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    supabaseTestList.clear();
+                    testList.clear();
+                    for (SupabaseTest sTest : response.body()) {
+                        if (sTest != null && sTest.categoryId != null &&
+                                (sTest.categoryId.trim().equalsIgnoreCase(categoryId.trim()) ||
+                                 sTest.categoryId.trim().equalsIgnoreCase("eq." + categoryId.trim()))) {
+                            supabaseTestList.add(sTest);
+                            testList.add(sTest.toTest());
+                        }
+                    }
+                    testList.sort((t1, t2) -> {
                         String name1 = (t1 != null && t1.getTitle() != null) ? t1.getTitle() : "";
                         String name2 = (t2 != null && t2.getTitle() != null) ? t2.getTitle() : "";
                         return name1.compareToIgnoreCase(name2);

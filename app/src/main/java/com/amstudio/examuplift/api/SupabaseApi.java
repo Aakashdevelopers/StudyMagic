@@ -3,6 +3,8 @@ package com.amstudio.examuplift.api;
 import com.amstudio.examuplift.models.AppFeedback;
 import com.amstudio.examuplift.models.Category;
 import com.amstudio.examuplift.models.Chapter;
+import com.amstudio.examuplift.models.MockExam;
+import com.amstudio.examuplift.models.MockSubcategory;
 import com.amstudio.examuplift.models.Note;
 import com.amstudio.examuplift.models.Subject;
 import com.amstudio.examuplift.models.SupabaseTest;
@@ -16,6 +18,27 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface SupabaseApi {
+    @GET("mock_exams?select=*&order=id.asc")
+    Call<List<MockExam>> getMockExams();
+
+    @GET("mock_subcategories?select=*&order=id.asc")
+    Call<List<MockSubcategory>> getMockSubcategories(@Query("category_id") String categoryIdQuery);
+
+    @GET("mock_subcategories?select=*&order=id.asc")
+    Call<List<MockSubcategory>> getAllMockSubcategories();
+
+    @GET("exam_mocks?select=*")
+    Call<List<SupabaseTest>> getExamMocksBySubcategory(@Query("subcategory_id") String subcategoryQuery);
+
+    @GET("mockup_tests?select=*")
+    Call<List<SupabaseTest>> getMockupTestsBySubcategory(@Query("subcategory_id") String subcategoryQuery);
+
+    @GET("exam_mocks?select=*")
+    Call<List<SupabaseTest>> getExamMocksByExamType(@Query("examtype") String examTypeQuery);
+
+    @GET("exam_mocks?select=*")
+    Call<List<SupabaseTest>> getAllExamMocks();
+
     @GET("mockup_tests?select=*&is_featured=eq.true")
     Call<List<SupabaseTest>> getFeaturedTests();
 
@@ -40,7 +63,7 @@ public interface SupabaseApi {
     @GET("tests")
     Call<List<SupabaseTest>> getTestsByTopic(@Query("topic_id") String topicId);
 
-    @GET("tests")
+    @GET("mockup_tests?select=*")
     Call<List<SupabaseTest>> getTestsByCategory(@Query("category_id") String categoryId);
 
     @GET("categories")

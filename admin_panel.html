@@ -679,6 +679,7 @@ button.gold:hover {
   </div>
   <nav class="nav-links">
     <button class="nav-btn active" id="btnNavHome" onclick="showScreen('home')">🏠 <span>Dashboard</span></button>
+    <button class="nav-btn" id="btnNavExamMocks" onclick="showScreen('manageExamMocks')">📝 <span>Mock (By Exam)</span></button>
     <button class="nav-btn" id="btnNavMockups" onclick="showScreen('manageMockups')">📝 <span>Mockups</span></button>
     <button class="nav-btn" id="btnNavTests" onclick="showScreen('manageTests')">🧪 <span>Tests</span></button>
     <button class="nav-btn" id="btnNavNotes" onclick="showScreen('manageNotes')">📚 <span>Notes</span></button>
@@ -752,6 +753,11 @@ button.gold:hover {
   </div>
 
   <div class="grid" style="margin-top:16px">
+    <div class="card action-card" onclick="showScreen('manageExamMocks')">
+      <h2>📝 Mock (By Exam)</h2>
+      <p class="sub" style="margin-bottom:0">Dedicated 2-table system for Exam Categories (mock_exams) & Exam Mock Tests (exam_mocks).</p>
+      <button>Open Mock (By Exam) Builder →</button>
+    </div>
     <div class="card action-card" onclick="showScreen('manageMockups')">
       <h2>📝 Manage Mockups</h2>
       <p class="sub" style="margin-bottom:0">Create Type 1 (Universal) & Type 2 (Subject-wise Timed) Mockups with question diagrams.</p>
@@ -788,6 +794,119 @@ button.gold:hover {
 </section>
 
 
+<!-- EXAM MOCKS (2-TABLE SYSTEM: mock_exams & exam_mocks) -->
+<section id="manageExamMocks" class="screen">
+  <button class="back" onclick="showScreen('home')">← Dashboard</button>
+  <h1>📝 Manage Mock (By Exam)</h1>
+  <p class="sub">Manage Exam Categories (Table 1: <code>mock_exams</code>) and Exam Mock Tests (Table 2: <code>exam_mocks</code>) for Mock Fragment.</p>
+  <div class="status" id="emStatus">Ready</div>
+
+  <!-- 1. Manage Exam Categories (Table 1: mock_exams) -->
+  <div class="card">
+    <h2>📂 Step 1: Manage Exam Categories (Table 1: mock_exams)</h2>
+    <p class="sub">Create and edit exam categories (e.g. SSC CGL 2024, RRB NTPC, Banking, State PSC).</p>
+
+    <div class="row">
+      <div>
+        <label>Exam Title *</label>
+        <input id="emCatTitle" placeholder="e.g. SSC CGL 2024">
+      </div>
+      <div>
+        <label>Exam Description</label>
+        <input id="emCatDesc" placeholder="e.g. Full Length Practice Sets for SSC CGL">
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label>Icon / Image URL (Optional)</label>
+        <input id="emCatIcon" placeholder="https://i.ibb.co/...">
+      </div>
+      <div style="display:flex;align-items:flex-end">
+        <button class="save" style="margin-bottom:0;width:100%" onclick="saveNewMockExamCategory()">➕ Add Exam Category</button>
+      </div>
+    </div>
+    <div id="emCatMsg" style="margin-top:10px"></div>
+
+    <h3 style="margin-top:20px;font-size:15px;color:var(--primary)">📋 Existing Mock Exam Categories</h3>
+    <button class="secondary" style="width:auto;margin:10px 0 14px" onclick="loadMockExamsList()">🔄 Refresh Categories</button>
+    <div id="emCategoriesList"><div class="empty">Loading exam categories...</div></div>
+  </div>
+
+  <!-- 2. Create Exam Mock Test (Table 2: exam_mocks) -->
+  <div class="card">
+    <h2>📝 Step 2: Create Exam Mock Test (Table 2: exam_mocks)</h2>
+    <p class="sub">Add mock tests connected to Table 1 via <code>examtype</code> foreign key.</p>
+
+    <div class="row" style="margin-bottom:16px">
+      <div>
+        <label>🎓 Select Mock Exam Category (Table 1) *</label>
+        <select id="emSelectExamCategory">
+          <option value="">Select Exam Category</option>
+        </select>
+      </div>
+    </div>
+
+    <label>Mockup Test Type</label>
+    <div class="type-box">
+      <div id="emCardType1" class="type-card active" onclick="selectEmMockType('type1')">
+        <div class="type-title">Type 1: Universal Duration</div>
+        <div class="type-desc">Single timer for whole test. Candidates can move freely between subjects.</div>
+      </div>
+      <div id="emCardType2" class="type-card" onclick="selectEmMockType('type2')">
+        <div class="type-title">Type 2: Subject-Wise Timed</div>
+        <div class="type-desc">Individual countdown timer per subject section. Section lock on timeout.</div>
+      </div>
+    </div>
+
+    <label>Mockup Test Title *</label>
+    <input id="emTitle" placeholder="Example: SSC CGL Full Length Mock Test 01">
+
+    <label>Description</label>
+    <textarea id="emDescription" placeholder="Enter instructions or test description..."></textarea>
+
+    <div class="row">
+      <div id="emDivUniversalDuration">
+        <label>Universal Duration (Minutes)</label>
+        <input id="emDuration" type="number" min="1" value="60">
+      </div>
+      <div>
+        <label>Marks Per Correct Ans *</label>
+        <input id="emCorrectMarks" type="number" step="0.01" value="1.0">
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Negative Marking (-ve Marks)</label>
+        <input id="emNegMarking" type="number" step="0.01" value="0.25">
+      </div>
+      <div>
+        <label>Total Marks (Optional)</label>
+        <input id="emTotalMarks" type="number" step="0.01" placeholder="Auto-calculated if blank">
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:24px 0 14px">
+      <h3 style="margin:0;font-size:16px;color:var(--primary)">📚 Subjects & Questions Builder</h3>
+      <button type="button" class="secondary" style="width:auto;margin:0;padding:8px 14px" onclick="addEmSubjectBuilderCard()">➕ Add Subject</button>
+    </div>
+
+    <div id="emSubjectsContainer">
+      <!-- Subject Cards populated here -->
+    </div>
+
+    <button class="save" style="margin-top:16px;width:100%;padding:14px" onclick="saveEmExamMock()">💾 Save & Publish Exam Mock Test</button>
+    <div id="emSaveMsg" style="margin-top:12px"></div>
+  </div>
+
+  <!-- 3. Existing Exam Mock Tests Table -->
+  <div class="card">
+    <h2>📋 Published Exam Mock Tests (Table 2: exam_mocks)</h2>
+    <button class="secondary" style="width:auto;margin-bottom:14px" onclick="loadEmExamMocks()">🔄 Refresh Exam Mocks List</button>
+    <div id="emMocksContainer"><div class="empty">Loading exam mocks...</div></div>
+  </div>
+</section>
+
 <!-- MOCKUPS -->
 <section id="manageMockups" class="screen">
   <button class="back" onclick="showScreen('home')">← Dashboard</button>
@@ -812,7 +931,7 @@ button.gold:hover {
     <div id="imgbbResult"></div>
   </div>
 
-  <!-- Create Mockup Form -->
+  <!-- Create Mockup Form (Table 2: exam_mocks & mockup_tests) -->
   <div class="card">
     <h2>➕ Create New Mockup Test</h2>
 
@@ -840,8 +959,14 @@ button.gold:hover {
         <input id="duration" type="number" min="1" value="60">
       </div>
       <div>
-        <label>📂 Exam Category</label>
-        <select id="mockupCategory"><option value="">Select category (Optional)</option></select>
+        <label>📁 Select Category (Filter)</label>
+        <select id="mockupMainCategory" onchange="onMockupMainCategoryChange()">
+          <option value="">All Categories</option>
+        </select>
+      </div>
+      <div>
+        <label>📂 Subcategory *</label>
+        <select id="mockupCategory"><option value="">Select subcategory *</option></select>
       </div>
     </div>
 
@@ -1167,6 +1292,24 @@ button.gold:hover {
     <div id="categoryList"><div class="empty">Loading categories...</div></div>
   </div>
 
+  <!-- SUBCATEGORIES (mock_subcategories) -->
+  <div class="card" style="border: 1px solid var(--primary);">
+    <h2>🏷️ Subcategories (`mock_subcategories`)</h2>
+    <p class="sub">Add and manage Subcategories for Mock Exams.</p>
+
+    <label>Belongs to Category *</label>
+    <select id="subcatCategory"><option value="">Select category</option></select>
+
+    <label>Subcategory Title / Name *</label>
+    <input id="subcatTitle" placeholder="Example: SSC CGL Tier 1, Banking Prelims, Railway Group D">
+
+    <button class="save" onclick="addSubcategory()">➕ Save & Add Subcategory</button>
+    <div id="subcatMessage" style="margin-top:12px"></div>
+
+    <h3 style="margin:24px 0 12px;font-size:15px;color:var(--text-muted)">📋 Existing Subcategories</h3>
+    <div id="subcatList"><div class="empty">Loading subcategories...</div></div>
+  </div>
+
   <!-- SUBJECTS -->
   <div class="card">
     <h2>📘 Subjects</h2>
@@ -1377,6 +1520,7 @@ async function checkAdminAuthState() {
 }
 
 let categories = [];
+let mockSubcategories = [];
 let subjects = [];
 let chapters = [];
 let topics = [];
@@ -1401,6 +1545,7 @@ function showScreen(name){
 
   const btnMap = {
     'home': 'btnNavHome',
+    'manageExamMocks': 'btnNavExamMocks',
     'manageMockups': 'btnNavMockups',
     'manageTests': 'btnNavTests',
     'manageNotes': 'btnNavNotes',
@@ -1415,6 +1560,7 @@ function showScreen(name){
   }
 
   if(name === "home") refreshDashboard();
+  if(name === "manageExamMocks") initExamMocksPage();
   if(name === "manageMockups") initMockupPage();
   if(name === "manageTests") initTestPage();
   if(name === "manageNotes") loadNotes();
@@ -1422,6 +1568,451 @@ function showScreen(name){
   if(name === "manageReports") loadReportedQuestions();
   if(name === "manageFeedbacks") loadFeedbacks();
   if(name === "manageAnalytics") loadAnalyticsData();
+}
+
+/* =====================================================
+   DEDICATED EXAM MOCKS CONTROLLER (2-TABLE SYSTEM)
+===================================================== */
+let currentEmMockType = "type1";
+let emSubjectCardCount = 0;
+let loadedEmMockExams = {};
+let loadedEmMocks = {};
+
+async function initExamMocksPage() {
+  await loadMockExamsList();
+  if (document.querySelectorAll("#emSubjectsContainer .subject-card").length === 0) {
+    addEmSubjectBuilderCard("Mathematics");
+  }
+  loadEmExamMocks();
+}
+
+async function loadMockExamsList() {
+  const container = document.getElementById("emCategoriesList");
+  const selectEl = document.getElementById("emSelectExamCategory");
+
+  if (container) container.innerHTML = "<div>Loading exam categories...</div>";
+  if (selectEl) selectEl.innerHTML = '<option value="">Select Exam Category</option>';
+
+  try {
+    const { data, error } = await supabaseClient.from("mock_exams").select("*").order("id", { ascending: true });
+    if (error) {
+      if (container) container.innerHTML = `<div class="empty" style="color:var(--danger)">Error: ${esc(error.message)}</div>`;
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      if (container) container.innerHTML = '<div class="empty">No exam categories found in mock_exams table.</div>';
+      return;
+    }
+
+    loadedEmMockExams = {};
+    let html = '<table style="width:100%;border-collapse:collapse;margin-top:10px">';
+    html += '<tr style="border-bottom:1px solid var(--border-color);text-align:left"><th>ID</th><th>Title</th><th>Description</th><th>Icon</th><th>Actions</th></tr>';
+
+    data.forEach(exam => {
+      loadedEmMockExams[exam.id] = exam;
+      if (selectEl) {
+        selectEl.innerHTML += `<option value="${exam.id}">${esc(exam.title)}</option>`;
+      }
+      const iconHtml = exam.icon_url ? `<img src="${esc(exam.icon_url)}" style="width:24px;height:24px;object-fit:cover;border-radius:4px">` : '—';
+
+      html += `<tr style="border-bottom:1px solid var(--border-color)">
+        <td><b>#${exam.id}</b></td>
+        <td><b>${esc(exam.title)}</b></td>
+        <td>${esc(exam.description || '—')}</td>
+        <td>${iconHtml}</td>
+        <td>
+          <button class="secondary" style="padding:4px 10px;font-size:12px;margin-right:6px" onclick="toggleEmCatEditForm(${exam.id})">✏️ Edit</button>
+          <button class="danger" style="padding:4px 10px;font-size:12px;margin:0" onclick="deleteMockExamCategory(${exam.id})">🗑️ Delete</button>
+        </td>
+      </tr>
+      <tr id="emCatEditRow_${exam.id}" style="display:none;background:var(--bg-card)">
+        <td colspan="5" style="padding:12px">
+          <div style="font-weight:700;color:var(--primary);margin-bottom:8px">✏️ Edit Exam Category #${exam.id} (Table 1: mock_exams)</div>
+          <div class="row">
+            <div>
+              <label>Exam Title</label>
+              <input id="emCatEditTitle_${exam.id}" value="${attr(exam.title)}">
+            </div>
+            <div>
+              <label>Description</label>
+              <input id="emCatEditDesc_${exam.id}" value="${attr(exam.description || '')}">
+            </div>
+          </div>
+          <div class="row" style="margin-top:8px">
+            <div>
+              <label>Icon URL</label>
+              <input id="emCatEditIcon_${exam.id}" value="${attr(exam.icon_url || '')}">
+            </div>
+            <div style="display:flex;align-items:flex-end;gap:8px">
+              <button class="save" style="margin:0;padding:8px 14px" onclick="saveEditedMockExamCategory(${exam.id})">💾 Save Category</button>
+              <button class="secondary" style="margin:0;padding:8px 14px" onclick="toggleEmCatEditForm(${exam.id})">❌ Cancel</button>
+            </div>
+          </div>
+        </td>
+      </tr>`;
+    });
+    html += '</table>';
+    if (container) container.innerHTML = html;
+  } catch (e) {
+    if (container) container.innerHTML = `<div class="empty" style="color:var(--danger)">Error: ${esc(e.message)}</div>`;
+  }
+}
+
+function toggleEmCatEditForm(id) {
+  const row = document.getElementById(`emCatEditRow_${id}`);
+  if (row) {
+    row.style.display = (row.style.display === "none") ? "table-row" : "none";
+  }
+}
+
+async function saveEditedMockExamCategory(id) {
+  const title = document.getElementById(`emCatEditTitle_${id}`).value.trim();
+  const desc = document.getElementById(`emCatEditDesc_${id}`).value.trim();
+  const icon = document.getElementById(`emCatEditIcon_${id}`).value.trim();
+
+  if (!title) { alert("Title cannot be empty"); return; }
+
+  const { error } = await supabaseClient.from("mock_exams").update({
+    title: title,
+    description: desc || null,
+    icon_url: icon || null
+  }).eq("id", id);
+
+  if (error) {
+    alert("❌ Error updating exam category: " + error.message);
+  } else {
+    alert("✅ Exam category updated in mock_exams table!");
+    loadMockExamsList();
+  }
+}
+
+async function saveNewMockExamCategory() {
+  const title = document.getElementById("emCatTitle").value.trim();
+  const desc = document.getElementById("emCatDesc").value.trim();
+  const icon = document.getElementById("emCatIcon").value.trim();
+  const msg = document.getElementById("emCatMsg");
+
+  if (!title) {
+    if (msg) msg.innerHTML = '<span style="color:var(--danger)">Please enter Exam Title</span>';
+    return;
+  }
+
+  if (msg) msg.innerHTML = '<span>Creating Exam Category in mock_exams...</span>';
+  const { error } = await supabaseClient.from("mock_exams").insert({
+    title: title,
+    description: desc || null,
+    icon_url: icon || null
+  });
+
+  if (error) {
+    if (msg) msg.innerHTML = `<span style="color:var(--danger)">❌ ${esc(error.message)}</span>`;
+  } else {
+    if (msg) msg.innerHTML = '<span style="color:var(--success)">✅ Exam Category created in mock_exams!</span>';
+    document.getElementById("emCatTitle").value = "";
+    document.getElementById("emCatDesc").value = "";
+    document.getElementById("emCatIcon").value = "";
+    loadMockExamsList();
+  }
+}
+
+async function deleteMockExamCategory(id) {
+  if (!confirm("Are you sure you want to delete this exam category? Exam mock tests linked to it will be removed.")) return;
+  const { error } = await supabaseClient.from("mock_exams").delete().eq("id", id);
+  if (error) {
+    alert("❌ Error deleting exam category: " + error.message);
+  } else {
+    alert("✅ Exam category deleted successfully!");
+    loadMockExamsList();
+  }
+}
+
+function selectEmMockType(type) {
+  currentEmMockType = type;
+  const card1 = document.getElementById("emCardType1");
+  const card2 = document.getElementById("emCardType2");
+  const univDiv = document.getElementById("emDivUniversalDuration");
+
+  if (type === "type1") {
+    if (card1) card1.classList.add("active");
+    if (card2) card2.classList.remove("active");
+    if (univDiv) univDiv.style.opacity = "1";
+    if (document.getElementById("emDuration")) document.getElementById("emDuration").disabled = false;
+  } else {
+    if (card2) card2.classList.add("active");
+    if (card1) card1.classList.remove("active");
+    if (univDiv) univDiv.style.opacity = "0.5";
+    if (document.getElementById("emDuration")) document.getElementById("emDuration").disabled = true;
+  }
+}
+
+function addEmSubjectBuilderCard(defaultName = "") {
+  emSubjectCardCount++;
+  const id = emSubjectCardCount;
+  const sampleJsonStr = JSON.stringify([
+    {
+      "id": "q1",
+      "question_text": "Q. What is the capital of India?",
+      "options": ["Mumbai", "New Delhi", "Kolkata", "Chennai"],
+      "correct_option_index": 1,
+      "e": "New Delhi is the official capital of India."
+    }
+  ], null, 2);
+
+  const html = `
+  <div id="emSubCard_${id}" class="subject-card" style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:16px;margin-bottom:14px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <span style="font-weight:700;color:var(--primary)">📘 Subject Section #${id}</span>
+      <button type="button" class="danger" style="width:auto;margin:0;padding:4px 10px;font-size:12px" onclick="removeEmSubjectBuilderCard(${id})">🗑️ Remove</button>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Subject Name *</label>
+        <input id="emSubName_${id}" class="em-sub-name" value="${esc(defaultName)}" placeholder="e.g. Mathematics">
+      </div>
+      <div>
+        <label>Subject Duration (Mins) <span class="small" style="color:var(--primary)">(Type 2 only)</span></label>
+        <input id="emSubDur_${id}" type="number" class="em-sub-dur" value="20" placeholder="20">
+      </div>
+    </div>
+
+    <label>Questions JSON Array *</label>
+    <textarea id="emSubJson_${id}" class="em-sub-json" style="min-height:140px;font-family:'JetBrains Mono',monospace;font-size:12px" placeholder="Paste questions JSON array...">${esc(sampleJsonStr)}</textarea>
+  </div>
+  `;
+
+  const container = document.getElementById("emSubjectsContainer");
+  if (container) container.insertAdjacentHTML("beforeend", html);
+}
+
+function removeEmSubjectBuilderCard(id) {
+  const card = document.getElementById(`emSubCard_${id}`);
+  if (card) card.remove();
+}
+
+async function saveEmExamMock() {
+  const msg = document.getElementById("emSaveMsg");
+  const examCatId = document.getElementById("emSelectExamCategory").value;
+  const title = document.getElementById("emTitle").value.trim();
+  const desc = document.getElementById("emDescription").value.trim();
+  const univDuration = parseInt(document.getElementById("emDuration").value) || 0;
+  const correctMarks = parseFloat(document.getElementById("emCorrectMarks").value) || 1.0;
+  const negMarking = parseFloat(document.getElementById("emNegMarking").value) || 0.0;
+  const totalMarksVal = parseFloat(document.getElementById("emTotalMarks").value);
+  const totalMarks = !isNaN(totalMarksVal) && totalMarksVal > 0 ? totalMarksVal : null;
+
+  if (!examCatId) { if (msg) msg.innerHTML = '<span style="color:var(--danger)">Please select an Exam Category from Table 1</span>'; return; }
+  if (!title) { if (msg) msg.innerHTML = '<span style="color:var(--danger)">Please enter test title</span>'; return; }
+
+  const cards = document.querySelectorAll("#emSubjectsContainer .subject-card");
+  if (cards.length === 0) { if (msg) msg.innerHTML = '<span style="color:var(--danger)">Please add at least one subject section!</span>'; return; }
+
+  const subjectsArray = [];
+  let totalCalculatedMins = 0;
+
+  for (let i = 0; i < cards.length; i++) {
+    const card = cards[i];
+    const nameInput = card.querySelector(".em-sub-name");
+    const durInput = card.querySelector(".em-sub-dur");
+    const jsonInput = card.querySelector(".em-sub-json");
+
+    const sName = nameInput ? nameInput.value.trim() : "";
+    const sDur = durInput ? (parseInt(durInput.value) || 0) : 0;
+    const sJson = jsonInput ? jsonInput.value.trim() : "";
+
+    if (!sName) { if (msg) msg.innerHTML = `<span style="color:var(--danger)">Subject #${i+1} name is required</span>`; return; }
+
+    let qArray = [];
+    try {
+      qArray = JSON.parse(sJson);
+      if (!Array.isArray(qArray)) throw new Error("Must be a JSON array");
+    } catch (e) {
+      if (msg) msg.innerHTML = `<span style="color:var(--danger)">Invalid JSON in Subject #${i+1}: ${e.message}</span>`;
+      return;
+    }
+
+    totalCalculatedMins += sDur;
+    subjectsArray.push({
+      "id": "sub_" + (i + 1),
+      "subject_name": sName,
+      "duration": (currentEmMockType === "type2") ? sDur : 0,
+      "questions_json": qArray
+    });
+  }
+
+  const finalDuration = (currentEmMockType === "type1") ? univDuration : totalCalculatedMins;
+
+  const questionsJsonObject = {
+    "test_type": currentEmMockType,
+    "is_subject_timer_enabled": (currentEmMockType === "type2"),
+    "correct_marks": correctMarks,
+    "negative_marking": negMarking,
+    "total_marks": totalMarks,
+    "subjects": subjectsArray
+  };
+
+  const payload = {
+    examtype: parseInt(examCatId),
+    title: title,
+    description: desc || null,
+    duration: finalDuration,
+    correct_marks: correctMarks,
+    negative_marking: negMarking,
+    total_marks: totalMarks,
+    test_type: currentEmMockType,
+    is_subject_timer_enabled: (currentEmMockType === "type2"),
+    questions_json: questionsJsonObject,
+    subjects: subjectsArray
+  };
+
+  if (msg) msg.innerHTML = '<span>Saving to exam_mocks table...</span>';
+  const { error } = await supabaseClient.from("exam_mocks").insert(payload);
+
+  if (error) {
+    if (msg) msg.innerHTML = `<span style="color:var(--danger)">❌ ${esc(error.message)}</span>`;
+  } else {
+    if (msg) msg.innerHTML = '<span style="color:var(--success)">🎉 Exam Mock Test published to exam_mocks successfully!</span>';
+    document.getElementById("emTitle").value = "";
+    document.getElementById("emDescription").value = "";
+    loadEmExamMocks();
+  }
+}
+
+async function loadEmExamMocks() {
+  const container = document.getElementById("emMocksContainer");
+  if (!container) return;
+  container.innerHTML = "<div>Loading exam mocks...</div>";
+
+  try {
+    const { data, error } = await supabaseClient.from("exam_mocks").select("*").order("id", { ascending: false });
+    if (error) {
+      container.innerHTML = `<div class="empty" style="color:var(--danger)">Error: ${esc(error.message)}</div>`;
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      container.innerHTML = '<div class="empty">No test records found in exam_mocks table.</div>';
+      return;
+    }
+
+    loadedEmMocks = {};
+    let html = '<div style="display:flex;flex-direction:column;gap:12px;margin-top:10px">';
+    data.forEach(m => {
+      loadedEmMocks[m.id] = m;
+      const examCategoryObj = loadedEmMockExams[m.examtype];
+      const examCategoryTitle = examCategoryObj ? examCategoryObj.title : `Exam ID #${m.examtype}`;
+
+      let catOptionsHtml = '';
+      Object.values(loadedEmMockExams).forEach(c => {
+        const sel = String(c.id) === String(m.examtype) ? 'selected' : '';
+        catOptionsHtml += `<option value="${c.id}" ${sel}>${esc(c.title)}</option>`;
+      });
+
+      html += `<div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <span class="badge blue">🎓 ${esc(examCategoryTitle)}</span>
+            <span class="badge green">⏱️ ${m.duration || 60} mins</span>
+            <span class="badge purple">${m.test_type === 'type2' ? 'Subject Timed' : 'Universal Timed'}</span>
+            <h3 style="margin:6px 0 2px">${esc(m.title)}</h3>
+            <p style="margin:0;font-size:12px;color:var(--text-muted)">${esc(m.description || 'No description')}</p>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="secondary" style="padding:6px 12px;font-size:12px;margin:0" onclick="toggleEmTestEditForm(${m.id})">✏️ Edit Details</button>
+            <button class="danger" style="padding:6px 12px;font-size:12px;margin:0" onclick="deleteEmExamMock(${m.id})">🗑️ Delete</button>
+          </div>
+        </div>
+
+        <div id="emTestEditForm_${m.id}" style="display:none;margin-top:14px;padding-top:14px;border-top:1px dashed var(--border-color)">
+          <h4 style="margin:0 0 10px;color:var(--primary)">✏️ Edit Test Details #${m.id} (Table 2: exam_mocks)</h4>
+          <div class="row">
+            <div>
+              <label>Exam Category (Table 1)</label>
+              <select id="emEditCat_${m.id}">
+                ${catOptionsHtml}
+              </select>
+            </div>
+            <div>
+              <label>Test Title</label>
+              <input id="emEditTitle_${m.id}" value="${attr(m.title)}">
+            </div>
+          </div>
+          <div style="margin-top:8px">
+            <label>Description</label>
+            <input id="emEditDesc_${m.id}" value="${attr(m.description || '')}">
+          </div>
+          <div class="row" style="margin-top:8px">
+            <div>
+              <label>Duration (Mins)</label>
+              <input id="emEditDur_${m.id}" type="number" value="${m.duration || 60}">
+            </div>
+            <div>
+              <label>Correct Marks</label>
+              <input id="emEditCorrect_${m.id}" type="number" step="0.01" value="${m.correct_marks || 1.0}">
+            </div>
+            <div>
+              <label>Negative Marks</label>
+              <input id="emEditNeg_${m.id}" type="number" step="0.01" value="${m.negative_marking || 0.0}">
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:12px">
+            <button class="save" style="margin:0;flex:1" onclick="saveEditedEmExamMock(${m.id})">💾 Save Test Details</button>
+            <button class="secondary" style="margin:0;flex:1" onclick="toggleEmTestEditForm(${m.id})">❌ Cancel</button>
+          </div>
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+    container.innerHTML = html;
+  } catch (e) {
+    container.innerHTML = `<div class="empty" style="color:var(--danger)">Error: ${esc(e.message)}</div>`;
+  }
+}
+
+function toggleEmTestEditForm(id) {
+  const form = document.getElementById(`emTestEditForm_${id}`);
+  if (form) {
+    form.style.display = (form.style.display === "none") ? "block" : "none";
+  }
+}
+
+async function saveEditedEmExamMock(id) {
+  const catId = document.getElementById(`emEditCat_${id}`).value;
+  const title = document.getElementById(`emEditTitle_${id}`).value.trim();
+  const desc = document.getElementById(`emEditDesc_${id}`).value.trim();
+  const dur = parseInt(document.getElementById(`emEditDur_${id}`).value) || 60;
+  const correct = parseFloat(document.getElementById(`emEditCorrect_${id}`).value) || 1.0;
+  const neg = parseFloat(document.getElementById(`emEditNeg_${id}`).value) || 0.0;
+
+  if (!title) { alert("Title cannot be empty"); return; }
+
+  const { error } = await supabaseClient.from("exam_mocks").update({
+    examtype: catId ? parseInt(catId) : null,
+    title: title,
+    description: desc || null,
+    duration: dur,
+    correct_marks: correct,
+    negative_marking: neg
+  }).eq("id", id);
+
+  if (error) {
+    alert("❌ Update failed: " + error.message);
+  } else {
+    alert("✅ Exam Mock updated in exam_mocks table!");
+    loadEmExamMocks();
+  }
+}
+
+async function deleteEmExamMock(id) {
+  if (!confirm("Are you sure you want to delete this test from exam_mocks?")) return;
+  const { error } = await supabaseClient.from("exam_mocks").delete().eq("id", id);
+  if (error) {
+    alert("❌ Delete failed: " + error.message);
+  } else {
+    alert("✅ Test deleted from exam_mocks!");
+    loadEmExamMocks();
+  }
 }
 
 
@@ -1621,8 +2212,53 @@ async function saveCategoryDetails(id) {
 /* =====================================================
    MOCKUPS & SUBJECT BUILDER
 ===================================================== */
+async function loadMockExamsForAdmin(){
+  const sel = document.getElementById("mockExamTypeSelect");
+  if(!sel) return;
+  try {
+    const { data, error } = await supabaseClient.from("mock_exams").select("*").order("id", { ascending: true });
+    if(!error && data) {
+      sel.innerHTML = '<option value="">Select Mock Exam Category (Table 1)</option>';
+      data.forEach(e => {
+        sel.innerHTML += `<option value="${e.id}">${esc(e.title)}</option>`;
+      });
+    }
+  } catch(e) {
+    console.error("Error loading mock_exams:", e);
+  }
+}
+
+async function createNewMockExamCategory(){
+  const title = document.getElementById("newMockExamTitle").value.trim();
+  const desc = document.getElementById("newMockExamDesc").value.trim();
+  const icon = document.getElementById("newMockExamIcon").value.trim();
+  const msg = document.getElementById("mockExamMsg");
+
+  if(!title) {
+    if(msg) msg.innerHTML = '<span style="color:var(--danger)">Please enter Exam Title</span>';
+    return;
+  }
+
+  if(msg) msg.innerHTML = '<span>Creating Mock Exam Category...</span>';
+  const { data, error } = await supabaseClient.from("mock_exams").insert({
+    title: title,
+    description: desc || null,
+    icon_url: icon || null
+  });
+
+  if(error) {
+    if(msg) msg.innerHTML = `<span style="color:var(--danger)">❌ ${esc(error.message)}</span>`;
+  } else {
+    if(msg) msg.innerHTML = '<span style="color:var(--success)">✅ Mock Exam Category created successfully!</span>';
+    document.getElementById("newMockExamTitle").value = "";
+    document.getElementById("newMockExamDesc").value = "";
+    document.getElementById("newMockExamIcon").value = "";
+    loadMockExamsForAdmin();
+  }
+}
+
 async function initMockupPage(){
-  if(categories.length === 0) {
+  if(categories.length === 0 || mockSubcategories.length === 0) {
     await loadAllStructure();
   } else {
     fillCategorySelects();
@@ -1630,6 +2266,7 @@ async function initMockupPage(){
   if(document.querySelectorAll(".subject-card").length === 0) {
     addSubjectBuilderCard("Mathematics");
   }
+  await loadMockExamsForAdmin();
   loadMockups();
 }
 
@@ -1818,9 +2455,16 @@ async function saveMockup(){
   };
 
   const mockupCat = document.getElementById("mockupCategory").value;
-  showMsg(msg, "Uploading mockup test...", "info");
+  if(!mockupCat) {
+    showMsg(msg, "Please select a Subcategory!", "error");
+    return;
+  }
+  const mockExamSel = document.getElementById("mockExamTypeSelect") ? document.getElementById("mockExamTypeSelect").value : null;
+  const examTypeIdVal = mockExamSel ? parseInt(mockExamSel) : null;
 
-  const { error } = await supabaseClient.from("mockup_tests").insert({
+  showMsg(msg, "Uploading mockup test to mockup_tests...", "info");
+
+  const mockupPayload = {
     title: title,
     description: description,
     duration: finalDuration,
@@ -1833,11 +2477,16 @@ async function saveMockup(){
     is_subject_timer_enabled: (currentMockupType === "type2"),
     questions_json: questionsJsonObject,
     subjects: subjectsArray
-  });
+  };
 
-  if(error){ showMsg(msg, error.message, "error"); return; }
+  const { error: mockupTestErr } = await supabaseClient.from("mockup_tests").insert(mockupPayload);
 
-  showMsg(msg, "✅ Mockup saved & uploaded successfully!", "success");
+  if(mockupTestErr){
+    showMsg(msg, "❌ Error saving mockup: " + mockupTestErr.message, "error");
+    return;
+  }
+
+  showMsg(msg, "✅ Mockup saved & uploaded successfully to mockup_tests!", "success");
   document.getElementById("title").value = "";
   document.getElementById("description").value = "";
   document.getElementById("duration").value = "60";
@@ -1865,6 +2514,36 @@ function generateCategoryOptions(selectedId) {
     h += `<option value="${c.id}" ${sel}>${esc(c.name)}</option>`;
   });
   return h;
+}
+
+function generateSubcategoryOptions(selectedId, filterMainCatId) {
+  let h = '<option value="">Select Subcategory *</option>';
+  let list = mockSubcategories || [];
+  if (filterMainCatId) {
+    list = list.filter(sc => String(sc.category_id) === String(filterMainCatId));
+  }
+  list.forEach(sc => {
+    const label = sc.title || sc.name;
+    const sel = String(sc.id) === String(selectedId) ? "selected" : "";
+    h += `<option value="${sc.id}" ${sel}>${esc(label)}</option>`;
+  });
+  return h;
+}
+
+function onMockupMainCategoryChange() {
+  const mainCatId = document.getElementById("mockupMainCategory") ? document.getElementById("mockupMainCategory").value : "";
+  const subEl = document.getElementById("mockupCategory");
+  if (!subEl) return;
+  const currentSub = subEl.value;
+  subEl.innerHTML = generateSubcategoryOptions(currentSub, mainCatId);
+}
+
+function onEditMockupMainCatChange(mId) {
+  const mainCatId = document.getElementById(`mEditMainCategory_${mId}`) ? document.getElementById(`mEditMainCategory_${mId}`).value : "";
+  const subEl = document.getElementById(`mEditCategory_${mId}`);
+  if (!subEl) return;
+  const currentSub = subEl.value;
+  subEl.innerHTML = generateSubcategoryOptions(currentSub, mainCatId);
 }
 
 function generateSubjectOptions(selectedId) {
@@ -1967,12 +2646,12 @@ async function loadMockups(){
 
   const { data, error } = await supabaseClient.from("mockup_tests").select("*").order("id", { ascending: false });
 
-  if(error){
-    s.className = "error"; s.innerText = "❌ " + error.message;
+  if(error && (!data || data.length === 0)){
+    s.className = "error"; s.innerText = "❌ " + (error ? error.message : "No mockups found");
     c.innerHTML = '<div class="empty">Unable to load mockups.</div>';
     return;
   }
-  s.innerText = `✅ ${data.length} mockups loaded`;
+  s.innerText = `✅ ${(data || []).length} mockups loaded`;
 
   const qmSel = document.getElementById("quickMockupSelect");
   if(qmSel) {
@@ -1998,6 +2677,9 @@ async function loadMockups(){
     const typeTag = isType2 ? "⏱️ Type 2 (Subject Timed)" : "🌐 Type 1 (Universal)";
     const isOpen = openMockupIds.has(m.id);
 
+    const catObj = (mockSubcategories || []).find(c => String(c.id) === String(m.category_id));
+    const catBadge = catObj ? `<span class="badge badge-gold">📂 ${esc(catObj.title || catObj.name)}</span>` : (m.category_id ? `<span class="badge badge-gold">📂 ID: ${m.category_id}</span>` : "");
+
     const d = document.createElement("div");
     d.className = "item";
     d.innerHTML = `
@@ -2005,6 +2687,7 @@ async function loadMockups(){
     <div class="item-desc">${esc(m.description||"No description")}</div>
     <div class="meta">
       <span class="badge badge-purple">${typeTag}</span>
+      ${catBadge}
       <span class="badge">⏱️ ${m.duration||0} min total</span>
       <span class="badge badge-blue">❓ ${countQuestions(q)} Questions</span>
       ${m.is_featured ? '<span class="badge" style="background:rgba(245,158,11,0.2);color:#fbbf24;border:1px solid rgba(245,158,11,0.3)">⭐ Featured</span>' : ""}
@@ -2027,8 +2710,14 @@ async function loadMockups(){
           <input id="mEditDuration_${m.id}" type="number" value="${m.duration||60}">
         </div>
         <div>
-          <label>Category</label>
-          <select id="mEditCategory_${m.id}">${generateCategoryOptions(m.category_id)}</select>
+          <label>Filter Main Category</label>
+          <select id="mEditMainCategory_${m.id}" onchange="onEditMockupMainCatChange(${m.id})">
+            ${generateCategoryOptions(catObj ? catObj.category_id : "")}
+          </select>
+        </div>
+        <div>
+          <label>Subcategory</label>
+          <select id="mEditCategory_${m.id}">${generateSubcategoryOptions(m.category_id, catObj ? catObj.category_id : "")}</select>
         </div>
       </div>
       <div class="row">
@@ -2078,6 +2767,7 @@ async function saveMockupDetails(id) {
   const questionsRaw = document.getElementById(`mEditQuestions_${id}`).value.trim();
 
   if(!title) { alert("Please enter mockup title."); return; }
+  if(!categoryId) { alert("Please select a Subcategory."); return; }
 
   let questionsJson = undefined;
   if(questionsRaw) {
@@ -2589,18 +3279,19 @@ async function initStructure(){
 
 async function loadAllStructure(){
   const s = document.getElementById("structureStatus");
-  s.className = ""; s.innerText = "Loading structure & exam types...";
+  if(s) { s.className = ""; s.innerText = "Loading structure & exam types..."; }
 
-  const [c, sub, ch, t] = await Promise.all([
+  const [c, sub, ch, t, msc] = await Promise.all([
     supabaseClient.from("categories").select("id, name, icon_url").order("name"),
     supabaseClient.from("subjects").select("*").order("name"),
     supabaseClient.from("chapters").select("*").order("name"),
-    supabaseClient.from("topics").select("*").order("name")
+    supabaseClient.from("topics").select("*").order("name"),
+    supabaseClient.from("mock_subcategories").select("*").order("title")
   ]);
 
   if(c.error || sub.error || ch.error || t.error){
     const e = c.error || sub.error || ch.error || t.error;
-    s.className = "error"; s.innerText = "❌ " + e.message;
+    if(s) { s.className = "error"; s.innerText = "❌ " + e.message; }
     return;
   }
 
@@ -2608,25 +3299,35 @@ async function loadAllStructure(){
   subjects = sub.data || [];
   chapters = ch.data || [];
   topics = t.data || [];
+  mockSubcategories = (msc && !msc.error && msc.data) ? msc.data : [];
 
   fillCategorySelects();
   fillSubjectSelects();
   fillChapterSelects();
   renderStructureLists();
 
-  s.className = "success"; s.innerText = "✅ Structure & Exam Icons loaded";
+  if(s) { s.className = "success"; s.innerText = "✅ Structure & Exam Icons loaded"; }
 }
 
 function fillCategorySelects(){
-  const ids = ["subjectCategory", "testCategory", "mockupCategory"];
+  const ids = ["subjectCategory", "testCategory", "subcatCategory", "mockupMainCategory"];
   ids.forEach(id => {
     const el = document.getElementById(id);
     if(!el) return;
     const current = el.value;
-    el.innerHTML = '<option value="">Select category</option>';
+    const defaultLabel = id === "mockupMainCategory" ? "All Categories" : "Select category";
+    el.innerHTML = `<option value="">${defaultLabel}</option>`;
     categories.forEach(x => addOption(el, x.id, x.name));
     if(current) el.value = current;
   });
+
+  const mEl = document.getElementById("mockupCategory");
+  if(mEl) {
+    const mainCatId = document.getElementById("mockupMainCategory") ? document.getElementById("mockupMainCategory").value : "";
+    const current = mEl.value;
+    mEl.innerHTML = generateSubcategoryOptions(current, mainCatId);
+    if(current) mEl.value = current;
+  }
 }
 
 function fillSubjectSelects(){
@@ -2692,6 +3393,30 @@ async function addTopic(){
   loadAllStructure();
 }
 
+async function addSubcategory(){
+  const msg = document.getElementById("subcatMessage");
+  const category_id = document.getElementById("subcatCategory").value;
+  const title = document.getElementById("subcatTitle").value.trim();
+
+  if(!category_id){ showMsg(msg, "Please select a Category.", "error"); return; }
+  if(!title){ showMsg(msg, "Please enter Subcategory title / name.", "error"); return; }
+
+  showMsg(msg, "Saving Subcategory...", "info");
+
+  const { error } = await supabaseClient.from("mock_subcategories").insert({
+    category_id: parseInt(category_id),
+    title: title
+  });
+
+  if(error){ showMsg(msg, "❌ " + error.message, "error"); return; }
+
+  document.getElementById("subcatTitle").value = "";
+
+  showMsg(msg, "✅ Subcategory added successfully!", "success");
+  loadAllStructure();
+  refreshDashboard();
+}
+
 function renderStructureLists(){
   const catList = document.getElementById("categoryList");
   catList.innerHTML = "";
@@ -2738,6 +3463,43 @@ function renderStructureLists(){
     `;
     catList.appendChild(d);
   });
+
+  const subcatList = document.getElementById("subcatList");
+  if(subcatList) {
+    subcatList.innerHTML = "";
+    if(!mockSubcategories.length) subcatList.innerHTML = '<div class="empty">No subcategories found.</div>';
+    mockSubcategories.forEach(sc => {
+      const cat = categories.find(c => String(c.id) === String(sc.category_id));
+      const d = document.createElement("div");
+      d.className = "item";
+      d.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div>
+          <div class="item-title" style="margin:0">${esc(sc.title || sc.name || "")}</div>
+          <div class="meta" style="margin-top:4px">
+            <span class="badge badge-purple">📂 ${esc(cat ? cat.name : "Cat ID: " + sc.category_id)}</span>
+            <span class="badge">ID: ${sc.id}</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="secondary" style="width:auto;margin:0;padding:6px 12px;font-size:12px" onclick="toggle('scedit-${sc.id}')">✏️ Edit</button>
+          <button class="danger" style="width:auto;margin:0;padding:6px 12px;font-size:12px" onclick="deleteSubcategory(${sc.id})">🗑️ Delete</button>
+        </div>
+      </div>
+
+      <!-- Inline Edit Subcategory Box -->
+      <div id="scedit-${sc.id}" style="display:none;background:var(--bg-card);border:1px solid var(--primary);border-radius:var(--radius-md);padding:14px;margin-top:10px">
+        <h4 style="margin:0 0 10px;color:var(--primary)">✏️ Edit Subcategory</h4>
+        <label>Belongs to Category *</label>
+        <select id="scEditCategory_${sc.id}">${generateCategoryOptions(sc.category_id)}</select>
+        <label style="margin-top:8px">Subcategory Title / Name *</label>
+        <input id="scEditTitle_${sc.id}" value="${attr(sc.title || sc.name || "")}">
+        <button class="save" style="margin-top:10px" onclick="saveSubcategoryDetails(${sc.id})">💾 Save Subcategory Details</button>
+      </div>
+      `;
+      subcatList.appendChild(d);
+    });
+  }
 
   const subList = document.getElementById("subjectList");
   subList.innerHTML = "";
@@ -2830,6 +3592,34 @@ function renderStructureLists(){
 async function deleteCategory(id){
   if(!confirm("Delete category? It may fail if subjects/tests depend on it.")) return;
   const { error } = await supabaseClient.from("categories").delete().eq("id", id);
+  if(error){ alert("❌ " + error.message); return; }
+  loadAllStructure();
+  refreshDashboard();
+}
+
+async function saveSubcategoryDetails(id) {
+  const categoryId = document.getElementById(`scEditCategory_${id}`).value;
+  const title = document.getElementById(`scEditTitle_${id}`).value.trim();
+
+  if(!categoryId) { alert("Please select a category."); return; }
+  if(!title) { alert("Subcategory title is required."); return; }
+
+  const { error } = await supabaseClient.from("mock_subcategories").update({
+    category_id: parseInt(categoryId),
+    title: title
+  }).eq("id", id);
+
+  if(error) {
+    alert("❌ Update failed: " + error.message);
+  } else {
+    alert("✅ Subcategory updated successfully!");
+    loadAllStructure();
+  }
+}
+
+async function deleteSubcategory(id){
+  if(!confirm("Delete subcategory?")) return;
+  const { error } = await supabaseClient.from("mock_subcategories").delete().eq("id", id);
   if(error){ alert("❌ " + error.message); return; }
   loadAllStructure();
   refreshDashboard();
@@ -3194,12 +3984,14 @@ async function submitQuickMockupQuestion() {
   m.questions_json = qJson;
   showMsg(msg, "Saving question...", "info");
 
-  const { error } = await supabaseClient.from("mockup_tests").update({
+  const updatePayload = {
     questions_json: m.questions_json,
     subjects: Array.isArray(m.subjects) ? m.subjects : (qJson.subjects || null)
-  }).eq("id", mockupId);
+  };
 
-  if(error) { showMsg(msg, error.message, "error"); }
+  const { error: mtErr } = await supabaseClient.from("mockup_tests").update(updatePayload).eq("id", mockupId);
+
+  if(mtErr) { showMsg(msg, mtErr.message, "error"); }
   else {
     document.getElementById("quickMQText").value = "";
     document.getElementById("quickMQImg").value = "";

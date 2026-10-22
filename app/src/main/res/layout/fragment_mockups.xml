@@ -22,19 +22,43 @@
             android:paddingTop="20dp"
             android:paddingBottom="24dp">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Full Mock Tests"
-                android:textColor="@color/headerTextColor"
-                android:textSize="22sp"
-                android:fontFamily="sans-serif-medium" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/btnBackToExams"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:contentDescription="Back"
+                    android:focusable="true"
+                    android:padding="4dp"
+                    android:src="@drawable/baseline_arrow_back_ios_24"
+                    android:visibility="gone"
+                    app:tint="@color/headerTextColor" />
+
+                <TextView
+                    android:id="@+id/tvHeaderTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Mock Test Exams"
+                    android:textColor="@color/headerTextColor"
+                    android:textSize="22sp" />
+
+            </LinearLayout>
 
             <TextView
+                android:id="@+id/tvHeaderSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="Exam-like experience with detailed analysis"
+                android:text="Select an exam category to explore mock tests"
                 android:textColor="@color/headerSubtitleColor"
                 android:textSize="14sp" />
 
@@ -55,7 +79,7 @@
             android:clipToPadding="false"
             android:paddingTop="8dp"
             android:paddingBottom="16dp"
-            tools:listitem="@layout/item_test" />
+            tools:listitem="@layout/item_mock_exam" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

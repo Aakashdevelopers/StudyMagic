@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -52,6 +53,10 @@ import com.amstudio.examuplift.models.ReportQuestion;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import android.content.SharedPreferences;
+import com.google.android.material.button.MaterialButton;
+import com.amstudio.examuplift.utils.QuestionTranslator;
+
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -69,6 +74,7 @@ public class MockupQuizActivity extends AppCompatActivity {
     private List<String> subjects = new ArrayList<>();
     private String currentSubject;
     private int currentQuestionIndexInSubject = 0;
+    private String selectedLanguage = "en";
 
     private Set<String> lockedSubjects = new HashSet<>();
     private Set<String> completedSubjects = new HashSet<>();
@@ -78,6 +84,7 @@ public class MockupQuizActivity extends AppCompatActivity {
     private ImageView ivQuestionImage, ivOpt1, ivOpt2, ivOpt3, ivOpt4;
     private LinearLayout llOpt1, llOpt2, llOpt3, llOpt4;
     private LinearLayout llSubjectTimerContainer;
+    private MaterialButton btnLanguageToggle;
     private LinearProgressIndicator quizProgress;
     private RadioGroup rgOptions;
     private RadioButton rb1, rb2, rb3, rb4;
@@ -126,6 +133,14 @@ public class MockupQuizActivity extends AppCompatActivity {
 
         timeLeftInMillis = supabaseTest.duration > 0 ? supabaseTest.duration * 60 * 1000L : 30 * 60 * 1000L;
         startTimer();
+
+        // Immediately trigger background pre-translation for starting 5 questions
+        List<Question> initialQs = getCurrentQuestions();
+        if (initialQs != null) {
+            QuestionTranslator.pretranslateBatch(initialQs, 0, 5, "en");
+            QuestionTranslator.pretranslateBatch(initialQs, 0, 5, "hi");
+        }
+
         showQuestion(0);
     }
 
@@ -278,11 +293,32 @@ public class MockupQuizActivity extends AppCompatActivity {
         btnMarkForReviewStar = findViewById(R.id.btnMarkForReviewStar);
         btnReport = findViewById(R.id.btnReport);
         btnBookmark = findViewById(R.id.btnBookmark);
+        btnLanguageToggle = findViewById(R.id.btnLanguageToggle);
         rvSubjects = findViewById(R.id.rvSubjects);
+
+        SharedPreferences sp = getSharedPreferences("app_prefs", MODE_PRIVATE);
+        selectedLanguage = sp.getString("pref_question_language", "hi");
+        updateLanguageButtonUI();
+
+        if (btnLanguageToggle != null) {
+            btnLanguageToggle.setOnClickListener(v -> showLanguageSelectionDialog());
+        }
 
         if (btnReport != null) {
             btnReport.setOnClickListener(v -> showReportDialog());
         }
+
+        ImageView btnBack = findViewById(R.id.btnBack);
+        if (btnBack != null) {
+            btnBack.setOnClickListener(v -> showExitConfirmationDialog());
+        }
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                showExitConfirmationDialog();
+            }
+        });
 
         if (btnBookmark != null) {
             btnBookmark.setOnClickListener(v -> {
@@ -547,13 +583,85 @@ public class MockupQuizActivity extends AppCompatActivity {
         }
     }
 
+    private void showLanguageSelectionDialog() {
+        String[] languages = new String[]{"Hindi (हिंदी)", "English"};
+        int checkedItem = "hi".equalsIgnoreCase(selectedLanguage) ? 0 : 1;
+
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Select Language / भाषा चुनें")
+                .setSingleChoiceItems(languages, checkedItem, (dialog, which) -> {
+                    String newLang = (which == 0) ? "hi" : "en";
+                    if (!newLang.equalsIgnoreCase(selectedLanguage)) {
+                        selectedLanguage = newLang;
+                        getSharedPreferences("app_prefs", MODE_PRIVATE)
+                                .edit()
+                                .putString("pref_question_language", selectedLanguage)
+                                .apply();
+
+                        updateLanguageButtonUI();
+                        showQuestion(currentQuestionIndexInSubject);
+                    }
+                    dialog.dismiss();
+                })
+                .show();
+    }
+
+    private void updateLanguageButtonUI() {
+        if (btnLanguageToggle != null) {
+            if ("hi".equalsIgnoreCase(selectedLanguage)) {
+                btnLanguageToggle.setText("हिंदी");
+            } else {
+                btnLanguageToggle.setText("English");
+            }
+        }
+    }
+
     private void showQuestion(int index) {
         List<Question> currentQs = getCurrentQuestions();
         if (currentQs == null || index < 0 || index >= currentQs.size()) return;
         Question q = currentQs.get(index);
         tvQuestionNoPill.setText("Q. " + (index + 1));
-        tvQuestionText.setText(q.getQuestionText() != null ? q.getQuestionText() : "");
-        
+
+        // Pre-translate next batch of 5 questions starting from current index in background
+        QuestionTranslator.pretranslateBatch(currentQs, index, 5, "en");
+        QuestionTranslator.pretranslateBatch(currentQs, index, 5, "hi");
+
+        String qTextLang = q.getQuestionTextForLanguage(selectedLanguage);
+
+        boolean hasTranslation = false;
+        if ("hi".equalsIgnoreCase(selectedLanguage)) {
+            hasTranslation = q.getQuestionTextHindi() != null && !q.getQuestionTextHindi().trim().isEmpty()
+                    && q.getOptionsHindi() != null && !q.getOptionsHindi().isEmpty();
+        } else if ("en".equalsIgnoreCase(selectedLanguage)) {
+            hasTranslation = q.getQuestionTextEnglish() != null && !q.getQuestionTextEnglish().trim().isEmpty()
+                    && q.getOptionsEnglish() != null && !q.getOptionsEnglish().isEmpty();
+        } else {
+            hasTranslation = true;
+        }
+
+        if (hasTranslation || (qTextLang != null && !qTextLang.trim().isEmpty() && !qTextLang.equals(q.getQuestionText()))) {
+            tvQuestionText.setText(qTextLang);
+            bindOptions(q);
+        } else {
+            tvQuestionText.setText(q.getQuestionText() != null ? q.getQuestionText() : "");
+            bindOptions(q);
+            QuestionTranslator.translateQuestion(q, selectedLanguage, new QuestionTranslator.OnTranslationCompleteListener() {
+                @Override
+                public void onSuccess(String translatedQuestionText, List<String> translatedOptions) {
+                    List<Question> qs = getCurrentQuestions();
+                    if (qs != null && currentQuestionIndexInSubject == index) {
+                        tvQuestionText.setText(translatedQuestionText);
+                        bindOptions(q);
+                    }
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    // Fallback
+                }
+            });
+        }
+
         if (q.getImageUrl() != null && !q.getImageUrl().trim().isEmpty()) {
             String imgUrl = q.getImageUrl().trim().replace(" ", "%20");
             ivQuestionImage.setVisibility(View.VISIBLE);
@@ -585,8 +693,6 @@ public class MockupQuizActivity extends AppCompatActivity {
         updateProgress();
         updateInfoStripIcons();
 
-        bindOptions(q);
-
         updateOptionUI();
 
         if (paletteAdapter != null) {
@@ -612,7 +718,7 @@ public class MockupQuizActivity extends AppCompatActivity {
     }
 
     private void bindOptions(Question q) {
-        List<String> opts = q.getOptions();
+        List<String> opts = q.getOptionsForLanguage(selectedLanguage);
 
         bindOption(llOpt1, tvOptText1, ivOpt1, rb1, (opts != null && opts.size() > 0) ? opts.get(0) : null);
         bindOption(llOpt2, tvOptText2, ivOpt2, rb2, (opts != null && opts.size() > 1) ? opts.get(1) : null);
@@ -872,6 +978,23 @@ public class MockupQuizActivity extends AppCompatActivity {
             timeString = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
         }
         tvTimer.setText(timeString);
+    }
+
+    private void showExitConfirmationDialog() {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Exit Test?")
+                .setMessage("Are you sure you want to exit the test? Your test progress will be lost unless you submit.")
+                .setPositiveButton("Submit Test", (dialog, which) -> {
+                    dialog.dismiss();
+                    finishTest();
+                })
+                .setNegativeButton("Exit", (dialog, which) -> {
+                    dialog.dismiss();
+                    finish();
+                })
+                .setNeutralButton("Resume Test", (dialog, which) -> dialog.dismiss())
+                .setCancelable(true)
+                .show();
     }
 
     private void finishTest() {

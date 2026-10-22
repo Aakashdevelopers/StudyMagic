@@ -17,6 +17,12 @@ public class SupabaseTest implements Serializable {
 
     @SerializedName("topic_id")
     public String topicId;
+
+    @SerializedName("examtype")
+    public String examtype;
+
+    @SerializedName("subcategory_id")
+    public String subcategoryId;
     
     public String title;
     public String description;

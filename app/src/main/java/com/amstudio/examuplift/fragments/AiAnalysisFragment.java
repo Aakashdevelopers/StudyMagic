@@ -127,6 +127,7 @@ public class AiAnalysisFragment extends Fragment {
 
     private void fetchAIPerformanceAnalysis(Test test, int correct, int total, String language) {
         int accuracy = total > 0 ? (correct * 100) / total : 0;
+        boolean isHindi = "Hindi".equalsIgnoreCase(language);
 
         // Update Quick Metrics Bar
         if (tvAIPillAccuracy != null) {
@@ -144,66 +145,140 @@ public class AiAnalysisFragment extends Fragment {
 
         if (aiLoading != null) aiLoading.setVisibility(View.VISIBLE);
         if (tvAILoadingStatus != null) {
-            tvAILoadingStatus.setText(language.equalsIgnoreCase("Hindi") ? "AI आपके प्रदर्शन का विश्लेषण कर रहा है..." : "AI is analyzing your performance...");
+            tvAILoadingStatus.setText(isHindi ? "AI प्रत्येक प्रश्न का गहन विश्लेषण व शॉर्टकट ट्रिक्स तैयार कर रहा है..." : "AI is analyzing each question deeply with shortcuts & tricks...");
         }
 
-        // Build compact performance summary for prompt to reduce token count for sub-second speeds
+        // Build complete, detailed question data for EVERY single question for deep AI analysis
         StringBuilder performanceData = new StringBuilder();
         String testTitle = (test != null && test.getTitle() != null) ? test.getTitle() : "Practice Quiz";
         performanceData.append("Test Title: ").append(testTitle).append("\n");
         performanceData.append("Score: ").append(correct).append("/").append(total).append(" (").append(accuracy).append("% Accuracy)\n\n");
+        performanceData.append("--- COMPLETE ITEM-BY-ITEM QUESTION LIST ---\n\n");
 
         if (test != null && test.getQuestions() != null && !test.getQuestions().isEmpty()) {
             int qSize = test.getQuestions().size();
             for (int i = 0; i < qSize; i++) {
                 Question q = test.getQuestions().get(i);
                 if (q == null) continue;
-                boolean isCorrect = q.getSelectedOptionIndex() != null && Objects.equals(q.getSelectedOptionIndex(), q.getCorrectOptionIndex());
 
-                String qText = q.getQuestionText() != null ? q.getQuestionText() : "";
-                if (qText.length() > 80) {
-                    qText = qText.substring(0, 80) + "...";
+                Integer selectedIdx = q.getSelectedOptionIndex();
+                boolean isCorrect = selectedIdx != null && Objects.equals(selectedIdx, q.getCorrectOptionIndex());
+                boolean isSkipped = selectedIdx == null;
+
+                String status = isCorrect ? "CORRECT ✓" : (isSkipped ? "SKIPPED ⚪" : "INCORRECT ✗");
+
+                String qText = q.getQuestionTextForLanguage(language);
+                if (qText == null || qText.trim().isEmpty()) {
+                    qText = q.getQuestionText() != null ? q.getQuestionText() : "";
+                }
+                qText = qText.replaceAll("<[^>]*>", "").trim();
+
+                List<String> options = q.getOptionsForLanguage(language);
+                if (options == null || options.isEmpty()) {
+                    options = q.getOptions();
                 }
 
-                performanceData.append("Q").append(i + 1).append(": ").append(qText)
-                        .append(" | Result: ").append(isCorrect ? "CORRECT ✓" : "INCORRECT ✗")
-                        .append("\n");
+                String studentAnswer = "Not Attempted (Skipped)";
+                if (selectedIdx != null && options != null && selectedIdx >= 0 && selectedIdx < options.size()) {
+                    studentAnswer = "Option " + (char) ('A' + selectedIdx) + ": " + options.get(selectedIdx);
+                }
+
+                String correctAnswer = "N/A";
+                int correctIdx = q.getCorrectOptionIndex();
+                if (options != null && correctIdx >= 0 && correctIdx < options.size()) {
+                    correctAnswer = "Option " + (char) ('A' + correctIdx) + ": " + options.get(correctIdx);
+                } else if (options != null && correctIdx - 1 >= 0 && correctIdx - 1 < options.size()) {
+                    correctAnswer = "Option " + (char) ('A' + (correctIdx - 1)) + ": " + options.get(correctIdx - 1);
+                }
+
+                String exp = q.getExplanationForLanguage(language);
+                if (exp == null || exp.trim().isEmpty()) {
+                    exp = q.getExplanation() != null ? q.getExplanation() : "";
+                }
+                exp = exp.replaceAll("<[^>]*>", "").trim();
+
+                performanceData.append("Question ").append(i + 1).append(" [").append(status).append("]:\n");
+                performanceData.append("Question Text: ").append(qText).append("\n");
+                if (options != null && !options.isEmpty()) {
+                    performanceData.append("Options: ");
+                    for (int optI = 0; optI < options.size(); optI++) {
+                        performanceData.append("(").append((char) ('A' + optI)).append(") ").append(options.get(optI)).append(" ");
+                    }
+                    performanceData.append("\n");
+                }
+                performanceData.append("Student Choice: ").append(studentAnswer).append("\n");
+                performanceData.append("Correct Choice: ").append(correctAnswer).append("\n");
+                if (!exp.isEmpty()) {
+                    performanceData.append("Base Explanation: ").append(exp).append("\n");
+                }
+                performanceData.append("\n");
             }
         }
 
         String prompt;
-        if (language.equalsIgnoreCase("Hindi")) {
-            prompt = "आप Exam Uplift के छात्रों के लिए AI शिक्षा मेंटर हैं।\n" +
-                    "परीक्षण परिणाम:\n" + performanceData + "\n" +
-                    "कृपया **पूर्णतः हिन्दी भाषा** में 5 बिंदुओं की संक्षिप्त, व्यावहारिक रिपोर्ट दें:\n" +
-                    "1. **📊 कुल प्रदर्शन सारांश**: संक्षिप्त विवरण\n" +
-                    "2. **🟢 मजबूत विषय**: मुख्य सही अवधारणाएं\n" +
-                    "3. **🔴 कमजोर विषय**: सुधार योग्य मुख्य बिंदु\n" +
-                    "4. **🔍 गलतियों का विश्लेषण**: वैचारिक/असावधानी की वजह\n" +
-                    "5. **🎯 कार्य योजना**: 3 तुरंत कदम";
+        if (isHindi) {
+            prompt = "आप Exam Uplift के छात्रों के लिए एक उत्कृष्ट शिक्षा विशेषज्ञ एवं AI Smart Analyst हैं।\n" +
+                    "नीचे दिए गए परीक्षा परिणाम और **प्रत्येक प्रश्न (Each & Every Question)** का अत्यंत गहरा और विस्तृत विश्लेषण करें:\n\n" +
+                    performanceData + "\n\n" +
+                    "🎯 **मुख्य निर्देश (STRICT INSTRUCTIONS)**:\n" +
+                    "1. आपको ऊपर दिए गए **प्रत्येक प्रश्न (Q1, Q2, Q3...) का एक-एक करके (Question-by-Question)** गहरा विश्लेषण प्रदान करना है।\n" +
+                    "2. **सही उत्तरित प्रश्न (Correct)**, **गलत उत्तरित प्रश्न (Incorrect)** और **छूटे हुए प्रश्न (Skipped)** - तीनों श्रेणियों को सरल और स्पष्ट शब्दों में समझाएं।\n" +
+                    "3. **प्रत्येक प्रश्न के लिए एक 'स्मार्ट ट्रिक / याद रखने की ट्रिक / शॉर्टकट' (Smart Trick / Memory Rule / Shortcut)** अवश्य दें ताकि छात्र परीक्षा में उसे आसानी से याद रख सके या तेजी से हल कर सके।\n\n" +
+                    "STRICTLY निम्नलिखित Markdown प्रारूप में उत्तर प्रस्तुत करें:\n\n" +
+                    "### 📊 Overall Performance & Deep Summary\n" +
+                    "• **स्कोर**: " + correct + "/" + total + " (सटीकता: " + accuracy + "%) - " + testTitle + "\n" +
+                    "• छात्र के समग्र प्रदर्शन का विस्तृत व प्रेरणादायक मूल्यांकन।\n\n" +
+                    "### 📝 Question-by-Question Deep Analysis & Tricks (प्रत्येक प्रश्न का विस्तृत विश्लेषण व ट्रिक्स)\n\n" +
+                    "नीचे टेस्ट के सभी प्रश्नों (Q1 से Q" + total + ") का क्रमवार गहन विश्लेषण है:\n\n" +
+                    "#### Q1: [प्रश्न की मुख्य पंक्ति] - [🟢 CORRECT / 🔴 INCORRECT / ⚪ SKIPPED]\n" +
+                    "• **आपका उत्तर**: [छात्र द्वारा चुना गया विकल्प या Skipped]\n" +
+                    "• **सही उत्तर**: [सही विकल्प]\n" +
+                    "• **गहन व्याख्या व अवधारणा (Deep Concept)**: सही उत्तर क्यों सही है और गलत उत्तर क्यों गलत था/क्या भ्रम हुआ था, इसे सरल शब्दों में गहराई से समझाएं।\n" +
+                    "• **💡 स्मार्ट ट्रिक / याद रखने का तरीका (Smart Trick & Shortcut)**: इस प्रश्न या अवधारणा को याद रखने/हल करने की एक आसान ट्रिक, निमोनिक, शॉर्टकट या नियम दें।\n\n" +
+                    "(इसी प्रारूप में सभी प्रश्नों Q1, Q2, Q3... Q" + total + " का विश्लेषण करें)\n\n" +
+                    "### 🔴 Weak Topics & Revision Strategy\n" +
+                    "• गलत और छूटे प्रश्नों से पहचाने गए कमजोर विषयों की सूची और उनके पुनरीक्षण के लिए स्पष्ट कदम।\n\n" +
+                    "### ⚡ Exam Shortcuts & Time Saving Tips\n" +
+                    "1. अगले प्रयास में समय बचाने और सिली मिस्टेक्स रोकने के लिए व्यावहारिक सुझाव।\n\n" +
+                    "नोट: उत्तर हिंदी भाषा में दें (अनुभाग शीर्षक अंग्रेजी में रखें)।";
         } else {
-            prompt = "You are an AI educational mentor for Exam Uplift students.\n" +
-                    "Test Results:\n" + performanceData + "\n" +
-                    "Provide a concise, highly actionable 5-point markdown report:\n" +
-                    "1. **📊 Overall Summary**: Brief performance score\n" +
-                    "2. **🟢 Strong Topics**: Main mastered concepts\n" +
-                    "3. **🔴 Weak Topics**: Concepts to improve\n" +
-                    "4. **🔍 Mistake Analysis**: Reason for errors\n" +
-                    "5. **🎯 Action Plan**: 3 concrete next steps";
+            prompt = "You are an expert Educational Mentor & AI Smart Analyst for Exam Uplift.\n" +
+                    "Analyze the following test result and conduct a DEEP QUESTION-BY-QUESTION ANALYSIS for all questions:\n\n" +
+                    performanceData + "\n\n" +
+                    "🎯 **CRITICAL INSTRUCTIONS**:\n" +
+                    "1. You MUST provide a **Question-by-Question breakdown for EVERY SINGLE QUESTION (Q1, Q2, Q3...)** in the test.\n" +
+                    "2. Thoroughly explain **Correct, Incorrect, AND Skipped questions** - why the correct option is right and why misconceptions occurred for wrong answers.\n" +
+                    "3. For **EVERY question**, provide a **SMART TRICK / MEMORY MNEMONIC / SOLVING SHORTCUT (💡 Smart Trick)** so the student can easily memorize or solve similar questions quickly in future exams.\n\n" +
+                    "Format the output strictly in Markdown using this structure:\n\n" +
+                    "### 📊 Overall Performance & Deep Summary\n" +
+                    "• **Score**: " + correct + "/" + total + " (" + accuracy + "% Accuracy) in " + testTitle + ".\n" +
+                    "• Comprehensive performance evaluation and encouraging mentor insights.\n\n" +
+                    "### 📝 Question-by-Question Deep Analysis & Tricks\n\n" +
+                    "Below is the itemized analysis for all questions (Q1 to Q" + total + "):\n\n" +
+                    "#### Q1: [Short Question Title] - [🟢 CORRECT / 🔴 INCORRECT / ⚪ SKIPPED]\n" +
+                    "• **Your Answer**: [Option selected or Skipped]\n" +
+                    "• **Correct Answer**: [Correct Option]\n" +
+                    "• **Deep Concept & Explanation**: Explain why the correct option is right and why wrong/skipped options happened.\n" +
+                    "• **💡 Smart Trick & Memory Mnemonic**: A practical shortcut, formula rule, memory trick, or mnemonic to solve/remember this question quickly.\n\n" +
+                    "(Repeat for ALL questions Q1, Q2, Q3... Q" + total + ")\n\n" +
+                    "### 🔴 Weak Topics & Revision Strategy\n" +
+                    "• Specific weak concepts derived from wrong/skipped questions and how to revise them effectively.\n\n" +
+                    "### ⚡ Exam Shortcuts & Time Saving Tips\n" +
+                    "1. Proven exam strategies to boost accuracy and save time in future tests.";
         }
 
-        // TIER 1: OpenRouter (Ultra Fast Model e.g. meta-llama/llama-3.2-3b-instruct:free or gemini-2.0-flash)
+        // TIER 1: OpenRouter
         if (Constants.OPENROUTER_KEY != null && !Constants.OPENROUTER_KEY.trim().isEmpty()) {
             tryOpenRouterAI(prompt, Constants.OPENROUTER_MODEL, test, correct, total, language);
         } else {
-            // Tier 2: Pollinations AI with fast lightweight model (mistral)
+            // Tier 2: Pollinations AI
             tryPollinationsAI(prompt, test, correct, total, language);
         }
     }
 
     private void tryOpenRouterAI(String prompt, String modelName, Test test, int correct, int total, String language) {
         if (tvAILoadingStatus != null) {
-            tvAILoadingStatus.setText(language.equalsIgnoreCase("Hindi") ? "OpenRouter AI से विश्लेषण हो रहा है..." : "Analyzing with OpenRouter AI...");
+            tvAILoadingStatus.setText(language.equalsIgnoreCase("Hindi") ? "OpenRouter AI से एक-एक प्रश्न का विश्लेषण हो रहा है..." : "Analyzing each question with OpenRouter AI...");
         }
 
         List<ChatRequest.Message> messages = new ArrayList<>();
@@ -251,7 +326,7 @@ public class AiAnalysisFragment extends Fragment {
 
     private void tryPollinationsAI(String prompt, Test test, int correct, int total, String language) {
         if (tvAILoadingStatus != null) {
-            tvAILoadingStatus.setText(language.equalsIgnoreCase("Hindi") ? "AI इंजन विश्लेषण कर रहा है..." : "AI engine is analyzing...");
+            tvAILoadingStatus.setText(language.equalsIgnoreCase("Hindi") ? "AI इंजन से एक-एक प्रश्न का विश्लेषण हो रहा है..." : "AI engine analyzing questions...");
         }
 
         PollinationsApi.PollinationsRequest req = new PollinationsApi.PollinationsRequest(prompt);
@@ -310,94 +385,205 @@ public class AiAnalysisFragment extends Fragment {
         }
     }
 
+    private String generateQuestionTrick(String qText, String correctAns, String exp, boolean isHindi) {
+        if (exp != null && !exp.trim().isEmpty()) {
+            String expLower = exp.toLowerCase();
+            if (expLower.contains("trick") || expLower.contains("shortcut") || expLower.contains("ट्रिक") || expLower.contains("शॉर्टकट")) {
+                return exp;
+            }
+        }
+
+        String coreKeyword = correctAns;
+        if (correctAns.contains(":")) {
+            coreKeyword = correctAns.substring(correctAns.indexOf(":") + 1).trim();
+        }
+
+        if (isHindi) {
+            return "याद रखने की स्मार्ट ट्रिक: **" + qText + "** → उत्तर हमेशा **" + coreKeyword + "** से संबंधित होता है। प्रश्न के मुख्य शब्दों (Keywords) को सीधे '" + coreKeyword + "' के साथ जोड़कर याद रखें!";
+        } else {
+            return "Speed Trick / Memory Rule: **" + qText + "** → Link key question trigger directly to **" + coreKeyword + "** for instant recall in exams!";
+        }
+    }
+
     private void renderLocalAIPerformanceReport(Test test, int correct, int total, String language) {
         if (aiLoading != null) aiLoading.setVisibility(View.GONE);
 
         int accuracy = total > 0 ? (correct * 100) / total : 0;
         int wrong = Math.max(0, total - correct);
+        boolean isHindi = "Hindi".equalsIgnoreCase(language);
         String testTitle = (test != null && test.getTitle() != null && !test.getTitle().isEmpty()) ? test.getTitle() : "Practice Assessment";
+
+        List<Question> questions = (test != null && test.getQuestions() != null) ? test.getQuestions() : new ArrayList<>();
 
         StringBuilder report = new StringBuilder();
 
-        if (language.equalsIgnoreCase("Hindi")) {
-            report.append("### 📊 कुल प्रदर्शन सारांश (Overall Performance)\n");
+        if (isHindi) {
+            report.append("### 📊 Overall Performance & Deep Summary\n");
             report.append("आपने **").append(testTitle).append("** में **").append(correct).append("/").append(total)
-                    .append("** अंक अर्जित किए हैं (सटीकता: **").append(accuracy).append("%**)।\n\n");
+                    .append("** अंक प्राप्त किए हैं (सटीकता: **").append(accuracy).append("%**)।\n\n");
 
             if (accuracy >= 80) {
-                report.append("🌟 **उत्कृष्ट प्रदर्शन!** आपकी अवधारणाओं पर मजबूत पकड़ है। परीक्षा में उच्च स्कोर के लिए इस लय को बनाए रखें।\n\n");
+                report.append("🌟 **उत्कृष्ट प्रदर्शन!** आपकी अवधारणाएँ अत्यंत स्पष्ट हैं।\n\n");
             } else if (accuracy >= 50) {
-                report.append("👍 **अच्छा प्रयास!** आप सही दिशा में हैं, लेकिन कुछ विषयों को और निखारने की आवश्यकता है।\n\n");
+                report.append("👍 **अच्छा प्रयास!** बुनियादी पकड़ अच्छी है, प्रत्येक प्रश्न के ट्रिक्स से स्कोर और बढ़ेगा।\n\n");
             } else {
-                report.append("🎯 **सुधार की आवश्यकता!** निरंतर अभ्यास और अवधारणाओं के पुनरीक्षण से आप अपने स्कोर में बड़ा उछाल ला सकते हैं।\n\n");
+                report.append("🎯 **सुधार की आवश्यकता!** नीचे दिए गए एक-एक प्रश्न के गहन विश्लेषण व ट्रिक्स का अध्ययन करें।\n\n");
             }
 
-            report.append("### 🟢 मजबूत विषय (Strong Topics)\n");
-            if (correct > 0) {
-                report.append("- **सही उत्तरित प्रश्न**: आपने **").append(correct).append("** प्रश्नों का सफलतापूर्वक उत्तर दिया।\n");
-                report.append("- **मजबूत क्षेत्र**: इन प्रश्नों से संबंधित बुनियादी अवधारणाओं पर आपकी कमांड अच्छी है।\n\n");
+            report.append("### 📝 Question-by-Question Deep Analysis & Tricks (प्रत्येक प्रश्न का विश्लेषण व ट्रिक)\n\n");
+
+            if (!questions.isEmpty()) {
+                for (int i = 0; i < questions.size(); i++) {
+                    Question q = questions.get(i);
+                    if (q == null) continue;
+
+                    Integer selectedIdx = q.getSelectedOptionIndex();
+                    boolean isCorrect = selectedIdx != null && Objects.equals(selectedIdx, q.getCorrectOptionIndex());
+                    boolean isSkipped = selectedIdx == null;
+
+                    String statusTag = isCorrect ? "🟢 CORRECT" : (isSkipped ? "⚪ SKIPPED" : "🔴 INCORRECT");
+
+                    String qText = q.getQuestionTextForLanguage("Hindi");
+                    if (qText == null || qText.trim().isEmpty()) {
+                        qText = q.getQuestionText() != null ? q.getQuestionText() : "";
+                    }
+                    qText = qText.replaceAll("<[^>]*>", "").trim();
+
+                    List<String> options = q.getOptionsForLanguage("Hindi");
+                    if (options == null || options.isEmpty()) options = q.getOptions();
+
+                    String yourAns = "Not Attempted (Skipped)";
+                    if (selectedIdx != null && options != null && selectedIdx >= 0 && selectedIdx < options.size()) {
+                        yourAns = "Option " + (char) ('A' + selectedIdx) + ": " + options.get(selectedIdx);
+                    }
+
+                    String correctAns = "N/A";
+                    int correctIdx = q.getCorrectOptionIndex();
+                    if (options != null && correctIdx >= 0 && correctIdx < options.size()) {
+                        correctAns = "Option " + (char) ('A' + correctIdx) + ": " + options.get(correctIdx);
+                    } else if (options != null && correctIdx - 1 >= 0 && correctIdx - 1 < options.size()) {
+                        correctAns = "Option " + (char) ('A' + (correctIdx - 1)) + ": " + options.get(correctIdx - 1);
+                    }
+
+                    String exp = q.getExplanationForLanguage("Hindi");
+                    if (exp == null || exp.trim().isEmpty()) {
+                        exp = q.getExplanation() != null ? q.getExplanation() : "";
+                    }
+                    exp = exp.replaceAll("<[^>]*>", "").trim();
+
+                    report.append("#### Q").append(i + 1).append(": ").append(qText).append(" - [").append(statusTag).append("]\n");
+                    report.append("• **आपका उत्तर**: ").append(yourAns).append("\n");
+                    report.append("• **सही उत्तर**: ").append(correctAns).append("\n");
+
+                    report.append("• **गहन व्याख्या (Deep Explanation)**: ");
+                    if (!exp.isEmpty()) {
+                        report.append(exp).append("\n");
+                    } else if (isCorrect) {
+                        report.append("आपका चुना गया उत्तर बिल्कुल सही और तार्किक है। विकल्प '").append(correctAns).append("' इस प्रश्न का सही समाधान प्रस्तुत करता है।\n");
+                    } else {
+                        report.append("सही विकल्प '").append(correctAns).append("' है। विकल्पों को ध्यान से पढ़कर बुनियादी नियम को लागू करें।\n");
+                    }
+
+                    report.append("• **💡 स्मार्ट ट्रिक / याद रखने का तरीका**: ");
+                    String trick = generateQuestionTrick(qText, correctAns, exp, true);
+                    report.append(trick).append("\n\n");
+                }
             } else {
-                report.append("- बुनियादी अवधारणाओं के पुनः अध्ययन से शुरुआत करें।\n\n");
+                report.append("कोई प्रश्न विवरण उपलब्ध नहीं है।\n\n");
             }
 
-            report.append("### 🔴 कमजोर विषय (Weak Topics)\n");
-            if (wrong > 0) {
-                report.append("- **गलत/छूटे प्रश्न**: **").append(wrong).append("** प्रश्न जिन्हें विशेष ध्यान की आवश्यकता है।\n");
-                report.append("- **मुख्य ध्यान क्षेत्र**: नीचे दिए गए 'Questions Review' अनुभाग से गलत उत्तरों के स्पष्टीकरण का ध्यानपूर्वक अध्ययन करें।\n\n");
-            } else {
-                report.append("- **कोई कमजोर क्षेत्र नहीं!** आपने शत-प्रतिशत सटीकता हासिल की है।\n\n");
-            }
+            report.append("### 🔴 Weak Topics & Revision Strategy\n");
+            report.append("• **कुल गलत/छूटे प्रश्न**: **").append(wrong).append("** प्रश्न।\n");
+            report.append("• **सुझाव**: ऊपर सूचीबद्ध गलत/छूटे प्रश्नों की व्याख्या और ट्रिक्स को ध्यान से पढ़ें और मुख्य सूत्रों के नोट्स बनाएं।\n\n");
 
-            report.append("### 🔍 गलतियों का विश्लेषण (Mistake Analysis)\n");
-            if (accuracy < 50) {
-                report.append("- मुख्य रूप से **वैचारिक स्पष्टता (Conceptual Clarity)** और प्रश्न को ध्यान से पढ़ने की कमी पाई गई।\n");
-            } else {
-                report.append("- गलतियाँ संभवतः **समान विकल्पों में भ्रम** या **समय प्रबंधन** के कारण हुई हैं।\n");
-            }
-            report.append("\n### 🎯 अगली परीक्षा के लिए कार्य योजना (Action Plan)\n");
-            report.append("1. **समीक्षा करें**: नीचे दिए गए समाधानों से गलत प्रश्नों का पुनः अभ्यास करें।\n");
-            report.append("2. **रिवीजन**: कमजोर विषयों के नोट्स का 15 मिनट रिवीजन करें।\n");
-            report.append("3. **पुनः प्रयास**: 24 घंटे के भीतर इसी प्रकार के मॉक टेस्ट में पुनः प्रयास करें।\n");
+            report.append("### ⚡ Exam Shortcuts & Time Saving Tips\n");
+            report.append("1. **Elimination Technique**: 4 में से 2 स्पष्ट गलत विकल्पों को पहले ही हटाएँ।\n");
+            report.append("2. **Keyword Association**: प्रश्न के मुख्य शब्दों (Keywords) को उत्तर के साथ जोड़कर याद रखें।\n");
+            report.append("3. **24-Hour Retake**: इस टेस्ट का 24 घंटे में पुनः प्रयास करें ताकि ट्रिक्स स्थायी याद हो जाएं।\n");
 
         } else {
-            report.append("### 📊 Overall Performance Summary\n");
+            report.append("### 📊 Overall Performance & Deep Summary\n");
             report.append("You scored **").append(correct).append("/").append(total)
                     .append("** in **").append(testTitle).append("** with an accuracy of **").append(accuracy).append("%**.\n\n");
 
             if (accuracy >= 80) {
-                report.append("🌟 **Outstanding Performance!** You demonstrate strong conceptual mastery and high precision.\n\n");
+                report.append("🌟 **Outstanding Performance!** Exceptional grasp of key concepts.\n\n");
             } else if (accuracy >= 50) {
-                report.append("👍 **Good Effort!** You have a solid baseline, but a few topics require targeted revision.\n\n");
+                report.append("👍 **Good Effort!** Solid foundation, review missed questions and tricks to reach 100%.\n\n");
             } else {
-                report.append("🎯 **Focus Required!** Consistent practice and revisiting core concepts will quickly boost your score.\n\n");
+                report.append("🎯 **Focus Required!** Carefully study the question-by-question breakdown below.\n\n");
             }
 
-            report.append("### 🟢 Strong Topics\n");
-            if (correct > 0) {
-                report.append("- **Correct Answers**: Successfully completed **").append(correct).append("** questions.\n");
-                report.append("- **Core Competency**: Strong understanding in the concepts tested in these questions.\n\n");
+            report.append("### 📝 Question-by-Question Deep Analysis & Tricks\n\n");
+
+            if (!questions.isEmpty()) {
+                for (int i = 0; i < questions.size(); i++) {
+                    Question q = questions.get(i);
+                    if (q == null) continue;
+
+                    Integer selectedIdx = q.getSelectedOptionIndex();
+                    boolean isCorrect = selectedIdx != null && Objects.equals(selectedIdx, q.getCorrectOptionIndex());
+                    boolean isSkipped = selectedIdx == null;
+
+                    String statusTag = isCorrect ? "🟢 CORRECT" : (isSkipped ? "⚪ SKIPPED" : "🔴 INCORRECT");
+
+                    String qText = q.getQuestionTextForLanguage("English");
+                    if (qText == null || qText.trim().isEmpty()) {
+                        qText = q.getQuestionText() != null ? q.getQuestionText() : "";
+                    }
+                    qText = qText.replaceAll("<[^>]*>", "").trim();
+
+                    List<String> options = q.getOptionsForLanguage("English");
+                    if (options == null || options.isEmpty()) options = q.getOptions();
+
+                    String yourAns = "Not Attempted (Skipped)";
+                    if (selectedIdx != null && options != null && selectedIdx >= 0 && selectedIdx < options.size()) {
+                        yourAns = "Option " + (char) ('A' + selectedIdx) + ": " + options.get(selectedIdx);
+                    }
+
+                    String correctAns = "N/A";
+                    int correctIdx = q.getCorrectOptionIndex();
+                    if (options != null && correctIdx >= 0 && correctIdx < options.size()) {
+                        correctAns = "Option " + (char) ('A' + correctIdx) + ": " + options.get(correctIdx);
+                    } else if (options != null && correctIdx - 1 >= 0 && correctIdx - 1 < options.size()) {
+                        correctAns = "Option " + (char) ('A' + (correctIdx - 1)) + ": " + options.get(correctIdx - 1);
+                    }
+
+                    String exp = q.getExplanationForLanguage("English");
+                    if (exp == null || exp.trim().isEmpty()) {
+                        exp = q.getExplanation() != null ? q.getExplanation() : "";
+                    }
+                    exp = exp.replaceAll("<[^>]*>", "").trim();
+
+                    report.append("#### Q").append(i + 1).append(": ").append(qText).append(" - [").append(statusTag).append("]\n");
+                    report.append("• **Your Answer**: ").append(yourAns).append("\n");
+                    report.append("• **Correct Answer**: ").append(correctAns).append("\n");
+
+                    report.append("• **Deep Explanation**: ");
+                    if (!exp.isEmpty()) {
+                        report.append(exp).append("\n");
+                    } else if (isCorrect) {
+                        report.append("Your chosen answer is logically sound and accurate. Option '").append(correctAns).append("' correctly solves this problem.\n");
+                    } else {
+                        report.append("Correct choice is '").append(correctAns).append("'. Apply core formula/rule elimination when attempting.\n");
+                    }
+
+                    report.append("• **💡 Smart Trick & Shortcut**: ");
+                    String trick = generateQuestionTrick(qText, correctAns, exp, false);
+                    report.append(trick).append("\n\n");
+                }
             } else {
-                report.append("- Begin by revising foundational concepts before taking timed tests.\n\n");
+                report.append("No question details available.\n\n");
             }
 
-            report.append("### 🔴 Weak Topics & Focus Areas\n");
-            if (wrong > 0) {
-                report.append("- **Incorrect/Skipped**: **").append(wrong).append("** questions need attention.\n");
-                report.append("- **Recommended Action**: Carefully read the detailed solutions provided in the 'Questions Review' section below.\n\n");
-            } else {
-                report.append("- **Zero Weak Areas!** Flawless accuracy achieved.\n\n");
-            }
+            report.append("### 🔴 Weak Topics & Revision Strategy\n");
+            report.append("• **Total Missed/Skipped**: **").append(wrong).append("** questions.\n");
+            report.append("• **Action**: Review the explanations and smart tricks above carefully.\n\n");
 
-            report.append("### 🔍 Mistake Analysis\n");
-            if (accuracy < 50) {
-                report.append("- Mistakes appear primarily due to **conceptual gaps** or unfamiliar question patterns.\n");
-            } else {
-                report.append("- Errors appear to stem from **time pressure** or slight option confusion.\n");
-            }
-            report.append("\n### 🎯 Action Plan for Next Attempt\n");
-            report.append("1. **Review Explanations**: Inspect the detailed solutions for all missed questions below.\n");
-            report.append("2. **Targeted Revision**: Spend 15 minutes reviewing formulas/rules for weak topics.\n");
-            report.append("3. **Retake Practice**: Attempt a similar test within 24 hours to reinforce learning.\n");
+            report.append("### ⚡ Exam Shortcuts & Time Saving Tips\n");
+            report.append("1. **Option Elimination**: Cross off 2 obviously incorrect choices immediately.\n");
+            report.append("2. **Keyword Association**: Associate key subject terms directly with correct answers.\n");
+            report.append("3. **24-Hour Retake**: Re-test yourself within 24 hours to cement shortcuts into memory.\n");
         }
 
         if (tvAIAnalysis != null) {

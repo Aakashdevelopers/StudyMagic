@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exam Uplift • Master Admin Dashboard</title>
+
+  <!-- Google Fonts & Supabase CDN -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --bg-main: #0b0f19;
+      --bg-card: #131b2e;
+      --bg-card-sub: #1c273e;
+      --border-color: #2a3854;
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --accent: #10b981;
+      --accent-hover: #059669;
+      --gold: #f59e0b;
+      --danger: #ef4444;
+      --danger-hover: #dc2626;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --radius-lg: 16px;
+      --radius-md: 10px;
+      --radius-sm: 6px;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+    /* AUTH LOGIN SCREEN */
+    #authScreen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.15), transparent 40%),
+                  radial-gradient(circle at bottom left, rgba(16, 185, 129, 0.1), transparent 40%),
+                  var(--bg-main);
+      padding: 20px;
+    }
+    .auth-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+    .auth-header { text-align: center; margin-bottom: 24px; }
+    .auth-header h1 { font-size: 26px; font-weight: 800; color: var(--primary); margin-bottom: 6px; }
+    .auth-header p { font-size: 13px; color: var(--text-muted); }
+
+    /* TYPE CARDS */
+    .type-box { display: flex; gap: 14px; margin-bottom: 16px; }
+    .type-card {
+      flex: 1;
+      padding: 16px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      background: var(--bg-card-sub);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .type-card:hover { border-color: var(--primary); }
+    .type-card.active {
+      border: 2px solid var(--primary);
+      background: rgba(99, 102, 241, 0.12);
+    }
+    .type-title { font-weight: 700; font-size: 15px; color: var(--text-main); margin-bottom: 4px; }
+    .type-desc { font-size: 12.5px; color: var(--text-muted); line-height: 1.4; }
+
+    /* FORM INPUTS & BUTTONS */
+    label { display: block; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin: 12px 0 6px; }
+    input, select, textarea {
+      width: 100%;
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 11px 14px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+    button {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 11px 18px;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    button:hover { background: var(--primary-hover); transform: translateY(-1px); }
+    button.secondary { background: var(--bg-card-sub); border: 1px solid var(--border-color); color: var(--text-main); }
+    button.secondary:hover { background: var(--border-color); }
+    button.accent { background: var(--accent); }
+    button.accent:hover { background: var(--accent-hover); }
+    button.danger { background: var(--danger); }
+    button.danger:hover { background: var(--danger-hover); }
+
+    /* MAIN APP LAYOUT */
+    #mainApp { display: none; min-height: 100vh; }
+    .app-container { display: flex; min-height: 100vh; }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 260px;
+      background: var(--bg-card);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; bottom: 0; left: 0;
+      z-index: 100;
+    }
+    .sidebar-brand {
+      padding: 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-icon { font-size: 24px; }
+    .brand-title { font-size: 18px; font-weight: 800; color: var(--text-main); }
+    .brand-sub { font-size: 11px; color: var(--primary); font-weight: 600; }
+
+    .sidebar-nav { padding: 16px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
+    .nav-btn {
+      width: 100%;
+      background: transparent;
+      color: var(--text-muted);
+      padding: 11px 16px;
+      border-radius: var(--radius-md);
+      justify-content: flex-start;
+      font-size: 13.5px;
+      font-weight: 500;
+    }
+    .nav-btn:hover { background: var(--bg-card-sub); color: var(--text-main); transform: none; }
+    .nav-btn.active { background: var(--primary); color: #fff; font-weight: 600; }
+
+    .sidebar-user {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .user-email { font-size: 12px; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
+
+    /* CONTENT AREA */
+    .content-area {
+      margin-left: 260px;
+      flex: 1;
+      padding: 32px;
+      max-width: 1400px;
+    }
+
+    /* TOP HEADER */
+    .top-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+    .page-title h2 { font-size: 24px; font-weight: 800; color: var(--text-main); }
+    .page-title p { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+    /* SCREENS */
+    .screen-section { display: none; }
+    .screen-section.active { display: block; animation: fadeIn 0.25s ease; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* CARDS & GRIDS */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .card-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+    .row { display: flex; gap: 14px; }
+    .row > * { flex: 1; }
+
+    /* STAT CARD */
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 20px;
+    }
+    .stat-val { font-size: 28px; font-weight: 800; color: var(--primary); margin: 6px 0; }
+    .stat-lbl { font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+
+    /* TABLES */
+    .table-container { overflow-x: auto; border-radius: var(--radius-md); border: 1px solid var(--border-color); }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px; }
+    th { background: var(--bg-card-sub); color: var(--text-muted); font-weight: 600; padding: 12px 16px; font-size: 12px; text-transform: uppercase; }
+    td { padding: 14px 16px; border-top: 1px solid var(--border-color); color: var(--text-main); }
+    tr:hover { background: rgba(255,255,255,0.02); }
+
+    /* BADGES */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11.5px;
+      font-weight: 600;
+      background: rgba(99, 102, 241, 0.15);
+      color: var(--primary);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+    .badge-success { background: rgba(16, 185, 129, 0.15); color: var(--accent); border-color: rgba(16, 185, 129, 0.3); }
+    .badge-gold { background: rgba(245, 158, 11, 0.15); color: var(--gold); border-color: rgba(245, 158, 11, 0.3); }
+    .badge-danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); border-color: rgba(239, 68, 68, 0.3); }
+
+    /* ITEM CARD IN LISTS */
+    .item-card {
+      background: var(--bg-card-sub);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      margin-bottom: 14px;
+    }
+
+    /* NOTIFICATION / TOAST */
+    #toastStatus {
+      position: fixed;
+      bottom: 24px; right: 24px;
+      padding: 12px 20px;
+      border-radius: var(--radius-md);
+      font-size: 13.5px;
+      font-weight: 600;
+      z-index: 2000;
+      display: none;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+    .toast-success { background: var(--accent); color: #fff; }
+    .toast-error { background: var(--danger); color: #fff; }
+    .toast-info { background: var(--primary); color: #fff; }
+  </style>
+</head>
+<body>
+
+  <!-- 1. AUTH LOGIN SCREEN -->
+  <div id="authScreen">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1>⚡ Exam Uplift</h1>
+        <p>Master Admin & Management Portal</p>
+      </div>
+
+      <form id="loginForm" onsubmit="handleAuthLogin(event)">
+        <label for="authEmail">Admin Email</label>
+        <input type="email" id="authEmail" value="adminexamuplift@gmail.com" required placeholder="admin@example.com">
+
+        <label for="authPassword">Password</label>
+        <input type="password" id="authPassword" value="ExamUplift#Admin2025!" required placeholder="••••••••">
+
+        <div style="margin-top:24px">
+          <button type="submit" id="authSubmitBtn" style="width:100%;padding:13px">🚀 Sign In to Dashboard</button>
+        </div>
+      </form>
+
+      <div id="authMsg" style="margin-top:16px;text-align:center;font-size:13px"></div>
+    </div>
+  </div>
+
+  <!-- 2. MAIN APP DASHBOARD -->
+  <div id="mainApp">
+    <div class="app-container">
+
+      <!-- SIDEBAR -->
+      <div class="sidebar">
+        <div class="sidebar-brand">
+          <span class="brand-icon">🎓</span>
+          <div>
+            <div class="brand-title">StudyMagic</div>
+            <div class="brand-sub">Master Admin Panel</div>
+          </div>
+        </div>
+
+        <div class="sidebar-nav">
+          <button class="nav-btn active" onclick="switchNav('dashHome', this)">📊 <span>Dashboard</span></button>
+          <button class="nav-btn" onclick="switchNav('dashHierarchy', this)">📂 <span>Structure & Hierarchy</span></button>
+          <button class="nav-btn" onclick="switchNav('dashMockups', this)">🎯 <span>Mockup Tests</span></button>
+          <button class="nav-btn" onclick="switchNav('dashTests', this)">🧪 <span>Chapter Tests</span></button>
+          <button class="nav-btn" onclick="switchNav('dashNotes', this)">📚 <span>PDF Notes</span></button>
+          <button class="nav-btn" onclick="switchNav('dashReports', this)">🚩 <span>Reported Questions</span></button>
+          <button class="nav-btn" onclick="switchNav('dashFeedbacks', this)">💬 <span>User Feedbacks</span></button>
+          <button class="nav-btn" onclick="switchNav('dashUploader', this)">🖼️ <span>Media Uploader</span></button>
+        </div>
+
+        <div class="sidebar-user">
+          <div class="user-email" id="loggedInEmail">adminexamuplift@gmail.com</div>
+          <button class="danger" onclick="handleLogout()" style="padding:6px 10px;font-size:12px">Logout</button>
+        </div>
+      </div>
+
+      <!-- CONTENT AREA -->
+      <div class="content-area">
+
+        <!-- TOP BAR -->
+        <div class="top-header">
+          <div class="page-title">
+            <h2 id="screenTitle">Dashboard Overview</h2>
+            <p id="screenSub">Real-time statistics and system performance metrics.</p>
+          </div>
+          <button class="secondary" onclick="refreshCurrentScreen()">🔄 Refresh Data</button>
+        </div>
+
+        <!-- ==================================================== -->
+        <!-- SCREEN 1: DASHBOARD HOME -->
+        <!-- ==================================================== -->
+        <div id="dashHome" class="screen-section active">
+          <div class="grid-4">
+            <div class="stat-card">
+              <div class="stat-lbl">Mockup Tests</div>
+              <div class="stat-val" id="statMockups">—</div>
+              <span class="badge">mockup_tests</span>
+            </div>
+            <div class="stat-card">
+              <div class="stat-lbl">Chapter Tests</div>
+              <div class="stat-val" id="statTests">—</div>
+              <span class="badge badge-success">Chapter Wise</span>
+            </div>
+            <div class="stat-card">
+              <div class="stat-lbl">PDF Notes</div>
+              <div class="stat-val" id="statNotes">—</div>
+              <span class="badge badge-gold">Study Docs</span>
+            </div>
+            <div class="stat-card">
+              <div class="stat-lbl">Reported Questions</div>
+              <div class="stat-val" id="statReports">—</div>
+              <span class="badge badge-danger">Needs Review</span>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-title">⚡ Database Connection Status</div>
+              <div style="display:flex;align-items:center;gap:12px;margin-top:10px">
+                <span style="width:12px;height:12px;background:#10b981;border-radius:50%;display:inline-block"></span>
+                <span style="font-weight:600" id="dbStatusText">Connected to Supabase</span>
+              </div>
+              <p style="font-size:13px;color:var(--text-muted);margin-top:8px">
+                URL: <code>https://crafyflxsvgjvvuzdftm.supabase.co</code>
+              </p>
+            </div>
+
+            <div class="card">
+              <div class="card-title">💬 Recent Feedback Overview</div>
+              <div id="homeRecentFeedbacks" style="font-size:13.5px;color:var(--text-muted)">Loading feedbacks...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================================================== -->
+        <!-- SCREEN 2: STRUCTURE & HIERARCHY -->
+        <!-- ==================================================== -->
+        <div id="dashHierarchy" class="screen-section">
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-title">📂 Add Category (`categories`)</div>
+              <label for="catTitleInput">Category Name *</label>
+              <input id="catTitleInput" placeholder="e.g. SSC, Railway, Banking">
+              <label for="catIconInput">Icon URL (Optional)</label>
+              <input id="catIconInput" placeholder="https://i.ibb.co/...">
+              <button class="accent" onclick="saveMainCategoryFromTop()" style="margin-top:14px;width:100%">➕ Save Category</button>
+            </div>
+
+            <div class="card">
+              <div class="card-title">🏷️ Add Subcategory (`mock_subcategories`)</div>
+              <label for="subCatParentSelect">Parent Category (`categories`) *</label>
+              <select id="subCatParentSelect"><option value="">Select Category</option></select>
+              <label for="subCatTitleInput">Subcategory Title *</label>
+              <input id="subCatTitleInput" placeholder="e.g. SSC CGL, RRB NTPC">
+              <label for="subCatDescInput">Description</label>
+              <input id="subCatDescInput" placeholder="Brief description...">
+              <button class="accent" onclick="saveExamSubcategory()" style="margin-top:14px;width:100%">➕ Save Subcategory</button>
+            </div>
+          </div>
+
+          <!-- MAIN CATEGORY -> SUBJECT -> CHAPTER -> TOPIC -->
+          <div class="card">
+            <div class="card-title">🌳 Chapter Hierarchy Builder</div>
+            <div class="grid-4">
+              <div>
+                <label for="hierCategoryName">1. Main Category</label>
+                <input id="hierCategoryName" placeholder="Category Name">
+                <button onclick="saveMainCategory()" style="margin-top:8px;width:100%">Add Category</button>
+              </div>
+              <div>
+                <label for="hierCategorySelect">2. Subject</label>
+                <select id="hierCategorySelect" aria-label="Select Category"></select>
+                <input id="hierSubjectName" aria-label="Subject Name" placeholder="Subject Name" style="margin-top:6px">
+                <button onclick="saveSubject()" style="margin-top:8px;width:100%">Add Subject</button>
+              </div>
+              <div>
+                <label for="hierSubjectSelect">3. Chapter</label>
+                <select id="hierSubjectSelect" aria-label="Select Subject"></select>
+                <input id="hierChapterName" aria-label="Chapter Name" placeholder="Chapter Name" style="margin-top:6px">
+                <button onclick="saveChapter()" style="margin-top:8px;width:100%">Add Chapter</button>
+              </div>
+              <div>
+                <label for="hierChapterSelect">4. Topic</label>
+                <select id="hierChapterSelect" aria-label="Select Chapter"></select>
+                <input id="hierTopicName" aria-label="Topic Name" placeholder="Topic Name" style="margin-top:6px">
+                <button onclick="saveTopic()" style="margin-top:8px;width:100%">Add Topic</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- LIST OF EXISTING STRUCTURE -->
+          <div class="card">
+            <div class="card-title">📋 Existing Categories & Hierarchy</div>
+            <div id="hierarchyListContainer"><div style="color:var(--text-muted)">Loading categories...</div></div>
+          </div>
+        </div>
+
+        <!-- ==================================================== -->
+        <!-- SCREEN 3: MOCKUP TESTS (mockup_tests) -->
+        <!-- ==================================================== -->
+        <div id="dashMockups" class="screen-section">
+
+          <!-- 1. CREATE MOCKUP TEST FORM -->
+          <div class="card">
+            <div class="card-title">➕ Create New Mockup Test</div>
+
+            <label>Mockup Test Type</label>
+            <div class="type-box">
+              <div id="cardType1" class="type-card active" onclick="selectMockupType('type1')">
+                <div class="type-title">Type 1: Universal Duration</div>
+                <div class="type-desc">Single timer for whole test. Candidates can move freely between subjects.</div>
+              </div>
+              <div id="cardType2" class="type-card" onclick="selectMockupType('type2')">
+                <div class="type-title">Type 2: Subject-Wise Timed</div>
+                <div class="type-desc">Individual countdown timer per subject section. Section lock on timeout.</div>
+              </div>
+            </div>
+
+            <label for="mTitle">Mockup Test Title *</label>
+            <input id="mTitle" placeholder="Example: SSC CGL Full Length Mock Test 01">
+
+            <label for="mDesc">Description</label>
+            <textarea id="mDesc" placeholder="Enter instructions or test description..."></textarea>
+
+            <div class="row" style="margin-top:10px">
+              <div id="divUniversalDuration">
+                <label for="mDuration">Universal Duration (Minutes)</label>
+                <input type="number" id="mDuration" min="1" value="60">
+              </div>
+              <div>
+                <label for="mCategory">📂 Exam Category</label>
+                <select id="mCategory" onchange="loadMockupSubcategories()"></select>
+              </div>
+              <div>
+                <label for="mSubcategory">📁 Subcategory</label>
+                <select id="mSubcategory"></select>
+              </div>
+            </div>
+
+            <div class="row" style="margin-top:10px">
+              <div>
+                <label for="mCorrectMarks">Marks Per Correct Ans *</label>
+                <input type="number" id="mCorrectMarks" step="0.01" min="0" value="1.0">
+              </div>
+              <div>
+                <label for="mNegMarking">Negative Marking (-ve Marks)</label>
+                <input type="number" id="mNegMarking" step="0.01" min="0" value="0.25">
+              </div>
+            </div>
+
+            <div class="row" style="margin-top:10px">
+              <div>
+                <label for="mTotalMarks">Total Marks (Optional)</label>
+                <input type="number" id="mTotalMarks" step="0.5" min="0" placeholder="Auto-calculated if blank">
+              </div>
+            </div>
+
+            <div style="margin-top:12px">
+              <label><input type="checkbox" id="mFeatured" style="width:auto;margin-right:6px"> ⭐ Mark as Featured Test</label>
+            </div>
+
+            <div style="margin:24px 0 14px;display:flex;justify-content:space-between;align-items:center">
+              <h3 style="color:var(--primary)">🎏 Subjects & Questions Builder</h3>
+              <button type="button" class="secondary" onclick="addMockupSubjectCard()">➕ Add Subject</button>
+            </div>
+
+            <div id="mockupSubjectsContainer"></div>
+
+            <button class="accent" onclick="saveMockupTest()" style="width:100%;padding:14px;font-size:15px;margin-top:18px">💾 Save & Publish Mockup</button>
+          </div>
+
+          <!-- 2. QUICK QUESTION ADDER -->
+          <div class="card" style="border:1px solid var(--primary)">
+            <div class="card-title">⚡ Quick Question Adder (1-by-1 Insertion)</div>
+            <div class="row">
+              <div>
+                <label for="quickMockupSelect">Target Mockup *</label>
+                <select id="quickMockupSelect" onchange="updateQuickSubjects()"></select>
+              </div>
+              <div>
+                <label for="quickSubjectSelect">Subject Section *</label>
+                <select id="quickSubjectSelect"></select>
+              </div>
+            </div>
+
+            <label for="quickQText">Question Text *</label>
+            <input id="quickQText" placeholder="Enter question text...">
+            <label for="quickQImg">Question Image URL (Optional)</label>
+            <input id="quickQImg" placeholder="https://i.ibb.co/...">
+
+            <div class="row">
+              <div><label for="quickOpt0">Option 1 *</label><input id="quickOpt0"></div>
+              <div><label for="quickOpt1">Option 2 *</label><input id="quickOpt1"></div>
+            </div>
+            <div class="row">
+              <div><label for="quickOpt2">Option 3 *</label><input id="quickOpt2"></div>
+              <div><label for="quickOpt3">Option 4 *</label><input id="quickOpt3"></div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label for="quickCorrect">Correct Option *</label>
+                <select id="quickCorrect">
+                  <option value="0">Option 1 (A)</option>
+                  <option value="1">Option 2 (B)</option>
+                  <option value="2">Option 3 (C)</option>
+                  <option value="3">Option 4 (D)</option>
+                </select>
+              </div>
+              <div>
+                <label for="quickExp">Explanation (Optional)</label>
+                <input id="quickExp" placeholder="Explanation text...">
+              </div>
+            </div>
+            <button class="accent" onclick="submitQuickQuestion()" style="margin-top:14px">🚀 Add Question to Mockup</button>
+          </div>
+
+          <!-- 3. PUBLISHED MOCKUPS LIST -->
+          <div class="card">
+            <div class="card-title">📋 Published Mockup Tests (`mockup_tests`)</div>
+            <div id="mockupsListContainer"><div style="color:var(--text-muted)">Loading mockups...</div></div>
+          </div>
+        </div>
+
+        <!-- ==================================================== -->
+        <!-- SCREEN 4: CHAPTER TESTS -->
+        <!-- ==================================================== -->
+        <div id="dashTests" class="screen-section">
+          <div class="card">
+            <div class="card-title">➕ Create Chapter Practice Test (`tests`)</div>
+
+            <div class="grid-4">
+              <div>
+                <label for="testCatSelect">Category *</label>
+                <select id="testCatSelect" onchange="loadTestSubjects()"></select>
+              </div>
+              <div>
+                <label for="testSubSelect">Subject *</label>
+                <select id="testSubSelect" onchange="loadTestChapters()"></select>
+              </div>
+              <div>
+                <label for="testChapSelect">Chapter *</label>
+                <select id="testChapSelect" onchange="loadTestTopics()"></select>
+              </div>
+              <div>
+                <label for="testTopicSelect">Topic *</label>
+                <select id="testTopicSelect"></select>
+              </div>
+            </div>
+
+            <div class="row" style="margin-top:10px">
+              <div>
+                <label for="testTitle">Test Title *</label>
+                <input id="testTitle" placeholder="e.g. Percentage Basic Test 01">
+              </div>
+              <div>
+                <label for="testDuration">Duration (Mins) *</label>
+                <input type="number" id="testDuration" value="15">
+              </div>
+              <div>
+                <label for="testCorrectMarks">Correct Marks (+)</label>
+                <input type="number" id="testCorrectMarks" step="0.01" value="1.0">
+              </div>
+              <div>
+                <label for="testNegMarking">Negative Marks (-)</label>
+                <input type="number" id="testNegMarking" step="0.01" value="0.25">
+              </div>
+            </div>
+
+            <label for="testDesc">Description</label>
+            <textarea id="testDesc" placeholder="Practice test details..."></textarea>
+
+            <label for="testJsonInput" style="margin-top:14px">Questions JSON Array</label>
+            <textarea id="testJsonInput" style="font-family:var(--font-mono);min-height:180px;font-size:12.5px" placeholder='[
+  {
+    "id": "q1",
+    "question_text": "What is 20% of 500?",
+    "options": ["50", "100", "150", "200"],
+    "correct_option_index": 1,
+    "e": "20% of 500 = 100"
+  }
+]'></textarea>
+            <button class="accent" onclick="saveTest()" style="width:100%;padding:14px;margin-top:14px">💾 Save & Publish Practice Test</button>
+          </div>
+
+          <div class="card">
+            <div class="card-title">📋 Chapter Tests List</div>
+            <div id="testsListContainer"><div style="color:var(--text-muted)">Loading tests...</div></div>
+          </div>
+        </div>
+
+        <!-- ==================================================== -->
+        <!-- SCREEN 5: PDF NOTES -->
+        <!-- ==================================================== -->
+        <div id="dashNotes" class="screen-section">
+          <div class="card">
+            <div class="card-title">➕ Add PDF Note Document (`notes`)</div>
+            <label for="noteTitle">Note Title *</label>
+            <input id="noteTitle" placeholder="e.g. Quantitative Aptitude Formula Book PDF">
+
+            <label for="notePdfFile">Select PDF File (Upload to Supabase Storage)</label>
+            <input type="file" id="notePdfFile" accept="application/pdf">
+
+            <label for="notePdfUrl">OR Direct PDF URL</label>
+            <input id="notePdfUrl" placeholder="https://...">
+
+            <label for="noteDesc">Description</label>
+            <textarea id="noteDesc" placeholder="Summary of PDF notes..."></textarea>
+
+            <button class="accent" onclick="saveNote()" style="margin-top:14px;width:100%;padding:12px">🚀 Upload & Save Note</button>
+          </div>
+
+          <div class="card">
+            <div class="card-title">📚 Published PDF Notes</div>
+            <div id="notesListContainer"><div style="color:var(--text-muted)">Loading notes...</div></div>
+          </div>
+        </div>
+
+        <!-- ==================================================== -->
+        <!-- SCREEN 6: REPORTED QUESTIONS -->
+        <!-- ==================================================== -->
+        <div id="dashReports" class="screen-section">
+          <div class="card">
+            <div class="card-title">🚩 Reported Questions (`report_question`)</div>
+            <div id="reportsListContainer"><div style="color:var(--text-muted)">Loading report logs...</div></div>
+          </div>
+        </div>
+
+        <!-- ==================================================== -->
+        <!-- SCREEN 7: USER FEEDBACKS -->
+        <!-- ==================================================== -->
+        <div id="dashFeedbacks" class="screen-section">
+          <div class="card">
+            <div class="card-title">💬 User Reviews & Feedback (`app_feedback`)</div>
+            <div id="feedbacksListContainer"><div style="color:var(--text-muted)">Loading feedbacks...</div></div>
+          </div>
+        </div>
+
+        <!-- ==================================================== -->
+        <!-- SCREEN 8: MEDIA UPLOADER -->
+        <!-- ==================================================== -->
+        <div id="dashUploader" class="screen-section">
+          <div class="card">
+            <div class="card-title">🖼️ ImgBB Diagram & Image Uploader</div>
+            <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px">Upload diagrams or question images to get direct image URLs for questions.</p>
+            <label for="imgbbKey">ImgBB API Key</label>
+            <input id="imgbbKey" value="98b5b00cee79645e2ea44a187446c2e3">
+            <label for="imgbbFile">Select Image File</label>
+            <input type="file" id="imgbbFile" accept="image/*">
+            <button class="accent" onclick="uploadImgBB()" style="margin-top:14px">🚀 Upload Image</button>
+            <div id="imgbbResult" style="margin-top:14px"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toastStatus">Notification</div>
+
+  <!-- SCRIPT LOGIC -->
+  <script>
+    // 1. SUPABASE CLIENT INIT
+    const SUPABASE_URL = "https://crafyflxsvgjvvuzdftm.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_NxzsXWLHPGkNi0jTVx5k1Q_QYoRwGFo";
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let activeNavId = "dashHome";
+    let categories = [], subjects = [], chapters = [], topics = [];
+    let examCategories = [], examSubcategories = [];
+    let mockupTests = [];
+
+    // AUTO SESSION CHECK
+    window.addEventListener("DOMContentLoaded", async () => {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (session && session.user) {
+        showMainApp(session.user.email);
+      }
+    });
+
+    // TOAST
+    function showToast(text, type = "info") {
+      const t = document.getElementById("toastStatus");
+      t.innerText = text;
+      t.className = type === "success" ? "toast-success" : (type === "error" ? "toast-error" : "toast-info");
+      t.style.display = "block";
+      setTimeout(() => { t.style.display = "none"; }, 3500);
+    }
+
+    // AUTH LOGIN
+    async function handleAuthLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById("authEmail").value.trim();
+      const password = document.getElementById("authPassword").value.trim();
+      const msg = document.getElementById("authMsg");
+
+      msg.innerText = "Authenticating...";
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        msg.style.color = "var(--danger)";
+        msg.innerText = "❌ " + error.message;
+      } else {
+        msg.style.color = "var(--accent)";
+        msg.innerText = "✅ Login successful!";
+        showMainApp(data.user.email);
+      }
+    }
+
+    async function handleLogout() {
+      await supabaseClient.auth.signOut();
+      document.getElementById("mainApp").style.display = "none";
+      document.getElementById("authScreen").style.display = "flex";
+    }
+
+    function showMainApp(email) {
+      document.getElementById("authScreen").style.display = "none";
+      document.getElementById("mainApp").style.display = "block";
+      document.getElementById("loggedInEmail").innerText = email;
+      loadDashboardStats();
+      loadHierarchyData();
+    }
+
+    // NAVIGATION
+    function switchNav(screenId, btn) {
+      document.querySelectorAll(".screen-section").forEach(s => s.classList.remove("active"));
+      document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+
+      document.getElementById(screenId).classList.add("active");
+      if(btn) btn.classList.add("active");
+      activeNavId = screenId;
+
+      if(screenId === 'dashHome') loadDashboardStats();
+      else if(screenId === 'dashHierarchy') loadHierarchyData();
+      else if(screenId === 'dashMockups') loadMockupsData();
+      else if(screenId === 'dashTests') loadTestsData();
+      else if(screenId === 'dashNotes') loadNotesData();
+      else if(screenId === 'dashReports') loadReportsData();
+      else if(screenId === 'dashFeedbacks') loadFeedbacksData();
+    }
+
+    function refreshCurrentScreen() {
+      switchNav(activeNavId, null);
+      showToast("Data refreshed!");
+    }
+
+    // ==========================================
+    // 1. DASHBOARD STATS
+    // ==========================================
+    async function loadDashboardStats() {
+      const [m, t, n, r] = await Promise.all([
+        supabaseClient.from("mockup_tests").select("id", { count: 'exact' }),
+        supabaseClient.from("tests").select("id", { count: 'exact' }),
+        supabaseClient.from("notes").select("id", { count: 'exact' }),
+        supabaseClient.from("report_question").select("id", { count: 'exact' })
+      ]);
+
+      document.getElementById("statMockups").innerText = m.count || 0;
+      document.getElementById("statTests").innerText = t.count || 0;
+      document.getElementById("statNotes").innerText = n.count || 0;
+      document.getElementById("statReports").innerText = r.count || 0;
+
+      // Feedbacks
+      const { data: fb } = await supabaseClient.from("app_feedback").select("*").limit(3).order("created_at", { ascending: false });
+      const fbBox = document.getElementById("homeRecentFeedbacks");
+      if (fb && fb.length > 0) {
+        fbBox.innerHTML = fb.map(f => `<div style="margin-bottom:8px">⭐ <b>${f.rating}/5</b> - ${escapeHtml(f.feedback || "No comment")} <span style="font-size:11px">(${f.user_email || 'User'})</span></div>`).join('');
+      } else {
+        fbBox.innerHTML = "No recent user feedback.";
+      }
+    }
+
+    // ==========================================
+    // 2. STRUCTURE & HIERARCHY
+    // ==========================================
+    async function loadHierarchyData() {
+      const [c, s, ch, tp, es] = await Promise.all([
+        supabaseClient.from("categories").select("*").order("name"),
+        supabaseClient.from("subjects").select("*").order("name"),
+        supabaseClient.from("chapters").select("*").order("name"),
+        supabaseClient.from("topics").select("*").order("name"),
+        supabaseClient.from("mock_subcategories").select("*").order("title")
+      ]);
+
+      categories = c.data || [];
+      subjects = s.data || [];
+      chapters = ch.data || [];
+      topics = tp.data || [];
+      examSubcategories = es.data || [];
+
+      populateDropdowns();
+      renderHierarchyList();
+    }
+
+    function populateDropdowns() {
+      const subCatSel = document.getElementById("subCatParentSelect");
+      subCatSel.innerHTML = '<option value="">Select Category</option>' +
+        categories.map(x => `<option value="${x.id}">${escapeHtml(x.name)}</option>`).join('');
+
+      const hierCat = document.getElementById("hierCategorySelect");
+      hierCat.innerHTML = '<option value="">Select Category</option>' +
+        categories.map(x => `<option value="${x.id}">${escapeHtml(x.name)}</option>`).join('');
+
+      const mCat = document.getElementById("mCategory");
+      mCat.innerHTML = '<option value="">Select Category</option>' +
+        categories.map(x => `<option value="${x.id}">${escapeHtml(x.name)}</option>`).join('');
+
+      const testCat = document.getElementById("testCatSelect");
+      testCat.innerHTML = '<option value="">Select Category</option>' +
+        categories.map(x => `<option value="${x.id}">${escapeHtml(x.name)}</option>`).join('');
+
+      loadMockupSubcategories();
+    }
+
+    async function saveMainCategoryFromTop() {
+      const name = document.getElementById("catTitleInput").value.trim();
+      const icon_url = document.getElementById("catIconInput").value.trim();
+
+      if(!name) { alert("Please enter category name."); return; }
+      const { error } = await supabaseClient.from("categories").insert({ name, icon_url });
+      if(error) alert("Error: " + error.message);
+      else { showToast("Category saved!", "success"); loadHierarchyData(); }
+    }
+
+    async function saveExamSubcategory() {
+      const cat_id = document.getElementById("subCatParentSelect").value;
+      const title = document.getElementById("subCatTitleInput").value.trim();
+      const description = document.getElementById("subCatDescInput").value.trim();
+
+      if(!cat_id || !title) { alert("Select category and title."); return; }
+      const { error } = await supabaseClient.from("mock_subcategories").insert({
+        exam_id: parseInt(cat_id),
+        category_id: parseInt(cat_id),
+        title, description
+      });
+      if(error) alert("Error: " + error.message);
+      else { showToast("Subcategory saved!", "success"); loadHierarchyData(); }
+    }
+
+    async function saveMainCategory() {
+      const name = document.getElementById("hierCategoryName").value.trim();
+      if(!name) return;
+      const { error } = await supabaseClient.from("categories").insert({ name });
+      if(error) alert(error.message);
+      else { showToast("Category added!", "success"); loadHierarchyData(); }
+    }
+
+    function renderHierarchyList() {
+      const box = document.getElementById("hierarchyListContainer");
+      if(!categories.length) { box.innerHTML = "No categories found."; return; }
+
+      let html = '<div class="table-container"><table><thead><tr><th>Type</th><th>ID</th><th>Name / Title</th><th>Actions</th></tr></thead><tbody>';
+
+      categories.forEach(c => {
+        html += `<tr><td><span class="badge">Category</span></td><td>${c.id}</td><td><b>${escapeHtml(c.name)}</b></td><td><button class="danger" onclick="deleteItem('categories', ${c.id})" style="padding:4px 8px;font-size:11px">Delete</button></td></tr>`;
+      });
+
+      examSubcategories.forEach(sc => {
+        html += `<tr><td><span class="badge badge-gold">Subcategory</span></td><td>${sc.id}</td><td><b>${escapeHtml(sc.title)}</b></td><td><button class="danger" onclick="deleteItem('mock_subcategories', ${sc.id})" style="padding:4px 8px;font-size:11px">Delete</button></td></tr>`;
+      });
+
+      html += '</tbody></table></div>';
+      box.innerHTML = html;
+    }
+
+    // Delete Helper
+    async function deleteItem(table, id) {
+      if(!confirm(`Delete item ID ${id} from ${table}?`)) return;
+      const { error } = await supabaseClient.from(table).delete().eq("id", id);
+      if(error) alert("Error: " + error.message);
+      else { showToast("Deleted successfully!", "success"); refreshCurrentScreen(); }
+    }
+
+    // ==========================================
+    // 3. MOCKUP TESTS (mockup_tests)
+    // ==========================================
+    let currentMockupType = "type1";
+    function selectMockupType(type) {
+      currentMockupType = type;
+      document.getElementById("cardType1").classList.toggle("active", type === "type1");
+      document.getElementById("cardType2").classList.toggle("active", type === "type2");
+    }
+
+    let mockupSubCount = 0;
+    function addMockupSubjectCard(defaultName = "") {
+      mockupSubCount++;
+      const id = mockupSubCount;
+      const subNameVal = defaultName || (`Subject #${id}`);
+      const div = document.createElement("div");
+      div.className = "item-card";
+      div.id = "mockSubCard_" + id;
+      div.style.border = "1px solid var(--border-color)";
+      div.style.padding = "20px";
+      div.style.borderRadius = "var(--radius-lg)";
+      div.style.marginBottom = "20px";
+
+      div.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <h4 style="margin:0;font-size:16px;color:var(--primary)">📘 Subject #${id}</h4>
+          <button type="button" class="danger" onclick="this.parentElement.parentElement.remove()" style="padding:5px 12px;font-size:12px">🗑️ Remove</button>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="subName_${id}">Subject Name *</label>
+            <input id="subName_${id}" class="mock-sub-name" value="${escapeHtml(subNameVal)}">
+          </div>
+          <div>
+            <label for="subDur_${id}">Subject Duration (Mins) (Type 2 only)</label>
+            <input type="number" id="subDur_${id}" class="mock-sub-timer" value="20">
+          </div>
+        </div>
+
+        <!-- VISUAL QUESTION BUILDER INSIDE SUBJECT -->
+        <div style="background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:18px;margin:18px 0 14px">
+          <h5 style="margin:0 0 12px;color:var(--primary);font-size:14px">🖼️ Visual Question Builder</h5>
+
+          <label for="visQText_${id}">Question Text *</label>
+          <input id="visQText_${id}" placeholder="Enter question text...">
+
+          <label for="visQImg_${id}">Question Image URL (Optional)</label>
+          <input id="visQImg_${id}" placeholder="https://i.ibb.co/...">
+
+          <div class="row">
+            <div>
+              <label for="visOpt0_${id}">Option 1 *</label>
+              <input id="visOpt0_${id}" placeholder="Option A text or image URL">
+            </div>
+            <div>
+              <label for="visOpt1_${id}">Option 2 *</label>
+              <input id="visOpt1_${id}" placeholder="Option B text or image URL">
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label for="visOpt2_${id}">Option 3 *</label>
+              <input id="visOpt2_${id}" placeholder="Option C text or image URL">
+            </div>
+            <div>
+              <label for="visOpt3_${id}">Option 4 *</label>
+              <input id="visOpt3_${id}" placeholder="Option D text or image URL">
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label for="visCorrect_${id}">Correct Option</label>
+              <select id="visCorrect_${id}">
+                <option value="0">Option 1 (A)</option>
+                <option value="1">Option 2 (B)</option>
+                <option value="2">Option 3 (C)</option>
+                <option value="3">Option 4 (D)</option>
+              </select>
+            </div>
+            <div>
+              <label for="visExp_${id}">Explanation (Optional)</label>
+              <input id="visExp_${id}" placeholder="Explanation...">
+            </div>
+          </div>
+
+          <button type="button" class="accent" style="width:100%;margin-top:14px;padding:12px" onclick="addVisualQuestionToSubject(${id})">➕ Add Visual Question to JSON</button>
+        </div>
+
+        <label for="subJson_${id}">Questions JSON Array *</label>
+        <textarea id="subJson_${id}" class="mock-sub-json" style="font-family:var(--font-mono);min-height:160px;font-size:12.5px" placeholder="[]"></textarea>
+      `;
+
+      document.getElementById("mockupSubjectsContainer").appendChild(div);
+    }
+
+    function addVisualQuestionToSubject(id) {
+      const qText = document.getElementById(`visQText_${id}`).value.trim();
+      const qImg = document.getElementById(`visQImg_${id}`).value.trim();
+      const opt0 = document.getElementById(`visOpt0_${id}`).value.trim();
+      const opt1 = document.getElementById(`visOpt1_${id}`).value.trim();
+      const opt2 = document.getElementById(`visOpt2_${id}`).value.trim();
+      const opt3 = document.getElementById(`visOpt3_${id}`).value.trim();
+      const correct = parseInt(document.getElementById(`visCorrect_${id}`).value) || 0;
+      const exp = document.getElementById(`visExp_${id}`).value.trim();
+
+      if(!qText || !opt0 || !opt1) {
+        alert("Please enter question text and at least Options 1 & 2!");
+        return;
+      }
+
+      const jsonTextarea = document.getElementById(`subJson_${id}`);
+      let qList = [];
+      try {
+        if(jsonTextarea.value.trim()) {
+          qList = JSON.parse(jsonTextarea.value.trim());
+        }
+      } catch(e) { qList = []; }
+
+      if(!Array.isArray(qList)) qList = [];
+
+      const newQ = {
+        id: "q" + Date.now(),
+        question_text: qText,
+        options: [opt0, opt1, opt2 || "", opt3 || ""],
+        correct_option_index: correct
+      };
+      if(qImg) newQ.image_url = qImg;
+      if(exp) newQ.e = exp;
+
+      qList.push(newQ);
+      jsonTextarea.value = JSON.stringify(qList, null, 2);
+
+      // Clear visual question inputs
+      document.getElementById(`visQText_${id}`).value = "";
+      document.getElementById(`visQImg_${id}`).value = "";
+      document.getElementById(`visOpt0_${id}`).value = "";
+      document.getElementById(`visOpt1_${id}`).value = "";
+      document.getElementById(`visOpt2_${id}`).value = "";
+      document.getElementById(`visOpt3_${id}`).value = "";
+      document.getElementById(`visExp_${id}`).value = "";
+
+      showToast(`Question added to Subject #${id} JSON!`, "success");
+    }
+
+    function loadMockupSubcategories() {
+      const catId = document.getElementById("mCategory").value;
+      const subSel = document.getElementById("mSubcategory");
+
+      let filtered = examSubcategories;
+      if (catId) {
+        filtered = examSubcategories.filter(x => String(x.exam_id) === String(catId) || String(x.category_id) === String(catId));
+      }
+
+      if (filtered && filtered.length > 0) {
+        subSel.innerHTML = '<option value="">Select Subcategory</option>' +
+          filtered.map(x => `<option value="${x.id}">${escapeHtml(x.title)}</option>`).join('');
+      } else {
+        subSel.innerHTML = '<option value="">No subcategory available</option>';
+      }
+    }
+
+    async function saveMockupTest() {
+      const title = document.getElementById("mTitle").value.trim();
+      const catVal = document.getElementById("mCategory").value;
+      const subCatVal = document.getElementById("mSubcategory").value;
+      const duration = parseInt(document.getElementById("mDuration").value) || 60;
+      const correct_marks = parseFloat(document.getElementById("mCorrectMarks").value) || 1.0;
+      const negative_marking = parseFloat(document.getElementById("mNegMarking").value) || 0.25;
+      const total_marks = parseFloat(document.getElementById("mTotalMarks").value) || null;
+      const description = document.getElementById("mDesc").value.trim();
+      const is_featured = document.getElementById("mFeatured").checked;
+
+      if(!title) { alert("Mockup Title required!"); return; }
+
+      const category_id = catVal ? parseInt(catVal) : null;
+      const subcategory_id = subCatVal ? parseInt(subCatVal) : null;
+
+      const subjectsArray = [];
+      document.querySelectorAll("#mockupSubjectsContainer .item-card").forEach(card => {
+        const subName = card.querySelector(".mock-sub-name").value.trim();
+        const subTimer = parseInt(card.querySelector(".mock-sub-timer").value) || 20;
+        const qRaw = card.querySelector(".mock-sub-json").value.trim();
+        let qList = [];
+        try { qList = JSON.parse(qRaw); } catch(e) {}
+        subjectsArray.push({
+          subject_name: subName,
+          timer: subTimer,
+          questions_json: qList
+        });
+      });
+
+      const questionsJsonObject = {
+        test_type: currentMockupType,
+        is_subject_timer_enabled: (currentMockupType === "type2"),
+        correct_marks,
+        negative_marking,
+        total_marks,
+        subjects: subjectsArray
+      };
+
+      const payload = {
+        title, description, duration,
+        category_id,
+        subcategory_id,
+        is_featured,
+        questions_json: questionsJsonObject,
+        subjects: subjectsArray
+      };
+
+      const { error } = await supabaseClient.from("mockup_tests").insert(payload);
+      if(error) alert("Error: " + error.message);
+      else {
+        showToast("Mockup Test Saved & Published!", "success");
+        document.getElementById("mTitle").value = "";
+        document.getElementById("mDesc").value = "";
+        document.getElementById("mockupSubjectsContainer").innerHTML = "";
+        addMockupSubjectCard("Mathematics");
+        loadMockupsData();
+      }
+    }
+
+    async function loadMockupsData() {
+      if(document.getElementById("mockupSubjectsContainer").children.length === 0) {
+        addMockupSubjectCard("Mathematics");
+      }
+      const { data } = await supabaseClient.from("mockup_tests").select("*").order("id", { ascending: false });
+      mockupTests = data || [];
+
+      const qSel = document.getElementById("quickMockupSelect");
+      qSel.innerHTML = '<option value="">Select Target Mockup</option>' +
+        mockupTests.map(m => `<option value="${m.id}">${escapeHtml(m.title)}</option>`).join('');
+
+      const box = document.getElementById("mockupsListContainer");
+      if(!mockupTests.length) { box.innerHTML = "No mockup tests found."; return; }
+
+      box.innerHTML = '<div class="table-container"><table><thead><tr><th>ID</th><th>Title</th><th>Timer Mode</th><th>Duration</th><th>Featured</th><th>Actions</th></tr></thead><tbody>' +
+        mockupTests.map(m => `<tr>
+          <td>${m.id}</td>
+          <td><b>${escapeHtml(m.title)}</b></td>
+          <td><span class="badge">${m.is_subject_timer_enabled ? '⏱️ Subject Timed' : '🌐 Universal'}</span></td>
+          <td>⏱️ ${m.duration || 60} mins</td>
+          <td>${m.is_featured ? '<span class="badge badge-gold">⭐ Featured</span>' : 'Standard'}</td>
+          <td><button class="danger" onclick="deleteItem('mockup_tests', ${m.id})" style="padding:4px 8px;font-size:11px">Delete</button></td>
+        </tr>`).join('') + '</tbody></table></div>';
+    }
+
+    function updateQuickSubjects() {
+      const id = document.getElementById("quickMockupSelect").value;
+      const m = mockupTests.find(x => String(x.id) === String(id));
+      const subSel = document.getElementById("quickSubjectSelect");
+
+      if(!m || !m.questions_json || !Array.isArray(m.questions_json.subjects)) {
+        subSel.innerHTML = '<option value="0">General Subject Section</option>';
+        return;
+      }
+
+      subSel.innerHTML = m.questions_json.subjects.map((s, idx) => `<option value="${idx}">${escapeHtml(s.subject_name || 'Subject ' + (idx+1))}</option>`).join('');
+    }
+
+    async function submitQuickQuestion() {
+      const mockupId = document.getElementById("quickMockupSelect").value;
+      const subIdx = parseInt(document.getElementById("quickSubjectSelect").value) || 0;
+      const qText = document.getElementById("quickQText").value.trim();
+      const qImg = document.getElementById("quickQImg").value.trim();
+      const opt0 = document.getElementById("quickOpt0").value.trim();
+      const opt1 = document.getElementById("quickOpt1").value.trim();
+      const opt2 = document.getElementById("quickOpt2").value.trim();
+      const opt3 = document.getElementById("quickOpt3").value.trim();
+      const correct = parseInt(document.getElementById("quickCorrect").value) || 0;
+      const exp = document.getElementById("quickExp").value.trim();
+
+      if(!mockupId || !qText || !opt0 || !opt1) { alert("Please complete required question fields!"); return; }
+
+      const m = mockupTests.find(x => String(x.id) === String(mockupId));
+      let qJson = m.questions_json || { subjects: [{ subject_name: "General", questions_json: [] }] };
+      if(typeof qJson === "string") { try { qJson = JSON.parse(qJson); } catch {} }
+
+      const newQ = {
+        id: "q" + Date.now(),
+        question_text: qText,
+        options: [opt0, opt1, opt2, opt3],
+        correct_option_index: correct
+      };
+      if(qImg) newQ.image_url = qImg;
+      if(exp) newQ.e = exp;
+
+      if(!Array.isArray(qJson.subjects)) qJson.subjects = [{ subject_name: "General", questions_json: [] }];
+      if(!qJson.subjects[subIdx]) qJson.subjects[subIdx] = { subject_name: "Section", questions_json: [] };
+      if(!Array.isArray(qJson.subjects[subIdx].questions_json)) qJson.subjects[subIdx].questions_json = [];
+
+      qJson.subjects[subIdx].questions_json.push(newQ);
+
+      const { error } = await supabaseClient.from("mockup_tests").update({
+        questions_json: qJson,
+        subjects: qJson.subjects
+      }).eq("id", mockupId);
+
+      if(error) alert("Error: " + error.message);
+      else {
+        showToast("Question added to Mockup Test!", "success");
+        document.getElementById("quickQText").value = "";
+        document.getElementById("quickOpt0").value = "";
+        document.getElementById("quickOpt1").value = "";
+        document.getElementById("quickOpt2").value = "";
+        document.getElementById("quickOpt3").value = "";
+        loadMockupsData();
+      }
+    }
+
+    // ==========================================
+    // 4. CHAPTER TESTS
+    // ==========================================
+    function loadTestSubjects() {
+      const catId = document.getElementById("testCatSelect").value;
+      const filtered = subjects.filter(x => String(x.category_id) === String(catId));
+      document.getElementById("testSubSelect").innerHTML = '<option value="">Select Subject</option>' +
+        filtered.map(x => `<option value="${x.id}">${escapeHtml(x.name)}</option>`).join('');
+    }
+
+    function loadTestChapters() {
+      const subId = document.getElementById("testSubSelect").value;
+      const filtered = chapters.filter(x => String(x.subject_id) === String(subId));
+      document.getElementById("testChapSelect").innerHTML = '<option value="">Select Chapter</option>' +
+        filtered.map(x => `<option value="${x.id}">${escapeHtml(x.name)}</option>`).join('');
+    }
+
+    function loadTestTopics() {
+      const chapId = document.getElementById("testChapSelect").value;
+      const filtered = topics.filter(x => String(x.chapter_id) === String(chapId));
+      document.getElementById("testTopicSelect").innerHTML = '<option value="">Select Topic</option>' +
+        filtered.map(x => `<option value="${x.id}">${escapeHtml(x.name)}</option>`).join('');
+    }
+
+    async function saveTest() {
+      const category_id = document.getElementById("testCatSelect").value;
+      const topic_id = document.getElementById("testTopicSelect").value;
+      const title = document.getElementById("testTitle").value.trim();
+      const duration = parseInt(document.getElementById("testDuration").value) || 15;
+      const correct_marks = parseFloat(document.getElementById("testCorrectMarks").value) || 1.0;
+      const negative_marking = parseFloat(document.getElementById("testNegMarking").value) || 0.25;
+      const description = document.getElementById("testDesc").value.trim();
+      const qRaw = document.getElementById("testJsonInput").value.trim();
+
+      if(!title) { alert("Test Title required!"); return; }
+      let qList = [];
+      try { qList = JSON.parse(qRaw); } catch(e) {}
+
+      const payload = {
+        category_id: category_id ? parseInt(category_id) : null,
+        topic_id: topic_id ? parseInt(topic_id) : null,
+        title, description, duration, correct_marks, negative_marking,
+        questions_json: JSON.stringify(qList)
+      };
+
+      const { error } = await supabaseClient.from("tests").insert(payload);
+      if(error) alert("Error: " + error.message);
+      else { showToast("Practice Test saved!", "success"); loadTestsData(); }
+    }
+
+    async function loadTestsData() {
+      const box = document.getElementById("testsListContainer");
+      const { data } = await supabaseClient.from("tests").select("*").order("id", { ascending: false });
+      if(!data || !data.length) { box.innerHTML = "No tests found."; return; }
+
+      box.innerHTML = '<div class="table-container"><table><thead><tr><th>ID</th><th>Title</th><th>Duration</th><th>Actions</th></tr></thead><tbody>' +
+        data.map(t => `<tr>
+          <td>${t.id}</td>
+          <td><b>${escapeHtml(t.title)}</b></td>
+          <td>⏱️ ${t.duration} mins</td>
+          <td><button class="danger" onclick="deleteItem('tests', ${t.id})" style="padding:4px 8px;font-size:11px">Delete</button></td>
+        </tr>`).join('') + '</tbody></table></div>';
+    }
+
+    // ==========================================
+    // 5. PDF NOTES
+    // ==========================================
+    async function saveNote() {
+      const title = document.getElementById("noteTitle").value.trim();
+      const fileInput = document.getElementById("notePdfFile");
+      let pdf_url = document.getElementById("notePdfUrl").value.trim();
+      const description = document.getElementById("noteDesc").value.trim();
+
+      if(!title) { alert("Note title required!"); return; }
+
+      if(fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const path = "notes_" + Date.now() + ".pdf";
+        showToast("Uploading PDF to Storage...", "info");
+        const { error: upErr } = await supabaseClient.storage.from("notes").upload(path, file, { contentType: "application/pdf" });
+        if(upErr) { alert("Storage Error: " + upErr.message); return; }
+        const { data: urlData } = supabaseClient.storage.from("notes").getPublicUrl(path);
+        pdf_url = urlData.publicUrl;
+      }
+
+      if(!pdf_url) { alert("Please attach a PDF file or URL."); return; }
+
+      const { error } = await supabaseClient.from("notes").insert({ title, description, pdf_url });
+      if(error) alert("Error: " + error.message);
+      else { showToast("Note document saved!", "success"); loadNotesData(); }
+    }
+
+    async function loadNotesData() {
+      const box = document.getElementById("notesListContainer");
+      const { data } = await supabaseClient.from("notes").select("*").order("id", { ascending: false });
+      if(!data || !data.length) { box.innerHTML = "No notes found."; return; }
+
+      box.innerHTML = '<div class="table-container"><table><thead><tr><th>ID</th><th>Title</th><th>PDF Document</th><th>Actions</th></tr></thead><tbody>' +
+        data.map(n => `<tr>
+          <td>${n.id}</td>
+          <td><b>${escapeHtml(n.title)}</b></td>
+          <td><a href="${n.pdf_url}" target="_blank" style="color:var(--primary);font-weight:600">📄 Open PDF</a></td>
+          <td><button class="danger" onclick="deleteItem('notes', ${n.id})" style="padding:4px 8px;font-size:11px">Delete</button></td>
+        </tr>`).join('') + '</tbody></table></div>';
+    }
+
+    // ==========================================
+    // 6. REPORTED QUESTIONS
+    // ==========================================
+    async function loadReportsData() {
+      const box = document.getElementById("reportsListContainer");
+      const { data } = await supabaseClient.from("report_question").select("*").order("created_at", { ascending: false });
+      if(!data || !data.length) { box.innerHTML = "No reported questions logs."; return; }
+
+      box.innerHTML = '<div class="table-container"><table><thead><tr><th>ID</th><th>User</th><th>Question Details</th><th>Issue Description</th><th>Actions</th></tr></thead><tbody>' +
+        data.map(r => `<tr>
+          <td>${r.id}</td>
+          <td>${escapeHtml(r.user_email || r.user_id || 'User')}</td>
+          <td>${escapeHtml(r.question_text || r.test_title || 'Question')}</td>
+          <td><span class="badge badge-danger">${escapeHtml(r.report_reason || r.issue || 'Reported')}</span></td>
+          <td><button class="danger" onclick="deleteItem('report_question', ${r.id})" style="padding:4px 8px;font-size:11px">Resolve & Delete</button></td>
+        </tr>`).join('') + '</tbody></table></div>';
+    }
+
+    // ==========================================
+    // 7. USER FEEDBACKS
+    // ==========================================
+    async function loadFeedbacksData() {
+      const box = document.getElementById("feedbacksListContainer");
+      const { data } = await supabaseClient.from("app_feedback").select("*").order("created_at", { ascending: false });
+      if(!data || !data.length) { box.innerHTML = "No user feedbacks found."; return; }
+
+      box.innerHTML = '<div class="table-container"><table><thead><tr><th>ID</th><th>User</th><th>Rating</th><th>Feedback</th><th>Actions</th></tr></thead><tbody>' +
+        data.map(f => `<tr>
+          <td>${f.id}</td>
+          <td>${escapeHtml(f.user_email || 'User')}</td>
+          <td><span class="badge badge-gold">⭐ ${f.rating}/5</span></td>
+          <td>${escapeHtml(f.feedback || 'No comment')}</td>
+          <td><button class="danger" onclick="deleteItem('app_feedback', ${f.id})" style="padding:4px 8px;font-size:11px">Delete</button></td>
+        </tr>`).join('') + '</tbody></table></div>';
+    }
+
+    // ==========================================
+    // 8. IMGBB MEDIA UPLOADER
+    // ==========================================
+    async function uploadImgBB() {
+      const key = document.getElementById("imgbbKey").value.trim();
+      const fileInput = document.getElementById("imgbbFile");
+      const resBox = document.getElementById("imgbbResult");
+
+      if(!fileInput.files.length) { alert("Select an image file."); return; }
+      const file = fileInput.files[0];
+      const formData = new FormData();
+      formData.append("image", file);
+
+      resBox.innerHTML = "Uploading to ImgBB...";
+      try {
+        const res = await fetch(`https://api.imgbb.com/1/upload?key=${key}`, {
+          method: "POST",
+          body: formData
+        });
+        const json = await res.json();
+        if(json.success) {
+          const url = json.data.url;
+          resBox.innerHTML = `<div style="background:var(--bg-card-sub);padding:12px;border-radius:8px">
+            <span class="badge badge-success">✅ Upload Success!</span><br>
+            <input value="${url}" readonly onclick="this.select()" style="margin-top:8px">
+            <img src="${url}" style="max-width:150px;margin-top:8px;border-radius:6px;display:block">
+          </div>`;
+        } else {
+          resBox.innerHTML = "❌ Error: " + json.error.message;
+        }
+      } catch(e) {
+        resBox.innerHTML = "❌ Upload failed: " + e.message;
+      }
+    }
+
+    // UTILS
+    function escapeHtml(str) {
+      if(!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+  </script>
+</body>
+</html>
