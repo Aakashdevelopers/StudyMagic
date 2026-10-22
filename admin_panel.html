@@ -1520,6 +1520,7 @@ async function checkAdminAuthState() {
 }
 
 let categories = [];
+let mockExams = [];
 let mockSubcategories = [];
 let subjects = [];
 let chapters = [];
@@ -2214,14 +2215,17 @@ async function saveCategoryDetails(id) {
 ===================================================== */
 async function loadMockExamsForAdmin(){
   const sel = document.getElementById("mockExamTypeSelect");
-  if(!sel) return;
   try {
     const { data, error } = await supabaseClient.from("mock_exams").select("*").order("id", { ascending: true });
     if(!error && data) {
-      sel.innerHTML = '<option value="">Select Mock Exam Category (Table 1)</option>';
-      data.forEach(e => {
-        sel.innerHTML += `<option value="${e.id}">${esc(e.title)}</option>`;
-      });
+      mockExams = data;
+      fillCategorySelects();
+      if(sel) {
+        sel.innerHTML = '<option value="">Select Mock Exam Category (Table 1)</option>';
+        data.forEach(e => {
+          sel.innerHTML += `<option value="${e.id}">${esc(e.title || e.name)}</option>`;
+        });
+      }
     }
   } catch(e) {
     console.error("Error loading mock_exams:", e);
@@ -2514,6 +2518,10 @@ function generateCategoryOptions(selectedId) {
     h += `<option value="${c.id}" ${sel}>${esc(c.name)}</option>`;
   });
   return h;
+}
+
+function generateMockExamOptions(selectedId) {
+  return generateCategoryOptions(selectedId);
 }
 
 function generateSubcategoryOptions(selectedId, filterMainCatId) {
@@ -3282,7 +3290,7 @@ async function loadAllStructure(){
   if(s) { s.className = ""; s.innerText = "Loading structure & exam types..."; }
 
   const [c, sub, ch, t, msc] = await Promise.all([
-    supabaseClient.from("categories").select("id, name, icon_url").order("name"),
+    supabaseClient.from("categories").select("*").order("name"),
     supabaseClient.from("subjects").select("*").order("name"),
     supabaseClient.from("chapters").select("*").order("name"),
     supabaseClient.from("topics").select("*").order("name"),
@@ -3301,6 +3309,20 @@ async function loadAllStructure(){
   topics = t.data || [];
   mockSubcategories = (msc && !msc.error && msc.data) ? msc.data : [];
 
+  // Auto-sync categories to mock_exams to satisfy mock_subcategories_category_id_fkey
+  if (categories.length > 0) {
+    try {
+      const syncRows = categories.map(cat => ({
+        id: cat.id,
+        title: cat.name || cat.title || "Category " + cat.id,
+        icon_url: cat.icon_url || null
+      }));
+      await supabaseClient.from("mock_exams").upsert(syncRows, { onConflict: "id" });
+    } catch(e) {
+      console.warn("Categories sync to mock_exams warning:", e);
+    }
+  }
+
   fillCategorySelects();
   fillSubjectSelects();
   fillChapterSelects();
@@ -3315,9 +3337,12 @@ function fillCategorySelects(){
     const el = document.getElementById(id);
     if(!el) return;
     const current = el.value;
-    const defaultLabel = id === "mockupMainCategory" ? "All Categories" : "Select category";
+    const defaultLabel = (id === "mockupMainCategory") ? "All Categories" : "Select category *";
     el.innerHTML = `<option value="">${defaultLabel}</option>`;
-    categories.forEach(x => addOption(el, x.id, x.name));
+    categories.forEach(x => {
+      const label = x.name || x.title;
+      addOption(el, x.id, label);
+    });
     if(current) el.value = current;
   });
 
@@ -3403,8 +3428,22 @@ async function addSubcategory(){
 
   showMsg(msg, "Saving Subcategory...", "info");
 
+  const catIdNum = parseInt(category_id);
+  const selectedCat = categories.find(c => String(c.id) === String(category_id));
+  const catName = selectedCat ? (selectedCat.name || selectedCat.title) : "Category " + catIdNum;
+
+  try {
+    await supabaseClient.from("mock_exams").upsert({
+      id: catIdNum,
+      title: catName,
+      icon_url: selectedCat ? selectedCat.icon_url : null
+    }, { onConflict: "id" });
+  } catch(e) {
+    console.warn("Sync to mock_exams warning:", e);
+  }
+
   const { error } = await supabaseClient.from("mock_subcategories").insert({
-    category_id: parseInt(category_id),
+    category_id: catIdNum,
     title: title
   });
 
@@ -3469,7 +3508,7 @@ function renderStructureLists(){
     subcatList.innerHTML = "";
     if(!mockSubcategories.length) subcatList.innerHTML = '<div class="empty">No subcategories found.</div>';
     mockSubcategories.forEach(sc => {
-      const cat = categories.find(c => String(c.id) === String(sc.category_id));
+      const cat = mockExams.find(e => String(e.id) === String(sc.category_id)) || categories.find(c => String(c.id) === String(sc.category_id));
       const d = document.createElement("div");
       d.className = "item";
       d.innerHTML = `
@@ -3477,7 +3516,7 @@ function renderStructureLists(){
         <div>
           <div class="item-title" style="margin:0">${esc(sc.title || sc.name || "")}</div>
           <div class="meta" style="margin-top:4px">
-            <span class="badge badge-purple">📂 ${esc(cat ? cat.name : "Cat ID: " + sc.category_id)}</span>
+            <span class="badge badge-purple">📂 ${esc(cat ? (cat.title || cat.name) : "Cat ID: " + sc.category_id)}</span>
             <span class="badge">ID: ${sc.id}</span>
           </div>
         </div>
@@ -3604,8 +3643,22 @@ async function saveSubcategoryDetails(id) {
   if(!categoryId) { alert("Please select a category."); return; }
   if(!title) { alert("Subcategory title is required."); return; }
 
+  const catIdNum = parseInt(categoryId);
+  const selectedCat = categories.find(c => String(c.id) === String(categoryId));
+  const catName = selectedCat ? (selectedCat.name || selectedCat.title) : "Category " + catIdNum;
+
+  try {
+    await supabaseClient.from("mock_exams").upsert({
+      id: catIdNum,
+      title: catName,
+      icon_url: selectedCat ? selectedCat.icon_url : null
+    }, { onConflict: "id" });
+  } catch(e) {
+    console.warn("Sync to mock_exams warning:", e);
+  }
+
   const { error } = await supabaseClient.from("mock_subcategories").update({
-    category_id: parseInt(categoryId),
+    category_id: catIdNum,
     title: title
   }).eq("id", id);
 
