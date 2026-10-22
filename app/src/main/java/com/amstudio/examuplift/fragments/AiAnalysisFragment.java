@@ -221,13 +221,20 @@ public class AiAnalysisFragment extends Fragment {
                     "नीचे दिए गए परीक्षा परिणाम और **प्रत्येक प्रश्न (Each & Every Question)** का अत्यंत गहरा और विस्तृत विश्लेषण करें:\n\n" +
                     performanceData + "\n\n" +
                     "🎯 **मुख्य निर्देश (STRICT INSTRUCTIONS)**:\n" +
-                    "1. आपको ऊपर दिए गए **प्रत्येक प्रश्न (Q1, Q2, Q3...) का एक-एक करके (Question-by-Question)** गहरा विश्लेषण प्रदान करना है।\n" +
-                    "2. **सही उत्तरित प्रश्न (Correct)**, **गलत उत्तरित प्रश्न (Incorrect)** और **छूटे हुए प्रश्न (Skipped)** - तीनों श्रेणियों को सरल और स्पष्ट शब्दों में समझाएं।\n" +
-                    "3. **प्रत्येक प्रश्न के लिए एक 'स्मार्ट ट्रिक / याद रखने की ट्रिक / शॉर्टकट' (Smart Trick / Memory Rule / Shortcut)** अवश्य दें ताकि छात्र परीक्षा में उसे आसानी से याद रख सके या तेजी से हल कर सके।\n\n" +
+                    "1. आपको छात्र के प्रदर्शन के आधार पर **मजबूत विषय (Strong Topics)** और **कमजोर विषय (Weak Topics)** की स्पष्ट सूची प्रदान करनी है।\n" +
+                    "2. आपको ऊपर दिए गए **प्रत्येक प्रश्न (Q1, Q2, Q3...) का एक-एक करके (Question-by-Question)** गहरा विश्लेषण प्रदान करना है।\n" +
+                    "3. **सही उत्तरित प्रश्न (Correct)**, **गलत उत्तरित प्रश्न (Incorrect)** और **छूटे हुए प्रश्न (Skipped)** - तीनों श्रेणियों को सरल और स्पष्ट शब्दों में समझाएं।\n" +
+                    "4. **प्रत्येक प्रश्न के लिए एक 'स्मार्ट ट्रिक / याद रखने की ट्रिक / शॉर्टकट' (Smart Trick / Memory Rule / Shortcut)** अवश्य दें ताकि छात्र परीक्षा में उसे आसानी से याद रख सके या तेजी से हल कर सके।\n\n" +
                     "STRICTLY निम्नलिखित Markdown प्रारूप में उत्तर प्रस्तुत करें:\n\n" +
                     "### 📊 Overall Performance & Deep Summary\n" +
                     "• **स्कोर**: " + correct + "/" + total + " (सटीकता: " + accuracy + "%) - " + testTitle + "\n" +
                     "• छात्र के समग्र प्रदर्शन का विस्तृत व प्रेरणादायक मूल्यांकन।\n\n" +
+                    "### 🟢 Strong Topics & Mastery Areas (मजबूत विषय)\n" +
+                    "• सही उत्तर दिए गए प्रश्नों के आधार पर 3 से 6 मुख्य मजबूत विषयों/अवधारणाओं की स्पष्ट बुलेट पॉइंट सूची दें जिनमें छात्र ने अच्छा प्रदर्शन किया।\n" +
+                    "• इन विषयों में मजबूती का कारण बताएं।\n\n" +
+                    "### 🔴 Weak Topics & Focus Areas (कमजोर विषय)\n" +
+                    "• गलत (Incorrect) तथा छूटे (Skipped) प्रश्नों से पहचाने गए कमजोर विषयों/फॉर्मूलों की स्पष्ट बुलेट पॉइंट सूची दें।\n" +
+                    "• प्रत्येक कमजोर विषय के पुनरीक्षण के लिए सटीक रणनीति बताएं।\n\n" +
                     "### 📝 Question-by-Question Deep Analysis & Tricks (प्रत्येक प्रश्न का विस्तृत विश्लेषण व ट्रिक्स)\n\n" +
                     "नीचे टेस्ट के सभी प्रश्नों (Q1 से Q" + total + ") का क्रमवार गहन विश्लेषण है:\n\n" +
                     "#### Q1: [प्रश्न की मुख्य पंक्ति] - [🟢 CORRECT / 🔴 INCORRECT / ⚪ SKIPPED]\n" +
@@ -236,23 +243,28 @@ public class AiAnalysisFragment extends Fragment {
                     "• **गहन व्याख्या व अवधारणा (Deep Concept)**: सही उत्तर क्यों सही है और गलत उत्तर क्यों गलत था/क्या भ्रम हुआ था, इसे सरल शब्दों में गहराई से समझाएं।\n" +
                     "• **💡 स्मार्ट ट्रिक / याद रखने का तरीका (Smart Trick & Shortcut)**: इस प्रश्न या अवधारणा को याद रखने/हल करने की एक आसान ट्रिक, निमोनिक, शॉर्टकट या नियम दें।\n\n" +
                     "(इसी प्रारूप में सभी प्रश्नों Q1, Q2, Q3... Q" + total + " का विश्लेषण करें)\n\n" +
-                    "### 🔴 Weak Topics & Revision Strategy\n" +
-                    "• गलत और छूटे प्रश्नों से पहचाने गए कमजोर विषयों की सूची और उनके पुनरीक्षण के लिए स्पष्ट कदम।\n\n" +
                     "### ⚡ Exam Shortcuts & Time Saving Tips\n" +
                     "1. अगले प्रयास में समय बचाने और सिली मिस्टेक्स रोकने के लिए व्यावहारिक सुझाव।\n\n" +
                     "नोट: उत्तर हिंदी भाषा में दें (अनुभाग शीर्षक अंग्रेजी में रखें)।";
         } else {
             prompt = "You are an expert Educational Mentor & AI Smart Analyst for Exam Uplift.\n" +
-                    "Analyze the following test result and conduct a DEEP QUESTION-BY-QUESTION ANALYSIS for all questions:\n\n" +
+                    "Analyze the following test result and conduct a DEEP ANALYSIS with Strong & Weak Topic Lists and itemized questions:\n\n" +
                     performanceData + "\n\n" +
                     "🎯 **CRITICAL INSTRUCTIONS**:\n" +
-                    "1. You MUST provide a **Question-by-Question breakdown for EVERY SINGLE QUESTION (Q1, Q2, Q3...)** in the test.\n" +
-                    "2. Thoroughly explain **Correct, Incorrect, AND Skipped questions** - why the correct option is right and why misconceptions occurred for wrong answers.\n" +
-                    "3. For **EVERY question**, provide a **SMART TRICK / MEMORY MNEMONIC / SOLVING SHORTCUT (💡 Smart Trick)** so the student can easily memorize or solve similar questions quickly in future exams.\n\n" +
+                    "1. You MUST list **Strong Topics & Mastery Areas** and **Weak Topics & Focus Areas** clearly with bullet points.\n" +
+                    "2. You MUST provide a **Question-by-Question breakdown for EVERY SINGLE QUESTION (Q1, Q2, Q3...)** in the test.\n" +
+                    "3. Thoroughly explain **Correct, Incorrect, AND Skipped questions** - why the correct option is right and why misconceptions occurred for wrong answers.\n" +
+                    "4. For **EVERY question**, provide a **SMART TRICK / MEMORY MNEMONIC / SOLVING SHORTCUT (💡 Smart Trick)** so the student can easily memorize or solve similar questions quickly in future exams.\n\n" +
                     "Format the output strictly in Markdown using this structure:\n\n" +
                     "### 📊 Overall Performance & Deep Summary\n" +
                     "• **Score**: " + correct + "/" + total + " (" + accuracy + "% Accuracy) in " + testTitle + ".\n" +
                     "• Comprehensive performance evaluation and encouraging mentor insights.\n\n" +
+                    "### 🟢 Strong Topics & Mastery Areas\n" +
+                    "• Bullet list of 3 to 6 specific topics or concepts the student mastered based on correct answers.\n" +
+                    "• Brief reason why these areas are strong.\n\n" +
+                    "### 🔴 Weak Topics & Focus Areas\n" +
+                    "• Bullet list of weak concepts, formulas, or question types derived from wrong/skipped questions.\n" +
+                    "• Actionable steps to strengthen these areas.\n\n" +
                     "### 📝 Question-by-Question Deep Analysis & Tricks\n\n" +
                     "Below is the itemized analysis for all questions (Q1 to Q" + total + "):\n\n" +
                     "#### Q1: [Short Question Title] - [🟢 CORRECT / 🔴 INCORRECT / ⚪ SKIPPED]\n" +
@@ -261,8 +273,6 @@ public class AiAnalysisFragment extends Fragment {
                     "• **Deep Concept & Explanation**: Explain why the correct option is right and why wrong/skipped options happened.\n" +
                     "• **💡 Smart Trick & Memory Mnemonic**: A practical shortcut, formula rule, memory trick, or mnemonic to solve/remember this question quickly.\n\n" +
                     "(Repeat for ALL questions Q1, Q2, Q3... Q" + total + ")\n\n" +
-                    "### 🔴 Weak Topics & Revision Strategy\n" +
-                    "• Specific weak concepts derived from wrong/skipped questions and how to revise them effectively.\n\n" +
                     "### ⚡ Exam Shortcuts & Time Saving Tips\n" +
                     "1. Proven exam strategies to boost accuracy and save time in future tests.";
         }
@@ -405,6 +415,37 @@ public class AiAnalysisFragment extends Fragment {
         }
     }
 
+    private List<String> extractTopicSnippets(List<Question> questions, boolean isCorrectTarget, String language, int maxCount) {
+        List<String> topics = new ArrayList<>();
+        if (questions == null) return topics;
+
+        for (Question q : questions) {
+            if (q == null) continue;
+            Integer selected = q.getSelectedOptionIndex();
+            boolean isCorrect = selected != null && Objects.equals(selected, q.getCorrectOptionIndex());
+
+            if (isCorrect == isCorrectTarget) {
+                String qTxt = q.getQuestionTextForLanguage(language);
+                if (qTxt == null || qTxt.trim().isEmpty()) {
+                    qTxt = q.getQuestionText() != null ? q.getQuestionText() : "";
+                }
+                qTxt = qTxt.replaceAll("<[^>]*>", "").trim();
+
+                if (!qTxt.isEmpty()) {
+                    int endIdx = qTxt.indexOf('?');
+                    if (endIdx != -1 && endIdx < 70) {
+                        qTxt = qTxt.substring(0, endIdx + 1);
+                    } else if (qTxt.length() > 70) {
+                        qTxt = qTxt.substring(0, 70) + "...";
+                    }
+                    topics.add(qTxt);
+                    if (topics.size() >= maxCount) break;
+                }
+            }
+        }
+        return topics;
+    }
+
     private void renderLocalAIPerformanceReport(Test test, int correct, int total, String language) {
         if (aiLoading != null) aiLoading.setVisibility(View.GONE);
 
@@ -414,6 +455,8 @@ public class AiAnalysisFragment extends Fragment {
         String testTitle = (test != null && test.getTitle() != null && !test.getTitle().isEmpty()) ? test.getTitle() : "Practice Assessment";
 
         List<Question> questions = (test != null && test.getQuestions() != null) ? test.getQuestions() : new ArrayList<>();
+        List<String> strongSnippets = extractTopicSnippets(questions, true, language, 6);
+        List<String> weakSnippets = extractTopicSnippets(questions, false, language, 6);
 
         StringBuilder report = new StringBuilder();
 
@@ -425,10 +468,36 @@ public class AiAnalysisFragment extends Fragment {
             if (accuracy >= 80) {
                 report.append("🌟 **उत्कृष्ट प्रदर्शन!** आपकी अवधारणाएँ अत्यंत स्पष्ट हैं।\n\n");
             } else if (accuracy >= 50) {
-                report.append("👍 **अच्छा प्रयास!** बुनियादी पकड़ अच्छी है, प्रत्येक प्रश्न के ट्रिक्स से स्कोर और बढ़ेगा।\n\n");
+                report.append("👍 **अच्छा प्रयास!** बुनियादी पकड़ अच्छी है, कमजोर विषयों के पुनरीक्षण से स्कोर और बढ़ेगा।\n\n");
             } else {
-                report.append("🎯 **सुधार की आवश्यकता!** नीचे दिए गए एक-एक प्रश्न के गहन विश्लेषण व ट्रिक्स का अध्ययन करें।\n\n");
+                report.append("🎯 **सुधार की आवश्यकता!** नीचे दिए गए मजबूत/कमजोर विषयों व प्रश्नों का ध्यानपूर्वक अध्ययन करें।\n\n");
             }
+
+            report.append("### 🟢 Strong Topics & Mastery Areas (मजबूत विषय)\n");
+            if (!strongSnippets.isEmpty()) {
+                report.append("आपने **").append(correct).append("** प्रश्नों का सही उत्तर देकर निम्नलिखित क्षेत्रों में मजबूत पकड़ दिखाई:\n");
+                for (String snippet : strongSnippets) {
+                    report.append("• **मजबूत पकड़**: ").append(snippet).append("\n");
+                }
+            } else if (correct > 0) {
+                report.append("• आपने **").append(correct).append("** प्रश्नों का सफलता पूर्वक उत्तर दिया।\n");
+            } else {
+                report.append("• बुनियादी सिद्धांतों के पुनः अध्ययन से शुरुआत करें।\n");
+            }
+            report.append("\n");
+
+            report.append("### 🔴 Weak Topics & Focus Areas (कमजोर विषय)\n");
+            if (!weakSnippets.isEmpty()) {
+                report.append("निम्नलिखित **").append(wrong).append("** गलत/छूटे प्रश्नों के विषयों पर विशेष पुनरीक्षण की आवश्यकता है:\n");
+                for (String snippet : weakSnippets) {
+                    report.append("• **ध्यान देने योग्य विषय**: ").append(snippet).append("\n");
+                }
+            } else if (wrong > 0) {
+                report.append("• **कुल गलत/छूटे प्रश्न**: **").append(wrong).append("** प्रश्न।\n");
+            } else {
+                report.append("• **कोई कमजोर क्षेत्र नहीं!** शत-प्रतिशत सटीकता हासिल की।\n");
+            }
+            report.append("\n");
 
             report.append("### 📝 Question-by-Question Deep Analysis & Tricks (प्रत्येक प्रश्न का विश्लेषण व ट्रिक)\n\n");
 
@@ -492,10 +561,6 @@ public class AiAnalysisFragment extends Fragment {
                 report.append("कोई प्रश्न विवरण उपलब्ध नहीं है।\n\n");
             }
 
-            report.append("### 🔴 Weak Topics & Revision Strategy\n");
-            report.append("• **कुल गलत/छूटे प्रश्न**: **").append(wrong).append("** प्रश्न।\n");
-            report.append("• **सुझाव**: ऊपर सूचीबद्ध गलत/छूटे प्रश्नों की व्याख्या और ट्रिक्स को ध्यान से पढ़ें और मुख्य सूत्रों के नोट्स बनाएं।\n\n");
-
             report.append("### ⚡ Exam Shortcuts & Time Saving Tips\n");
             report.append("1. **Elimination Technique**: 4 में से 2 स्पष्ट गलत विकल्पों को पहले ही हटाएँ।\n");
             report.append("2. **Keyword Association**: प्रश्न के मुख्य शब्दों (Keywords) को उत्तर के साथ जोड़कर याद रखें।\n");
@@ -513,6 +578,32 @@ public class AiAnalysisFragment extends Fragment {
             } else {
                 report.append("🎯 **Focus Required!** Carefully study the question-by-question breakdown below.\n\n");
             }
+
+            report.append("### 🟢 Strong Topics & Mastery Areas\n");
+            if (!strongSnippets.isEmpty()) {
+                report.append("You showed strong proficiency in the following **").append(correct).append("** question topic areas:\n");
+                for (String snippet : strongSnippets) {
+                    report.append("• **Mastered Topic**: ").append(snippet).append("\n");
+                }
+            } else if (correct > 0) {
+                report.append("• You successfully answered **").append(correct).append("** questions.\n");
+            } else {
+                report.append("• Begin by revising core foundational concepts.\n");
+            }
+            report.append("\n");
+
+            report.append("### 🔴 Weak Topics & Focus Areas\n");
+            if (!weakSnippets.isEmpty()) {
+                report.append("Targeted revision is recommended for the following **").append(wrong).append("** missed question areas:\n");
+                for (String snippet : weakSnippets) {
+                    report.append("• **Focus Area**: ").append(snippet).append("\n");
+                }
+            } else if (wrong > 0) {
+                report.append("• **Total Missed/Skipped**: **").append(wrong).append("** questions.\n");
+            } else {
+                report.append("• **Zero Weak Areas!** Flawless accuracy achieved.\n");
+            }
+            report.append("\n");
 
             report.append("### 📝 Question-by-Question Deep Analysis & Tricks\n\n");
 
@@ -575,10 +666,6 @@ public class AiAnalysisFragment extends Fragment {
             } else {
                 report.append("No question details available.\n\n");
             }
-
-            report.append("### 🔴 Weak Topics & Revision Strategy\n");
-            report.append("• **Total Missed/Skipped**: **").append(wrong).append("** questions.\n");
-            report.append("• **Action**: Review the explanations and smart tricks above carefully.\n\n");
 
             report.append("### ⚡ Exam Shortcuts & Time Saving Tips\n");
             report.append("1. **Option Elimination**: Cross off 2 obviously incorrect choices immediately.\n");

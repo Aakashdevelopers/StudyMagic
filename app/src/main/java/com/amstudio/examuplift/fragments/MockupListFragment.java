@@ -157,7 +157,10 @@ public class MockupListFragment extends Fragment {
         selectedExam = null;
         selectedSubcategory = null;
         if (tvHeaderTitle != null) tvHeaderTitle.setText("Mock Test Exams");
-        if (tvHeaderSubtitle != null) tvHeaderSubtitle.setText("Select an exam category to explore mock tests");
+        if (tvHeaderSubtitle != null) {
+            tvHeaderSubtitle.setText("Select an exam category to explore mock tests");
+            tvHeaderSubtitle.setVisibility(View.VISIBLE);
+        }
         if (btnBackToExams != null) btnBackToExams.setVisibility(View.GONE);
         if (onBackPressedCallback != null) onBackPressedCallback.setEnabled(false);
 
@@ -172,7 +175,15 @@ public class MockupListFragment extends Fragment {
         }
         selectedSubcategory = null;
         if (tvHeaderTitle != null) tvHeaderTitle.setText(selectedExam.getTitle());
-        if (tvHeaderSubtitle != null) tvHeaderSubtitle.setText(selectedExam.getDescription() != null && !selectedExam.getDescription().isEmpty() ? selectedExam.getDescription() : "Select subcategory (e.g. CGL, CHSL, CPO)");
+        if (tvHeaderSubtitle != null) {
+            if (selectedExam.getDescription() != null && !selectedExam.getDescription().isEmpty()) {
+                tvHeaderSubtitle.setText(selectedExam.getDescription());
+                tvHeaderSubtitle.setVisibility(View.VISIBLE);
+            } else {
+                tvHeaderSubtitle.setText("");
+                tvHeaderSubtitle.setVisibility(View.GONE);
+            }
+        }
         if (btnBackToExams != null) btnBackToExams.setVisibility(View.VISIBLE);
         if (onBackPressedCallback != null) onBackPressedCallback.setEnabled(true);
 
@@ -190,7 +201,15 @@ public class MockupListFragment extends Fragment {
             return;
         }
         if (tvHeaderTitle != null) tvHeaderTitle.setText(selectedSubcategory.getTitle());
-        if (tvHeaderSubtitle != null) tvHeaderSubtitle.setText(selectedSubcategory.getDescription() != null && !selectedSubcategory.getDescription().isEmpty() ? selectedSubcategory.getDescription() : "Explore mock tests");
+        if (tvHeaderSubtitle != null) {
+            if (selectedSubcategory.getDescription() != null && !selectedSubcategory.getDescription().isEmpty()) {
+                tvHeaderSubtitle.setText(selectedSubcategory.getDescription());
+                tvHeaderSubtitle.setVisibility(View.VISIBLE);
+            } else {
+                tvHeaderSubtitle.setText("");
+                tvHeaderSubtitle.setVisibility(View.GONE);
+            }
+        }
         if (btnBackToExams != null) btnBackToExams.setVisibility(View.VISIBLE);
         if (onBackPressedCallback != null) onBackPressedCallback.setEnabled(true);
 
