@@ -547,8 +547,6 @@ public class MockupQuizActivity extends AppCompatActivity {
                 updatePalette();
                 showQuestion(currentQuestionIndexInSubject);
                 Toast.makeText(this, "Previous Subject: " + currentSubject, Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "This is the first question", Toast.LENGTH_SHORT).show();
             }
         }
     }

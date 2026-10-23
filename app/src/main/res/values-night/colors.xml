@@ -58,4 +58,35 @@
     <color name="mockTestOnContainer">#E0F2F1</color>
     <color name="mockTestAccent">#4DB6AC</color>
     <color name="mockTestStroke">#00796B</color>
+
+    <!-- About Screen Theme Colors (Night Mode) -->
+    <color name="aboutHeroBackground">#0F172A</color>
+    <color name="aboutHeroWave">#020617</color>
+    <color name="aboutTaglineBg">#1E293B</color>
+    <color name="aboutTaglineText">#E2E8F0</color>
+
+    <!-- Social Link Cards (Night Theme) -->
+    <color name="card_telegram_bg">#1E293B</color>
+    <color name="card_telegram_stroke">#334155</color>
+    <color name="card_telegram_title">#F8FAFC</color>
+    <color name="card_telegram_sub">#93C5FD</color>
+    <color name="card_telegram_btn">#2563EB</color>
+
+    <color name="card_doubts_bg">#112A25</color>
+    <color name="card_doubts_stroke">#134E4A</color>
+    <color name="card_doubts_title">#F8FAFC</color>
+    <color name="card_doubts_sub">#99F6E4</color>
+    <color name="card_doubts_btn">#0D9488</color>
+
+    <color name="card_youtube_bg">#2C1D21</color>
+    <color name="card_youtube_stroke">#4C1D24</color>
+    <color name="card_youtube_title">#F8FAFC</color>
+    <color name="card_youtube_sub">#FCA5A5</color>
+    <color name="card_youtube_btn">#DC2626</color>
+
+    <color name="card_instagram_bg">#2D1B28</color>
+    <color name="card_instagram_stroke">#4C1D38</color>
+    <color name="card_instagram_title">#F8FAFC</color>
+    <color name="card_instagram_sub">#FBCFE8</color>
+    <color name="card_instagram_btn">#E11D48</color>
 </resources>

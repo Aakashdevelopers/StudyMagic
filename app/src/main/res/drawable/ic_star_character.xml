@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+
+    <!-- Outer Star Body Base -->
+    <path
+        android:fillColor="#FFCA28"
+        android:pathData="M32,4 L40,21 L58,23 L45,36 L48,54 L32,45 L16,54 L19,36 L6,23 L24,21 Z" />
+
+    <!-- Star Shading / Dimensional Right Side -->
+    <path
+        android:fillColor="#FFB300"
+        android:pathData="M32,4 L32,45 L48,54 L45,36 L58,23 L40,21 Z" />
+
+    <!-- Left Eye (Happy Curve) -->
+    <path
+        android:strokeColor="#3E2723"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M23,28 Q26,24 29,28" />
+
+    <!-- Right Eye (Happy Curve) -->
+    <path
+        android:strokeColor="#3E2723"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M35,28 Q38,24 41,28" />
+
+    <!-- Rosy Cheeks Left -->
+    <path
+        android:fillColor="#FF8A80"
+        android:fillAlpha="0.8"
+        android:pathData="M21,32 A2.5,2 0 1,0 26,32 A2.5,2 0 1,0 21,32 Z" />
+
+    <!-- Rosy Cheeks Right -->
+    <path
+        android:fillColor="#FF8A80"
+        android:fillAlpha="0.8"
+        android:pathData="M38,32 A2.5,2 0 1,0 43,32 A2.5,2 0 1,0 38,32 Z" />
+
+    <!-- Open Happy Mouth -->
+    <path
+        android:fillColor="#D81B60"
+        android:pathData="M28,34 Q32,41 36,34 Z" />
+
+    <!-- Tongue in Mouth -->
+    <path
+        android:fillColor="#FF8A80"
+        android:pathData="M30,36 Q32,40 34,36 Z" />
+</vector>

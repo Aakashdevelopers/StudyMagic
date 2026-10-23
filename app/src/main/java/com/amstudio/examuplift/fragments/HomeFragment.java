@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.amstudio.examuplift.AboutActivity;
 import com.amstudio.examuplift.MockupQuizActivity;
 import com.amstudio.examuplift.R;
 import com.amstudio.examuplift.SavedQuestionsActivity;
@@ -46,6 +47,22 @@ public class HomeFragment extends Fragment {
         View header = view.findViewById(R.id.llHeader);
         WindowInsetsUtil.applyTopInset(header);
         WindowInsetsUtil.setLightStatusBar(getActivity(), false);
+
+        View cvAboutContainer = view.findViewById(R.id.cvAboutContainer);
+        if (cvAboutContainer != null) {
+            cvAboutContainer.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), AboutActivity.class);
+                startActivity(intent);
+            });
+        }
+
+        View cardAboutCommunityBanner = view.findViewById(R.id.cardAboutCommunityBanner);
+        if (cardAboutCommunityBanner != null) {
+            cardAboutCommunityBanner.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), AboutActivity.class);
+                startActivity(intent);
+            });
+        }
 
         View llSearchBar = view.findViewById(R.id.llSearchBar);
         if (llSearchBar != null) {

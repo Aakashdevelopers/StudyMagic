@@ -105,8 +105,6 @@ public class DialogUtils {
 
         RatingBar ratingBar = dialogView.findViewById(R.id.ratingBarFeedback);
         TextInputEditText etReview = dialogView.findViewById(R.id.etReview);
-        TextInputEditText etFeatureSuggestion = dialogView.findViewById(R.id.etFeatureSuggestion);
-        TextInputEditText etUserContact = dialogView.findViewById(R.id.etUserContact);
         View btnCancel = dialogView.findViewById(R.id.btnCancelFeedback);
         View btnSubmit = dialogView.findViewById(R.id.btnSubmitFeedback);
 
@@ -116,17 +114,15 @@ public class DialogUtils {
 
         if (btnSubmit != null) {
             btnSubmit.setOnClickListener(v -> {
-                int rating = ratingBar != null ? Math.round(ratingBar.getRating()) : 5;
+                int rating = ratingBar != null ? Math.round(ratingBar.getRating()) : 0;
                 String review = etReview != null && etReview.getText() != null ? etReview.getText().toString().trim() : "";
-                String suggestion = etFeatureSuggestion != null && etFeatureSuggestion.getText() != null ? etFeatureSuggestion.getText().toString().trim() : "";
-                String contact = etUserContact != null && etUserContact.getText() != null ? etUserContact.getText().toString().trim() : "";
 
-                if (TextUtils.isEmpty(review) && TextUtils.isEmpty(suggestion)) {
-                    Toast.makeText(context, "Please enter a review or new feature suggestion / कृपया समीक्षा या सुझाव लिखें", Toast.LENGTH_SHORT).show();
+                if (rating <= 0) {
+                    Toast.makeText(context, "Please select a rating / कृपया रेटिंग चुनें", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                AppFeedback feedback = new AppFeedback(rating, review, suggestion, contact);
+                AppFeedback feedback = new AppFeedback(rating, review, "", "");
                 Toast.makeText(context, "Sending feedback...", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
 

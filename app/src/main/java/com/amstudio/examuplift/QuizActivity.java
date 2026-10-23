@@ -313,8 +313,6 @@ public class QuizActivity extends AppCompatActivity {
         if (currentQuestionIndex > 0) {
             currentQuestionIndex--;
             showQuestion(currentQuestionIndex);
-        } else {
-            Toast.makeText(this, "This is the first question", Toast.LENGTH_SHORT).show();
         }
     }
 

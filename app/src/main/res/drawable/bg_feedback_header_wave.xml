@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="360dp"
+    android:height="110dp"
+    android:viewportWidth="360"
+    android:viewportHeight="110">
+
+    <!-- Top Solid Gold Fill -->
+    <path
+        android:fillColor="#F5C842"
+        android:pathData="M0,0 L360,0 L360,70 Q270,110 180,80 Q90,50 0,85 Z" />
+
+    <!-- Overlay Curved Soft Gold Wave -->
+    <path
+        android:fillColor="#FFE082"
+        android:fillAlpha="0.6"
+        android:pathData="M0,0 L360,0 L360,55 Q270,95 180,65 Q90,35 0,70 Z" />
+
+    <!-- Accent Light Wave Detail -->
+    <path
+        android:fillColor="#FFF3E0"
+        android:fillAlpha="0.35"
+        android:pathData="M0,0 L360,0 L360,40 Q250,80 160,50 Q70,20 0,55 Z" />
+</vector>

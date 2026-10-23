@@ -19,6 +19,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.amstudio.examuplift.MockupQuizActivity;
 import com.amstudio.examuplift.R;
 import com.amstudio.examuplift.api.ApiClient;
+import com.amstudio.examuplift.models.Category;
 import com.amstudio.examuplift.models.MockExam;
 import com.amstudio.examuplift.models.MockSubcategory;
 import com.amstudio.examuplift.models.SupabaseTest;
@@ -93,14 +94,9 @@ public class MockupListFragment extends Fragment {
                 if (selectedSubcategory != null) {
                     selectedSubcategory = null;
                     showSubcategoriesListView();
-                } else if (selectedExam != null) {
-                    if (getArguments() != null && getArguments().containsKey("categoryId")) {
-                        if (getParentFragmentManager() != null) {
-                            getParentFragmentManager().popBackStack();
-                        }
-                    } else {
-                        selectedExam = null;
-                        showExamsListView();
+                } else if (getArguments() != null && getArguments().containsKey("categoryId")) {
+                    if (getParentFragmentManager() != null) {
+                        getParentFragmentManager().popBackStack();
                     }
                 }
             }
@@ -111,17 +107,12 @@ public class MockupListFragment extends Fragment {
             if (selectedSubcategory != null) {
                 selectedSubcategory = null;
                 showSubcategoriesListView();
-            } else if (selectedExam != null) {
-                if (getArguments() != null && getArguments().containsKey("categoryId")) {
-                    if (getParentFragmentManager() != null) {
-                        getParentFragmentManager().popBackStack();
-                    }
-                } else {
-                    selectedExam = null;
-                    showExamsListView();
+            } else if (getArguments() != null && getArguments().containsKey("categoryId")) {
+                if (getParentFragmentManager() != null) {
+                    getParentFragmentManager().popBackStack();
                 }
             } else {
-                showExamsListView();
+                showSubcategoriesListView();
             }
         });
 
@@ -131,7 +122,7 @@ public class MockupListFragment extends Fragment {
             } else if (selectedExam != null) {
                 fetchMockSubcategories(selectedExam.getId());
             } else {
-                fetchMockExams();
+                fetchAllMockSubcategoriesDirect();
             }
         });
 
@@ -139,76 +130,52 @@ public class MockupListFragment extends Fragment {
         String argCatName = getArguments() != null ? getArguments().getString("categoryName") : null;
 
         if (argCatId != null && !argCatId.isEmpty()) {
+            long cId = 0;
             try {
-                long cId = Long.parseLong(argCatId);
-                selectedExam = new MockExam(cId, argCatName != null ? argCatName : "Exam Mocks", "", "");
-                showSubcategoriesListView();
-            } catch (NumberFormatException e) {
-                showExamsListView();
-            }
+                cId = Long.parseLong(argCatId);
+            } catch (NumberFormatException ignored) {}
+            selectedExam = new MockExam(cId, argCatName != null ? argCatName : "Exam Mocks", "", "");
         } else {
-            showExamsListView();
+            selectedExam = null;
         }
+
+        showSubcategoriesListView();
 
         return view;
     }
 
-    private void showExamsListView() {
-        selectedExam = null;
+    private void showSubcategoriesListView() {
         selectedSubcategory = null;
-        if (tvHeaderTitle != null) tvHeaderTitle.setText("Mock Test Exams");
+        if (selectedExam != null) {
+            if (tvHeaderTitle != null) tvHeaderTitle.setText(selectedExam.getTitle());
+            if (btnBackToExams != null) btnBackToExams.setVisibility(View.VISIBLE);
+            if (onBackPressedCallback != null) onBackPressedCallback.setEnabled(true);
+        } else {
+            if (tvHeaderTitle != null) tvHeaderTitle.setText("Mock Tests");
+            if (btnBackToExams != null) btnBackToExams.setVisibility(View.GONE);
+            if (onBackPressedCallback != null) onBackPressedCallback.setEnabled(false);
+        }
         if (tvHeaderSubtitle != null) {
-            tvHeaderSubtitle.setText("Select an exam category to explore mock tests");
+            tvHeaderSubtitle.setText("Select a subcategory to explore mock tests");
             tvHeaderSubtitle.setVisibility(View.VISIBLE);
         }
-        if (btnBackToExams != null) btnBackToExams.setVisibility(View.GONE);
-        if (onBackPressedCallback != null) onBackPressedCallback.setEnabled(false);
-
-        rvMockups.setAdapter(examAdapter);
-        fetchMockExams();
-    }
-
-    private void showSubcategoriesListView() {
-        if (selectedExam == null) {
-            showExamsListView();
-            return;
-        }
-        selectedSubcategory = null;
-        if (tvHeaderTitle != null) tvHeaderTitle.setText(selectedExam.getTitle());
-        if (tvHeaderSubtitle != null) {
-            if (selectedExam.getDescription() != null && !selectedExam.getDescription().isEmpty()) {
-                tvHeaderSubtitle.setText(selectedExam.getDescription());
-                tvHeaderSubtitle.setVisibility(View.VISIBLE);
-            } else {
-                tvHeaderSubtitle.setText("");
-                tvHeaderSubtitle.setVisibility(View.GONE);
-            }
-        }
-        if (btnBackToExams != null) btnBackToExams.setVisibility(View.VISIBLE);
-        if (onBackPressedCallback != null) onBackPressedCallback.setEnabled(true);
 
         rvMockups.setAdapter(subcategoryAdapter);
-        fetchMockSubcategories(selectedExam.getId());
+        if (selectedExam != null) {
+            fetchMockSubcategories(selectedExam.getId());
+        } else {
+            fetchAllMockSubcategoriesDirect();
+        }
     }
 
     private void showExamMocksView() {
         if (selectedSubcategory == null) {
-            if (selectedExam != null) {
-                showSubcategoriesListView();
-            } else {
-                showExamsListView();
-            }
+            showSubcategoriesListView();
             return;
         }
         if (tvHeaderTitle != null) tvHeaderTitle.setText(selectedSubcategory.getTitle());
         if (tvHeaderSubtitle != null) {
-            if (selectedSubcategory.getDescription() != null && !selectedSubcategory.getDescription().isEmpty()) {
-                tvHeaderSubtitle.setText(selectedSubcategory.getDescription());
-                tvHeaderSubtitle.setVisibility(View.VISIBLE);
-            } else {
-                tvHeaderSubtitle.setText("");
-                tvHeaderSubtitle.setVisibility(View.GONE);
-            }
+            tvHeaderSubtitle.setVisibility(View.GONE);
         }
         if (btnBackToExams != null) btnBackToExams.setVisibility(View.VISIBLE);
         if (onBackPressedCallback != null) onBackPressedCallback.setEnabled(true);
@@ -217,33 +184,33 @@ public class MockupListFragment extends Fragment {
         fetchExamMocks(selectedSubcategory.getId(), selectedExam != null ? selectedExam.getId() : 0);
     }
 
-    private void fetchMockExams() {
+    private void fetchAllMockSubcategoriesDirect() {
         if (!swipeRefresh.isRefreshing()) {
             progressBar.setVisibility(View.VISIBLE);
         }
-        ApiClient.getInterface().getMockExams().enqueue(new Callback<List<MockExam>>() {
+        ApiClient.getInterface().getAllMockSubcategories().enqueue(new Callback<List<MockSubcategory>>() {
             @Override
-            public void onResponse(Call<List<MockExam>> call, Response<List<MockExam>> response) {
+            public void onResponse(Call<List<MockSubcategory>> call, Response<List<MockSubcategory>> response) {
                 progressBar.setVisibility(View.GONE);
                 swipeRefresh.setRefreshing(false);
+                mockSubcategoriesList.clear();
                 if (response.isSuccessful() && response.body() != null) {
-                    mockExamsList.clear();
-                    for (MockExam exam : response.body()) {
-                        if (exam.isActive()) {
-                            mockExamsList.add(exam);
+                    for (MockSubcategory sub : response.body()) {
+                        if (sub.isActive()) {
+                            mockSubcategoriesList.add(sub);
                         }
                     }
-                    examAdapter.notifyDataSetChanged();
-                } else {
-                    Toast.makeText(getContext(), "Failed to load mock exams", Toast.LENGTH_SHORT).show();
                 }
+                subcategoryAdapter.notifyDataSetChanged();
             }
 
             @Override
-            public void onFailure(Call<List<MockExam>> call, Throwable t) {
+            public void onFailure(Call<List<MockSubcategory>> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
                 swipeRefresh.setRefreshing(false);
-                Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                if (getContext() != null) {
+                    Toast.makeText(getContext(), "Failed to load subcategories", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -256,56 +223,25 @@ public class MockupListFragment extends Fragment {
             @Override
             public void onResponse(Call<List<MockSubcategory>> call, Response<List<MockSubcategory>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
-                    progressBar.setVisibility(View.GONE);
-                    swipeRefresh.setRefreshing(false);
                     mockSubcategoriesList.clear();
                     for (MockSubcategory sub : response.body()) {
                         if (sub.isActive()) {
                             mockSubcategoriesList.add(sub);
                         }
                     }
-                    subcategoryAdapter.notifyDataSetChanged();
-                } else {
-                    fetchAllMockSubcategoriesFallback(categoryId);
+                    if (!mockSubcategoriesList.isEmpty()) {
+                        progressBar.setVisibility(View.GONE);
+                        swipeRefresh.setRefreshing(false);
+                        subcategoryAdapter.notifyDataSetChanged();
+                        return;
+                    }
                 }
+                fetchAllMockSubcategoriesDirect();
             }
 
             @Override
             public void onFailure(Call<List<MockSubcategory>> call, Throwable t) {
-                fetchAllMockSubcategoriesFallback(categoryId);
-            }
-        });
-    }
-
-    private void fetchAllMockSubcategoriesFallback(long categoryId) {
-        ApiClient.getInterface().getAllMockSubcategories().enqueue(new Callback<List<MockSubcategory>>() {
-            @Override
-            public void onResponse(Call<List<MockSubcategory>> call, Response<List<MockSubcategory>> response) {
-                progressBar.setVisibility(View.GONE);
-                swipeRefresh.setRefreshing(false);
-                mockSubcategoriesList.clear();
-                if (response.isSuccessful() && response.body() != null) {
-                    for (MockSubcategory sub : response.body()) {
-                        if (sub.isActive() && (sub.getCategoryId() == categoryId || categoryId <= 0)) {
-                            mockSubcategoriesList.add(sub);
-                        }
-                    }
-                    if (mockSubcategoriesList.isEmpty()) {
-                        for (MockSubcategory sub : response.body()) {
-                            if (sub.isActive()) {
-                                mockSubcategoriesList.add(sub);
-                            }
-                        }
-                    }
-                }
-                subcategoryAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onFailure(Call<List<MockSubcategory>> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
-                swipeRefresh.setRefreshing(false);
-                Toast.makeText(getContext(), "Failed to load subcategories", Toast.LENGTH_SHORT).show();
+                fetchAllMockSubcategoriesDirect();
             }
         });
     }
@@ -405,13 +341,32 @@ public class MockupListFragment extends Fragment {
 
     private void fetchExamMocksFallbackCategory(long categoryId) {
         if (categoryId <= 0) {
-            progressBar.setVisibility(View.GONE);
-            swipeRefresh.setRefreshing(false);
-            examMocksList.clear();
-            mockAdapter.notifyDataSetChanged();
+            fetchAllMockupTestsFallback();
             return;
         }
-        ApiClient.getInterface().getExamMocksByExamType("eq." + categoryId).enqueue(new Callback<List<SupabaseTest>>() {
+        ApiClient.getInterface().getTestsByCategory("eq." + categoryId).enqueue(new Callback<List<SupabaseTest>>() {
+            @Override
+            public void onResponse(Call<List<SupabaseTest>> call, Response<List<SupabaseTest>> response) {
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                    progressBar.setVisibility(View.GONE);
+                    swipeRefresh.setRefreshing(false);
+                    examMocksList.clear();
+                    examMocksList.addAll(response.body());
+                    sortAndNotifyMocks();
+                } else {
+                    fetchAllMockupTestsFallback();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<SupabaseTest>> call, Throwable t) {
+                fetchAllMockupTestsFallback();
+            }
+        });
+    }
+
+    private void fetchAllMockupTestsFallback() {
+        ApiClient.getInterface().getAllMockupTests().enqueue(new Callback<List<SupabaseTest>>() {
             @Override
             public void onResponse(Call<List<SupabaseTest>> call, Response<List<SupabaseTest>> response) {
                 progressBar.setVisibility(View.GONE);
@@ -514,14 +469,18 @@ public class MockupListFragment extends Fragment {
         }
     }
 
+    public interface OnSubcategoryClickListener {
+        void onSubcategoryClick(MockSubcategory subcategory);
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(SupabaseTest test);
+    }
+
     // Adapter for Table 2: mock_subcategories (Subcategory)
     private static class MockSubcategoryAdapter extends RecyclerView.Adapter<MockSubcategoryAdapter.ViewHolder> {
         private final List<MockSubcategory> subcategories;
         private final OnSubcategoryClickListener listener;
-
-        public interface OnSubcategoryClickListener {
-            void onSubcategoryClick(MockSubcategory subcategory);
-        }
 
         public MockSubcategoryAdapter(List<MockSubcategory> subcategories, OnSubcategoryClickListener listener) {
             this.subcategories = subcategories;
@@ -538,12 +497,15 @@ public class MockupListFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             MockSubcategory subcategory = subcategories.get(position);
-            holder.tvExamTitle.setText(subcategory.getTitle());
-            if (subcategory.getDescription() != null && !subcategory.getDescription().isEmpty()) {
-                holder.tvExamDescription.setText(subcategory.getDescription());
-                holder.tvExamDescription.setVisibility(View.VISIBLE);
-            } else {
+            if (holder.tvExamTitle != null) {
+                holder.tvExamTitle.setText(subcategory.getTitle());
+            }
+            if (holder.tvExamDescription != null) {
                 holder.tvExamDescription.setVisibility(View.GONE);
+            }
+
+            if (holder.tvMockCount != null) {
+                holder.tvMockCount.setText("Explore Mocks");
             }
 
             if (holder.ivExamIcon != null) {
@@ -570,7 +532,7 @@ public class MockupListFragment extends Fragment {
         }
 
         static class ViewHolder extends RecyclerView.ViewHolder {
-            TextView tvExamTitle, tvExamDescription;
+            TextView tvExamTitle, tvExamDescription, tvMockCount;
             ImageView ivExamIcon;
             View btnViewMocks;
 
@@ -578,6 +540,7 @@ public class MockupListFragment extends Fragment {
                 super(itemView);
                 tvExamTitle = itemView.findViewById(R.id.tvExamTitle);
                 tvExamDescription = itemView.findViewById(R.id.tvExamDescription);
+                tvMockCount = itemView.findViewById(R.id.tvMockCount);
                 ivExamIcon = itemView.findViewById(R.id.ivExamIcon);
                 btnViewMocks = itemView.findViewById(R.id.btnViewMocks);
             }
@@ -588,10 +551,6 @@ public class MockupListFragment extends Fragment {
     private static class MockupAdapter extends RecyclerView.Adapter<MockupAdapter.ViewHolder> {
         private final List<SupabaseTest> tests;
         private final OnItemClickListener listener;
-
-        public interface OnItemClickListener {
-            void onItemClick(SupabaseTest test);
-        }
 
         public MockupAdapter(List<SupabaseTest> tests, OnItemClickListener listener) {
             this.tests = tests;
@@ -609,7 +568,16 @@ public class MockupListFragment extends Fragment {
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             SupabaseTest test = tests.get(position);
             if (holder.tvTitle != null) holder.tvTitle.setText(test.title);
-            if (holder.tvDescription != null) holder.tvDescription.setText(test.description);
+
+            if (holder.tvDescription != null) {
+                if (test.description != null && !test.description.trim().isEmpty()) {
+                    holder.tvDescription.setText(test.description);
+                    holder.tvDescription.setVisibility(View.VISIBLE);
+                } else {
+                    holder.tvDescription.setVisibility(View.GONE);
+                }
+            }
+
             if (holder.tvDuration != null) holder.tvDuration.setText(test.duration + " Mins");
             if (holder.tvMarks != null) {
                 Test t = test.toTest();

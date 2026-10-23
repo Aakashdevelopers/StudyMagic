@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="44dp"
+    android:viewportWidth="360"
+    android:viewportHeight="80">
+
+    <!-- Translucent Light Wave Layer 1 -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.12"
+        android:pathData="M0,80 L360,80 L360,20 Q270,60 180,25 Q90,0 0,35 Z" />
+
+    <!-- Translucent Gold/Accent Wave Layer 2 -->
+    <path
+        android:fillColor="#FFB300"
+        android:fillAlpha="0.22"
+        android:pathData="M0,80 L360,80 L360,35 Q270,70 180,35 Q90,10 0,45 Z" />
+
+    <!-- Solid Page Background Fill Wave (Connects blue header smoothly to page background) -->
+    <path
+        android:fillColor="@color/backgroundColor"
+        android:pathData="M0,80 L360,80 L360,48 Q270,80 180,48 Q90,18 0,55 Z" />
+
+</vector>

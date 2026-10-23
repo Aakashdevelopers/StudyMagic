@@ -7,16 +7,16 @@ public class MockExam implements Serializable {
     @SerializedName("id")
     private long id;
 
-    @SerializedName("title")
+    @SerializedName(value = "title", alternate = {"name", "exam_name", "category_name"})
     private String title;
 
-    @SerializedName("description")
+    @SerializedName(value = "description", alternate = {"desc", "sub_description"})
     private String description;
 
-    @SerializedName("icon_url")
+    @SerializedName(value = "icon_url", alternate = {"icon", "iconUrl", "image_url"})
     private String iconUrl;
 
-    @SerializedName("is_active")
+    @SerializedName(value = "is_active", alternate = {"active", "isActive"})
     private boolean isActive = true;
 
     @SerializedName("created_at")

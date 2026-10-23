@@ -7,19 +7,19 @@ public class MockSubcategory implements Serializable {
     @SerializedName("id")
     private long id;
 
-    @SerializedName("category_id")
+    @SerializedName(value = "category_id", alternate = {"categoryId", "category_id_fk"})
     private long categoryId;
 
-    @SerializedName("title")
+    @SerializedName(value = "title", alternate = {"name", "subcategory_name", "sub_category_name"})
     private String title;
 
-    @SerializedName("description")
+    @SerializedName(value = "description", alternate = {"desc", "sub_description"})
     private String description;
 
-    @SerializedName("icon_url")
+    @SerializedName(value = "icon_url", alternate = {"icon", "iconUrl", "image_url"})
     private String iconUrl;
 
-    @SerializedName("is_active")
+    @SerializedName(value = "is_active", alternate = {"active", "isActive"})
     private boolean isActive = true;
 
     @SerializedName("created_at")

@@ -3,203 +3,150 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="20dp"
+    android:layout_marginHorizontal="20dp"
+    android:layout_marginVertical="16dp"
     app:cardBackgroundColor="@color/surfaceColor"
-    app:cardCornerRadius="24dp"
+    app:cardCornerRadius="28dp"
     app:cardElevation="12dp"
-    app:strokeWidth="0dp">
+    app:strokeColor="@color/colorOutlineVariant"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp">
+        android:orientation="vertical">
 
-        <!-- Header Row -->
-        <LinearLayout
+        <!-- Header Section with Waves and Star Badge -->
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_height="120dp">
 
-            <FrameLayout
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="@drawable/bg_report_dialog_icon">
+            <!-- Golden Waves Graphic Background -->
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:contentDescription="@null"
+                android:scaleType="fitXY"
+                android:src="@drawable/bg_feedback_header_wave" />
+
+            <!-- Centered Circular Badge with Cute Star Graphic -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="bottom|center_horizontal"
+                app:cardBackgroundColor="@color/surfaceColor"
+                app:cardCornerRadius="40dp"
+                app:cardElevation="6dp"
+                app:strokeColor="@color/surfaceColor"
+                app:strokeWidth="3dp">
 
                 <ImageView
-                    android:layout_width="26dp"
-                    android:layout_height="26dp"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
                     android:layout_gravity="center"
                     android:contentDescription="@null"
-                    android:src="@drawable/ic_star_quiz"
-                    app:tint="@color/colorPrimary" />
-            </FrameLayout>
+                    android:src="@drawable/ic_star_character" />
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
+            </com.google.android.material.card.MaterialCardView>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="App Feedback &amp; Suggestions 🚀"
-                    android:textColor="@color/textPrimary"
-                    android:textSize="17sp"
-                    android:textStyle="bold" />
+        </FrameLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="App is just launched &amp; improving! Send your valuable feedback"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="ऐप अभी लॉन्च हुआ है, बेहतर बनाने के लिए सुझाव दें"
-                    android:textColor="@color/textSecondary"
-                    android:textSize="11sp" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Rating Section -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:text="Rate Your Experience / अनुभव कैसा रहा:"
-            android:textColor="@color/textSecondary"
-            android:textSize="12sp"
-            android:textStyle="bold" />
-
-        <RatingBar
-            android:id="@+id/ratingBarFeedback"
-            style="@style/Widget.AppCompat.RatingBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"
-            android:numStars="5"
-            android:rating="5"
-            android:stepSize="1"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark" />
-
-        <!-- App Review Input -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilReview"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:hint="App Review / ऐप की समीक्षा (Optional)"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusTopStart="12dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etReview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="top|start"
-                android:inputType="textMultiLine"
-                android:maxLength="400"
-                android:minLines="2"
-                android:maxLines="4"
-                android:textColor="@color/textPrimary"
-                android:textSize="13sp" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Feature Suggestion Input -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilFeatureSuggestion"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:hint="Suggest New Features / नया क्या देखना चाहते हैं?"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusTopStart="12dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etFeatureSuggestion"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="top|start"
-                android:inputType="textMultiLine"
-                android:maxLength="400"
-                android:minLines="2"
-                android:maxLines="4"
-                android:textColor="@color/textPrimary"
-                android:textSize="13sp" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Optional User Contact -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilUserContact"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:hint="Your Name/Email or Phone / संपर्क साधन (Optional)"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusTopStart="12dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etUserContact"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionDone"
-                android:inputType="text"
-                android:singleLine="true"
-                android:textColor="@color/textPrimary"
-                android:textSize="13sp" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Bottom Action Buttons -->
+        <!-- Main Content Area -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:gravity="end"
-            android:orientation="horizontal">
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnCancelFeedback"
-                style="@style/Widget.Material3.Button.OutlinedButton"
+            <!-- Title -->
+            <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:layout_marginEnd="10dp"
-                android:paddingHorizontal="16dp"
-                android:text="Close / बंद करें"
-                android:textAllCaps="false"
-                android:textColor="@color/textSecondary"
-                android:textSize="13sp"
-                app:cornerRadius="12dp"
-                app:strokeColor="@color/colorOutline" />
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="How Would You Rate Our\nApp Experience?"
+                android:textColor="@color/textPrimary"
+                android:textSize="17sp"
+                android:textStyle="bold" />
 
+            <!-- Hindi Subtitle -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:text="ऐप का अनुभव कैसा रहा?"
+                android:textColor="@color/textSecondary"
+                android:textSize="12sp" />
+
+            <!-- 5-Star Rating Bar -->
+            <RatingBar
+                android:id="@+id/ratingBarFeedback"
+                style="@style/Widget.AppCompat.RatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:numStars="5"
+                android:progressBackgroundTint="@color/colorOutline"
+                android:progressTint="@color/colorSecondary"
+                android:rating="0"
+                android:stepSize="1" />
+
+            <!-- Optional Feedback Comment Box -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilReview"
+                style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="Leave a comment (Optional) / विचार लिखें..."
+                app:boxBackgroundColor="@color/surfaceVariant"
+                app:boxCornerRadiusBottomEnd="16dp"
+                app:boxCornerRadiusBottomStart="16dp"
+                app:boxCornerRadiusTopEnd="16dp"
+                app:boxCornerRadiusTopStart="16dp"
+                app:boxStrokeWidth="0dp"
+                app:boxStrokeWidthFocused="1dp"
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etReview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top|start"
+                    android:inputType="textMultiLine"
+                    android:maxLength="400"
+                    android:maxLines="3"
+                    android:minLines="2"
+                    android:textColor="@color/textPrimary"
+                    android:textSize="13sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Pill-Shaped Submit Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSubmitFeedback"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:paddingHorizontal="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="20dp"
                 android:text="Submit / सबमिट करें"
                 android:textAllCaps="false"
-                android:textSize="13sp"
+                android:textSize="14sp"
                 android:textStyle="bold"
-                app:cornerRadius="12dp" />
+                app:cornerRadius="26dp" />
+
+            <!-- Text Button No Thanks / Cancel -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCancelFeedback"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="No, Thanks! / बाद में"
+                android:textAllCaps="false"
+                android:textColor="@color/textSecondary"
+                android:textSize="13sp" />
 
         </LinearLayout>
 

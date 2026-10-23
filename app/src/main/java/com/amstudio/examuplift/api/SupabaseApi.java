@@ -18,7 +18,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface SupabaseApi {
-    @GET("mock_exams?select=*&order=id.asc")
+    @GET("categories?select=*")
     Call<List<MockExam>> getMockExams();
 
     @GET("mock_subcategories?select=*&order=id.asc")
@@ -27,16 +27,16 @@ public interface SupabaseApi {
     @GET("mock_subcategories?select=*&order=id.asc")
     Call<List<MockSubcategory>> getAllMockSubcategories();
 
-    @GET("exam_mocks?select=*")
+    @GET("mockup_tests?select=*")
     Call<List<SupabaseTest>> getExamMocksBySubcategory(@Query("subcategory_id") String subcategoryQuery);
 
     @GET("mockup_tests?select=*")
     Call<List<SupabaseTest>> getMockupTestsBySubcategory(@Query("subcategory_id") String subcategoryQuery);
 
-    @GET("exam_mocks?select=*")
+    @GET("mockup_tests?select=*")
     Call<List<SupabaseTest>> getExamMocksByExamType(@Query("examtype") String examTypeQuery);
 
-    @GET("exam_mocks?select=*")
+    @GET("mockup_tests?select=*")
     Call<List<SupabaseTest>> getAllExamMocks();
 
     @GET("mockup_tests?select=*&is_featured=eq.true")

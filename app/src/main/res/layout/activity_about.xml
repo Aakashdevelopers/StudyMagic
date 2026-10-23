@@ -1,0 +1,712 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundColor">
+
+    <!-- Top Navigation Bar Header Container -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/aboutHeroBackground"
+        app:elevation="0dp"
+        app:liftOnScroll="false">
+
+        <RelativeLayout
+            android:id="@+id/topBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/aboutHeroBackground"
+            android:paddingHorizontal="@dimen/spacing_12">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Back"
+                android:padding="10dp"
+                android:src="@drawable/baseline_arrow_back_ios_24"
+                app:tint="@color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:fontFamily="sans-serif-medium"
+                android:text="About Exam Uplift"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_title" />
+
+            <ImageButton
+                android:id="@+id/btnShareApp"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Share App"
+                android:padding="10dp"
+                android:src="@drawable/ic_share"
+                app:tint="@color/white" />
+
+        </RelativeLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/spacing_32">
+
+            <!-- Hero Header Banner Section -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/aboutHeroBackground">
+
+                <!-- Logo & App Title Container -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/spacing_20"
+                    android:paddingTop="@dimen/spacing_16"
+                    android:paddingBottom="52dp">
+
+                    <!-- App Logo Card -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="92dp"
+                        android:layout_height="92dp"
+                        app:cardCornerRadius="24dp"
+                        app:cardElevation="8dp"
+                        app:strokeColor="#33FFFFFF"
+                        app:strokeWidth="2dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:contentDescription="Exam Uplift Logo"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/logo" />
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_12"
+                        android:fontFamily="sans-serif-black"
+                        android:letterSpacing="0.06"
+                        android:text="EXAM UPLIFT"
+                        android:textColor="@color/white"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:id="@+id/tvTagline"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:background="@drawable/bg_ai_badge"
+                        android:backgroundTint="@color/aboutTaglineBg"
+                        android:paddingHorizontal="@dimen/spacing_16"
+                        android:paddingVertical="@dimen/spacing_6"
+                        android:text="Elevate Your Exam Preparation 🚀"
+                        android:textColor="@color/aboutTaglineText"
+                        android:textSize="@dimen/text_size_caption"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvAppVersion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_8"
+                        android:text="Version 1.0.2"
+                        android:textColor="#94A3B8"
+                        android:textSize="@dimen/text_size_caption" />
+
+                </LinearLayout>
+
+                <!-- Wave Background Graphic connected to bottom edge -->
+                <ImageView
+                    android:id="@+id/ivHeaderWave"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_alignParentBottom="true"
+                    android:contentDescription="@null"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/bg_about_header_wave" />
+
+            </RelativeLayout>
+
+            <!-- App Overview Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/spacing_16"
+                android:layout_marginTop="@dimen/spacing_16"
+                app:cardBackgroundColor="@color/surfaceColor"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="@dimen/elevation_low"
+                app:strokeColor="@color/colorOutline"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_20">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_info"
+                            app:tint="@color/colorPrimary" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/spacing_8"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="Welcome to Exam Uplift"
+                            android:textColor="@color/textPrimary"
+                            android:textSize="@dimen/text_size_title" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_12"
+                        android:lineSpacingExtra="4dp"
+                        android:text="Exam Uplift is your premier learning destination designed specifically for competitive exam aspirants. We provide free top-tier test series, video lectures, shortcut tricks, and an active doubt-solving community to help you crack SSC, Railway, Banking, and State exams."
+                        android:textColor="@color/textSecondary"
+                        android:textSize="@dimen/text_size_body" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Social & Community Links Section Header -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/spacing_16"
+                android:layout_marginTop="@dimen/spacing_24"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Connect &amp; Learn With Us 🌐"
+                    android:textColor="@color/textPrimary"
+                    android:textSize="@dimen/text_size_title" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Join our official channels for free lectures, daily PDFs &amp; doubt solutions"
+                    android:textColor="@color/textSecondary"
+                    android:textSize="@dimen/text_size_caption" />
+
+            </LinearLayout>
+
+            <!-- 1. Telegram Main Channel Button Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardTelegram"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/spacing_16"
+                android:layout_marginTop="@dimen/spacing_12"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardBackgroundColor="@color/card_telegram_bg"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="@dimen/elevation_low"
+                app:strokeColor="@color/card_telegram_stroke"
+                app:strokeWidth="1dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/spacing_16">
+
+                    <FrameLayout
+                        android:id="@+id/flTelegramIcon"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/bg_circle_light"
+                        android:backgroundTint="@color/card_telegram_btn">
+
+                        <ImageView
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_telegram"
+                            app:tint="@color/white" />
+
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/spacing_12"
+                        android:layout_toEndOf="@id/flTelegramIcon"
+                        android:layout_toStartOf="@id/btnTelegramJoin"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="Telegram Channel"
+                            android:textColor="@color/card_telegram_title"
+                            android:textSize="@dimen/text_size_subtitle" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Latest updates, study PDFs &amp; quiz"
+                            android:textColor="@color/card_telegram_sub"
+                            android:textSize="@dimen/text_size_caption" />
+
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnTelegramJoin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="38dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:backgroundTint="@color/card_telegram_btn"
+                        android:paddingHorizontal="@dimen/spacing_16"
+                        android:text="Join"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_body_small"
+                        android:textStyle="bold"
+                        app:cornerRadius="19dp" />
+
+                </RelativeLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 2. Maths & Reasoning Doubts Group Button Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardMathsDoubts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/spacing_16"
+                android:layout_marginTop="@dimen/spacing_12"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardBackgroundColor="@color/card_doubts_bg"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="@dimen/elevation_low"
+                app:strokeColor="@color/card_doubts_stroke"
+                app:strokeWidth="1dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/spacing_16">
+
+                    <FrameLayout
+                        android:id="@+id/flDoubtsIcon"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/bg_circle_light"
+                        android:backgroundTint="@color/card_doubts_btn">
+
+                        <ImageView
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_telegram"
+                            app:tint="@color/white" />
+
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/spacing_12"
+                        android:layout_toEndOf="@id/flDoubtsIcon"
+                        android:layout_toStartOf="@id/btnDoubtsAsk"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="Maths &amp; Reasoning Doubts"
+                            android:textColor="@color/card_doubts_title"
+                            android:textSize="@dimen/text_size_subtitle" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Ask questions &amp; get fast solutions"
+                            android:textColor="@color/card_doubts_sub"
+                            android:textSize="@dimen/text_size_caption" />
+
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnDoubtsAsk"
+                        android:layout_width="wrap_content"
+                        android:layout_height="38dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:backgroundTint="@color/card_doubts_btn"
+                        android:paddingHorizontal="@dimen/spacing_16"
+                        android:text="Ask Doubts"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_body_small"
+                        android:textStyle="bold"
+                        app:cornerRadius="19dp" />
+
+                </RelativeLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 3. YouTube Channel Button Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardYoutube"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/spacing_16"
+                android:layout_marginTop="@dimen/spacing_12"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardBackgroundColor="@color/card_youtube_bg"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="@dimen/elevation_low"
+                app:strokeColor="@color/card_youtube_stroke"
+                app:strokeWidth="1dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/spacing_16">
+
+                    <FrameLayout
+                        android:id="@+id/flYoutubeIcon"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/bg_circle_light"
+                        android:backgroundTint="@color/card_youtube_btn">
+
+                        <ImageView
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_youtube" />
+
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/spacing_12"
+                        android:layout_toEndOf="@id/flYoutubeIcon"
+                        android:layout_toStartOf="@id/btnYoutubeSubscribe"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="Free Lectures &amp; GK Tricks"
+                            android:textColor="@color/card_youtube_title"
+                            android:textSize="@dimen/text_size_subtitle" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Watch shortcut videos on YouTube"
+                            android:textColor="@color/card_youtube_sub"
+                            android:textSize="@dimen/text_size_caption" />
+
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnYoutubeSubscribe"
+                        android:layout_width="wrap_content"
+                        android:layout_height="38dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:backgroundTint="@color/card_youtube_btn"
+                        android:paddingHorizontal="@dimen/spacing_16"
+                        android:text="Subscribe"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_body_small"
+                        android:textStyle="bold"
+                        app:cornerRadius="19dp" />
+
+                </RelativeLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 4. Instagram Page Button Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardInstagram"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/spacing_16"
+                android:layout_marginTop="@dimen/spacing_12"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardBackgroundColor="@color/card_instagram_bg"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="@dimen/elevation_low"
+                app:strokeColor="@color/card_instagram_stroke"
+                app:strokeWidth="1dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/spacing_16">
+
+                    <FrameLayout
+                        android:id="@+id/flInstagramIcon"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/bg_circle_light"
+                        android:backgroundTint="@color/card_instagram_btn">
+
+                        <ImageView
+                            android:layout_width="26dp"
+                            android:layout_height="26dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_instagram"
+                            app:tint="@color/white" />
+
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/spacing_12"
+                        android:layout_toEndOf="@id/flInstagramIcon"
+                        android:layout_toStartOf="@id/btnInstagramFollow"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="Instagram Page"
+                            android:textColor="@color/card_instagram_title"
+                            android:textSize="@dimen/text_size_subtitle" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Daily quiz reels &amp; current affairs"
+                            android:textColor="@color/card_instagram_sub"
+                            android:textSize="@dimen/text_size_caption" />
+
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnInstagramFollow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="38dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:backgroundTint="@color/card_instagram_btn"
+                        android:paddingHorizontal="@dimen/spacing_16"
+                        android:text="Follow"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/text_size_body_small"
+                        android:textStyle="bold"
+                        app:cornerRadius="19dp" />
+
+                </RelativeLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Features Highlights Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/spacing_16"
+                android:layout_marginTop="@dimen/spacing_20"
+                app:cardBackgroundColor="@color/surfaceColor"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="@dimen/elevation_low"
+                app:strokeColor="@color/colorOutline"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_20">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Why Choose Exam Uplift? ✨"
+                        android:textColor="@color/textPrimary"
+                        android:textSize="@dimen/text_size_subtitle" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_12"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:lineSpacingExtra="2dp"
+                            android:text="🎯  100% Free High-Quality Test Series &amp; Mock Tests"
+                            android:textColor="@color/textSecondary"
+                            android:textSize="@dimen/text_size_body" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_10"
+                            android:lineSpacingExtra="2dp"
+                            android:text="💡  Daily GK Tricks, Formulas &amp; Short Cut Methods"
+                            android:textColor="@color/textSecondary"
+                            android:textSize="@dimen/text_size_body" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_10"
+                            android:lineSpacingExtra="2dp"
+                            android:text="🤝  Active Doubt Clearing Groups &amp; Expert Solutions"
+                            android:textColor="@color/textSecondary"
+                            android:textSize="@dimen/text_size_body" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_10"
+                            android:lineSpacingExtra="2dp"
+                            android:text="⚡  Real-Time AI Test Analysis &amp; Speed Tracking"
+                            android:textColor="@color/textSecondary"
+                            android:textSize="@dimen/text_size_body" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Bottom Action Row: Feedback & Privacy Policy Buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/spacing_16"
+                android:layout_marginTop="@dimen/spacing_20"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnFeedback"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="@dimen/spacing_8"
+                    android:text="Send Feedback"
+                    android:textAllCaps="false"
+                    android:textColor="@color/textPrimary"
+                    app:cornerRadius="16dp"
+                    app:icon="@drawable/ic_rate_review"
+                    app:iconPadding="6dp"
+                    app:iconSize="18dp"
+                    app:iconTint="@color/colorPrimary"
+                    app:strokeColor="@color/colorOutline" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnPrivacyPolicy"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/spacing_8"
+                    android:text="Privacy Policy"
+                    android:textAllCaps="false"
+                    android:textColor="@color/textPrimary"
+                    app:cornerRadius="16dp"
+                    app:icon="@drawable/ic_info"
+                    app:iconPadding="6dp"
+                    app:iconSize="18dp"
+                    app:iconTint="@color/colorPrimary"
+                    app:strokeColor="@color/colorOutline" />
+
+            </LinearLayout>
+
+            <!-- Copyright & Footer Message -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_24"
+                android:gravity="center"
+                android:text="Made with ❤ for Aspirants • Exam Uplift"
+                android:textColor="@color/textTertiary"
+                android:textSize="@dimen/text_size_caption" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -149,7 +149,7 @@
                 android:id="@+id/llAIMetricPills"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="12dp"
                 android:orientation="horizontal">
 
                 <TextView
@@ -157,10 +157,10 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginEnd="4dp"
+                    android:layout_marginEnd="3dp"
                     android:background="@drawable/bg_ai_stat_pill"
                     android:gravity="center"
-                    android:paddingHorizontal="8dp"
+                    android:paddingHorizontal="4dp"
                     android:paddingVertical="8dp"
                     android:text="🎯 Analysis Ready"
                     android:textColor="@color/colorPrimary"
@@ -172,13 +172,28 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="4dp"
+                    android:layout_marginHorizontal="3dp"
                     android:background="@drawable/bg_ai_stat_pill"
                     android:gravity="center"
-                    android:paddingHorizontal="8dp"
+                    android:paddingHorizontal="4dp"
                     android:paddingVertical="8dp"
                     android:text="📊 0% Accuracy"
                     android:textColor="@color/textPrimary"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvAIPillScore"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="3dp"
+                    android:background="@drawable/bg_ai_stat_pill"
+                    android:gravity="center"
+                    android:paddingHorizontal="4dp"
+                    android:paddingVertical="8dp"
+                    android:text="🏆 0/0 Marks"
+                    android:textColor="@color/colorSecondary"
                     android:textSize="11sp"
                     android:textStyle="bold" />
 
